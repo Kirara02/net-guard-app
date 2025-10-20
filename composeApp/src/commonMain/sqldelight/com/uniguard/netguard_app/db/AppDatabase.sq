@@ -1,0 +1,92 @@
+/** ============================
+ *  SQLDelight Schema: AppDatabase
+ *  Tables: ServerEntity, HistoryEntity
+ *  ============================ */
+
+CREATE TABLE ServerEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    url TEXT NOT NULL,
+    created_by TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE HistoryEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    server_id TEXT NOT NULL REFERENCES ServerEntity(id) ON DELETE CASCADE,
+    server_name TEXT NOT NULL,
+    url TEXT NOT NULL,
+    status TEXT NOT NULL, -- e.g. "DOWN", "RESOLVED", etc.
+    timestamp TEXT NOT NULL,
+    created_by TEXT NOT NULL,
+    assigned_to TEXT,
+    resolved_by TEXT,
+    resolved_at TEXT,
+    resolve_note TEXT
+);
+
+/** ============================
+ *  ServerEntity Queries
+ *  ============================ */
+
+getAllServers:
+SELECT * FROM ServerEntity
+ORDER BY created_at DESC;
+
+getServerById:
+SELECT * FROM ServerEntity
+WHERE id = ?;
+
+insertServer:
+INSERT OR REPLACE INTO ServerEntity(id, name, url, created_by, created_at)
+VALUES (?, ?, ?, ?, ?);
+
+deleteServerById:
+DELETE FROM ServerEntity
+WHERE id = ?;
+
+clearServers:
+DELETE FROM ServerEntity;
+
+
+/** ============================
+ *  HistoryEntity Queries
+ *  ============================ */
+
+getAllHistory:
+SELECT * FROM HistoryEntity
+ORDER BY timestamp DESC;
+
+getHistoryByServer:
+SELECT * FROM HistoryEntity
+WHERE server_id = ?
+ORDER BY timestamp DESC;
+
+insertHistory:
+INSERT OR REPLACE INTO HistoryEntity(
+    id,
+    server_id,
+    server_name,
+    url,
+    status,
+    timestamp,
+    created_by,
+    assigned_to,
+    resolved_by,
+    resolved_at,
+    resolve_note
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteHistoryById:
+DELETE FROM HistoryEntity
+WHERE id = ?;
+
+clearHistory:
+DELETE FROM HistoryEntity;
+
+getRecentStatusForServer:
+SELECT *
+FROM HistoryEntity
+WHERE server_id = ?
+ORDER BY timestamp DESC
+LIMIT 1;
