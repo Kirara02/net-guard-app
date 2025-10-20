@@ -6,7 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.uniguard.netguard_app.di.AppModule
+import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.presentation.ui.components.*
 import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
@@ -15,7 +15,7 @@ import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    viewModel: AuthViewModel = AppModule.authViewModel,
+    viewModel: AuthViewModel = rememberKoinViewModel<AuthViewModel>(),
     onNavigateBack: () -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()

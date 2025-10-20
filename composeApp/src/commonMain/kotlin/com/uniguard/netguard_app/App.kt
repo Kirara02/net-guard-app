@@ -6,6 +6,10 @@ import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
 
 @Composable
 fun App() {
+    LaunchedEffect(Unit) {
+        log { "App started." }
+    }
+
     NetGuardTheme {
         AppNavigation()
     }

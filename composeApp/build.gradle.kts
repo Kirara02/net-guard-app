@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.coroutines.android)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.androidx.work.runtime.ktx)
+            implementation(libs.koin.android)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -63,12 +64,19 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.material.icons.extended)
 
+            // Logger
+            implementation(libs.logger)
+
             // Ktor
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.json)
+
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
 
             // SQLDelight
             implementation(libs.sqldelight.runtime)

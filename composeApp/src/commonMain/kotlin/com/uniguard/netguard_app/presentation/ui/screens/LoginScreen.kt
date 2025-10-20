@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.presentation.ui.components.*
 import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
@@ -16,7 +17,7 @@ import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: AuthViewModel,
+    viewModel: AuthViewModel = rememberKoinViewModel<AuthViewModel>(),
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {

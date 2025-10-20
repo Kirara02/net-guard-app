@@ -2,11 +2,12 @@ package com.uniguard.netguard_app.di
 
 import com.uniguard.netguard_app.data.local.database.DatabaseProvider
 import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import org.koin.dsl.module
 
-actual fun getDatabaseProvider(): DatabaseProvider {
-    return DatabaseProvider()
+actual val databaseProviderModule = module {
+    single { DatabaseProvider() }
 }
 
-actual fun getAuthPreferences(): AuthPreferences {
-    return AuthPreferences()
+actual val authPreferencesModule = module {
+    single { AuthPreferences() }
 }

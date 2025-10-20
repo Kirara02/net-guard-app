@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.Server
 import com.uniguard.netguard_app.domain.model.ServerStatus
 import com.uniguard.netguard_app.presentation.ui.components.PrimaryButton
@@ -24,7 +25,7 @@ import com.uniguard.netguard_app.presentation.viewmodel.ServerViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServerManagementScreen(
-    viewModel: ServerViewModel = remember { ServerViewModel() },
+    viewModel: ServerViewModel = rememberKoinViewModel<ServerViewModel>(),
     onNavigateBack: () -> Unit
 ) {
     val servers by viewModel.servers.collectAsState()

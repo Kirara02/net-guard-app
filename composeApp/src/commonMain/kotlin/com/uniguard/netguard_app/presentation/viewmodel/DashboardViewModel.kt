@@ -3,10 +3,10 @@ package com.uniguard.netguard_app.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniguard.netguard_app.data.remote.api.TokenExpiredException
-import com.uniguard.netguard_app.di.AppModule
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.History
 import com.uniguard.netguard_app.domain.model.Server
+import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.domain.repository.HistoryRepository
 import com.uniguard.netguard_app.domain.repository.ServerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,8 @@ import kotlinx.coroutines.launch
 
 class DashboardViewModel(
     private val serverRepository: ServerRepository,
-    private val historyRepository: HistoryRepository
+    private val historyRepository: HistoryRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _servers = MutableStateFlow<List<Server>>(emptyList())
@@ -67,7 +68,7 @@ class DashboardViewModel(
                 }
             } catch (e: TokenExpiredException) {
                 // Token expired - trigger logout
-                AppModule.authViewModel.logout()
+                authRepository.clearAuthData()
                 _error.value = "Session expired. Please login again."
             } catch (e: Exception) {
                 _error.value = e.message ?: "Failed to load dashboard data"

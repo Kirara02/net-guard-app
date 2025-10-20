@@ -13,16 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.uniguard.netguard_app.di.AppModule
+import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.presentation.ui.components.*
 import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
+import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.DashboardViewModel
 import com.uniguard.netguard_app.utils.formatRelativeTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = AppModule.dashboardViewModel,
+    viewModel: DashboardViewModel = rememberKoinViewModel<DashboardViewModel>(),
+    authViewModel: AuthViewModel = rememberKoinViewModel<AuthViewModel>(),
     onNavigateToServerList: () -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToProfile: () -> Unit,
@@ -68,7 +70,10 @@ fun DashboardScreen(
                                 )
                             }
                         }
-                        IconButton(onClick = onLogout) {
+                        IconButton(onClick = {
+                            authViewModel.logout()
+                            onLogout()
+                        }) {
                             Icon(
                                 Icons.AutoMirrored.Filled.Logout,
                                 contentDescription = "Logout",

@@ -3,18 +3,19 @@ package com.uniguard.netguard_app.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniguard.netguard_app.data.remote.api.TokenExpiredException
-import com.uniguard.netguard_app.di.AppModule
 import com.uniguard.netguard_app.domain.model.ApiResult
-import com.uniguard.netguard_app.domain.model.CreateServerRequest
 import com.uniguard.netguard_app.domain.model.Server
 import com.uniguard.netguard_app.domain.model.ServerStatus
+import com.uniguard.netguard_app.domain.repository.AuthRepository
+import com.uniguard.netguard_app.domain.repository.ServerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ServerViewModel(
-    private val serverRepository: com.uniguard.netguard_app.domain.repository.ServerRepository = AppModule.serverRepository
+    private val serverRepository: ServerRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _servers = MutableStateFlow<List<Server>>(emptyList())
@@ -44,7 +45,7 @@ class ServerViewModel(
                 }
             } catch (e: TokenExpiredException) {
                 // Token expired - trigger logout
-                AppModule.authViewModel.logout()
+                authRepository.clearAuthData()
                 _error.value = "Session expired. Please login again."
             } catch (e: Exception) {
                 _error.value = e.message ?: "Failed to load servers"
@@ -85,7 +86,7 @@ class ServerViewModel(
                 }
             } catch (e: TokenExpiredException) {
                 // Token expired - trigger logout
-                AppModule.authViewModel.logout()
+                authRepository.clearAuthData()
                 _error.value = "Session expired. Please login again."
             } catch (e: Exception) {
                 _error.value = e.message ?: "Failed to refresh servers"
@@ -115,7 +116,7 @@ class ServerViewModel(
                 }
             } catch (e: TokenExpiredException) {
                 // Token expired - trigger logout
-                AppModule.authViewModel.logout()
+                authRepository.clearAuthData()
                 _error.value = "Session expired. Please login again."
             } catch (e: Exception) {
                 _error.value = e.message ?: "Failed to add server"
@@ -145,7 +146,7 @@ class ServerViewModel(
                 }
             } catch (e: TokenExpiredException) {
                 // Token expired - trigger logout
-                AppModule.authViewModel.logout()
+                authRepository.clearAuthData()
                 _error.value = "Session expired. Please login again."
             } catch (e: Exception) {
                 _error.value = e.message ?: "Failed to update server"
@@ -175,7 +176,7 @@ class ServerViewModel(
                 }
             } catch (e: TokenExpiredException) {
                 // Token expired - trigger logout
-                AppModule.authViewModel.logout()
+                authRepository.clearAuthData()
                 _error.value = "Session expired. Please login again."
             } catch (e: Exception) {
                 _error.value = e.message ?: "Failed to delete server"

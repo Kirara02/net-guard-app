@@ -6,20 +6,22 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.uniguard.netguard_app.di.AppModule
+import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.presentation.ui.screens.DashboardScreen
 import com.uniguard.netguard_app.presentation.ui.screens.HistoryScreen
 import com.uniguard.netguard_app.presentation.ui.screens.LoginScreen
 import com.uniguard.netguard_app.presentation.ui.screens.ProfileScreen
 import com.uniguard.netguard_app.presentation.ui.screens.RegisterScreen
 import com.uniguard.netguard_app.presentation.ui.screens.ServerManagementScreen
+import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 
 @Composable
 fun AppNavigation(
     navController: NavHostController = rememberNavController(),
-    isLoggedIn: Boolean = AppModule.authViewModel.isLoggedIn.collectAsState().value
 ) {
+    val authViewModel = rememberKoinViewModel<AuthViewModel>()
+    val isLoggedIn = authViewModel.isLoggedIn.collectAsState().value
+
     NavHost(
         navController = navController,
         startDestination = if (isLoggedIn) Dashboard else Login
@@ -27,7 +29,6 @@ fun AppNavigation(
         // Authentication Routes
         composable<Login> {
             LoginScreen(
-                viewModel = AppModule.authViewModel,
                 onLoginSuccess = {
                     navController.navigate(Dashboard) {
                         popUpTo<Login> { inclusive = true }
@@ -41,7 +42,6 @@ fun AppNavigation(
 
         composable<Register> {
             RegisterScreen(
-                viewModel = AppModule.authViewModel,
                 onRegisterSuccess = {
                     navController.navigate(Dashboard) {
                         popUpTo<Register> { inclusive = true }
@@ -66,7 +66,6 @@ fun AppNavigation(
                     navController.navigate(Profile)
                 },
                 onLogout = {
-                    AppModule.authViewModel.logout()
                     navController.navigate(Login) {
                         popUpTo(0) { inclusive = true }
                     }

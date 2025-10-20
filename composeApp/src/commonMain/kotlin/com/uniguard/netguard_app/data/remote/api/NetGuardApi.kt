@@ -11,43 +11,14 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.HttpTimeout
 
-class NetGuardApi(private val baseUrl: String = getPlatformApiUrl()) {
+class NetGuardApi(
+    httpClient: HttpClient,
+    private val baseUrl: String = getPlatformApiUrl()
+) {
 
-    private val client = HttpClient {
-        install(ContentNegotiation) {
-            json(Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            })
-        }
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.ALL
-        }
-        HttpResponseValidator {
-            validateResponse { response ->
-                when (response.status.value) {
-                    401 -> {
-                        val isAuthEndpoint = response.call.request.url.encodedPath.let { path ->
-                            path.contains("/auth/login") || path.contains("/auth/register")
-                        }
-                        if (!isAuthEndpoint) {
-                            // Token expired - clear auth and throw exception
-                            throw TokenExpiredException("Token expired")
-                        }
-                    }
-                    in 400..499 -> {
-                        throw ClientException(response, response.status.description)
-                    }
-                    in 500..599 -> {
-                        throw ServerException(response, response.status.description)
-                    }
-                }
-            }
-        }
-    }
+    private val client = httpClient
 
     // Authentication Endpoints
     suspend fun login(request: LoginRequest): ApiResult<AuthData> {
