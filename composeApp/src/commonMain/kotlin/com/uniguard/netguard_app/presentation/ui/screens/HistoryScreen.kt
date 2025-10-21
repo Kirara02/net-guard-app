@@ -3,6 +3,8 @@ package com.uniguard.netguard_app.presentation.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,7 +24,7 @@ fun HistoryScreen(
                     title = { Text("Incident History") },
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
-                            Text("←")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
                     }
                 )

@@ -1,5 +1,6 @@
 package com.uniguard.netguard_app.di
 
+import com.uniguard.netguard_app.BuildKonfig
 import com.uniguard.netguard_app.data.remote.api.ClientException
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.data.remote.api.ServerException
@@ -13,13 +14,12 @@ import com.uniguard.netguard_app.domain.repository.ServerRepository
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.DashboardViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.ServerViewModel
+import com.uniguard.netguard_app.utils.KtorNapierLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -27,51 +27,6 @@ import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-
-// Dependency injection container
-//object AppModule {
-//
-//    // API
-//    val api: NetGuardApi by lazy { NetGuardApi() }
-//
-//    // Database
-//    val databaseProvider: DatabaseProvider by lazy {
-//        // This will be platform-specific implementation
-//        getDatabaseProvider()
-//    }
-//
-//    // Preferences
-//    val authPreferences: AuthPreferences by lazy {
-//        // This will be platform-specific implementation
-//        getAuthPreferences()
-//    }
-//
-//    // Repositories
-//    val authRepository: AuthRepository by lazy {
-//        AuthRepositoryImpl(api, authPreferences)
-//    }
-//
-//    val serverRepository: ServerRepository by lazy {
-//        ServerRepositoryImpl(api, databaseProvider, authPreferences)
-//    }
-//
-//    val historyRepository: HistoryRepository by lazy {
-//        HistoryRepositoryImpl(api, databaseProvider, authPreferences)
-//    }
-//
-//    // ViewModels
-//    val authViewModel: AuthViewModel by lazy {
-//        AuthViewModel(authRepository)
-//    }
-//
-//    val dashboardViewModel: DashboardViewModel by lazy {
-//        DashboardViewModel(serverRepository, historyRepository)
-//    }
-//
-//    val serverViewModel: ServerViewModel by lazy {
-//        ServerViewModel(serverRepository)
-//    }
-//}
 
 fun KoinApplication.init() {
     modules(appModule, databaseProviderModule, authPreferencesModule)
@@ -88,8 +43,8 @@ val appModule = module {
                 })
             }
             install(Logging) {
-                logger = Logger.DEFAULT
-                level = LogLevel.ALL
+                logger = KtorNapierLogger()
+                level = if(BuildKonfig.DEBUG) LogLevel.ALL else LogLevel.NONE
             }
             install(HttpTimeout) {
                 val timeout = 30_000L

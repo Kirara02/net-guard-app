@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -10,6 +11,17 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.kotlinCocoapods)
+    alias(libs.plugins.buildKonfig)
+}
+
+buildkonfig {
+    packageName = "com.uniguard.netguard_app"
+
+    defaultConfigs {
+        buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", "true", const = true)
+    }
 }
 
 kotlin {
@@ -37,6 +49,31 @@ kotlin {
             isStatic = true
         }
     }
+
+    cocoapods {
+        summary = "NetGuard multiplatform app"
+        version = "1.0"
+        homepage = "https://github.com/Kirara02/net-guard-app"
+        ios.deploymentTarget = "16.0"
+        license = "MIT"
+
+        framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+
+        podfile = project.file("../iosApp/Podfile")
+
+        pod("FirebaseCore") {
+            version = "~> 12.4"
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+
+        pod("FirebaseMessaging") {
+            version = "~> 12.4"
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+    }
     
     sourceSets {
         androidMain.dependencies {
@@ -48,6 +85,8 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.androidx.work.runtime.ktx)
             implementation(libs.koin.android)
+            implementation(project.dependencies.platform(libs.firebase.android.bom))
+            implementation(libs.firebase.messaging)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -92,6 +131,10 @@ kotlin {
 
             // Coroutines
             implementation(libs.coroutines.core)
+
+            // Firebase
+            implementation(libs.gitlive.firebase.kotlin.messaging)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

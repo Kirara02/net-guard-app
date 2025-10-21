@@ -18,6 +18,10 @@ coroutines = "1.10.2"
 workRuntimeKtx = "2.10.5"
 koin = "4.1.1"
 napier = "2.7.1"
+firebase-android-bom = "34.4.0"
+gradlePlugins-google-services = "4.4.4"
+firebase-gitlive-sdk = "2.3.0"
+buildKonfig = "0.17.1"
 
 [libraries]
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
@@ -46,6 +50,11 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 logger = { module = "io.github.aakira:napier", version.ref = "napier" }
+#Firebase
+firebase-android-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-android-bom" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+gitlive-firebase-kotlin-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = "firebase-gitlive-sdk" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -55,3 +64,6 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version = "2.1.0" }
+google-services = { id = "com.google.gms.google-services", version.ref = "gradlePlugins-google-services" }
+kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }

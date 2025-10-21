@@ -6,7 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		51EE57D039E7BC13B4BCE242 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 664C9466DE7E9A3BBEF0C8A0 /* Pods_iosApp.framework */; };
+		5E1CDE632EA7296C0046F9E4 /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E1CDE622EA7296C0046F9E4 /* FirebaseCore.framework */; };
+		5E1CDE652EA729740046F9E4 /* FirebaseMessaging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E1CDE642EA729740046F9E4 /* FirebaseMessaging.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		04C3F971ABBB11945354EF71 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
+		07CA6C96BE16B082263AA76E /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
+		5E1CDE602EA729020046F9E4 /* FirebaseCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E1CDE622EA7296C0046F9E4 /* FirebaseCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E1CDE642EA729740046F9E4 /* FirebaseMessaging.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FirebaseMessaging.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		664C9466DE7E9A3BBEF0C8A0 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3AF8F2F3A719734FFE27DF5 /* NetGuardApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetGuardApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -31,6 +43,8 @@
 		};
 		586999A2BE350C778041784D /* Configuration */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = Configuration;
 			sourceTree = "<group>";
 		};
@@ -41,18 +55,34 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E1CDE652EA729740046F9E4 /* FirebaseMessaging.framework in Frameworks */,
+				5E1CDE632EA7296C0046F9E4 /* FirebaseCore.framework in Frameworks */,
+				51EE57D039E7BC13B4BCE242 /* Pods_iosApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3536B507D89F8333B0F6F632 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5E1CDE642EA729740046F9E4 /* FirebaseMessaging.framework */,
+				5E1CDE622EA7296C0046F9E4 /* FirebaseCore.framework */,
+				5E1CDE602EA729020046F9E4 /* FirebaseCore.framework */,
+				664C9466DE7E9A3BBEF0C8A0 /* Pods_iosApp.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3F98B30BE37ECAF0637AC57D = {
 			isa = PBXGroup;
 			children = (
 				586999A2BE350C778041784D /* Configuration */,
 				409B8870656A1098CC5CB16A /* iosApp */,
 				B1C36265B8C58E94463DC807 /* Products */,
+				D83057622058DFB1518CB26C /* Pods */,
+				3536B507D89F8333B0F6F632 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -64,6 +94,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		D83057622058DFB1518CB26C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				04C3F971ABBB11945354EF71 /* Pods-iosApp.debug.xcconfig */,
+				07CA6C96BE16B082263AA76E /* Pods-iosApp.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -71,10 +110,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0BC23D2B023E4B78675331EC /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
+				DBA3567AEFEA1A948ED8C11F /* [CP] Check Pods Manifest.lock */,
 				7A433ACB0140756901DA9789 /* Compile Kotlin Framework */,
 				947FA60D892C6A6E2EA60115 /* Sources */,
 				3B75013442843691B1F6619B /* Frameworks */,
 				073DCF122BB91F533EFAF85E /* Resources */,
+				055810E8374F6414E536854E /* [CP] Embed Pods Frameworks */,
+				0CF76FD8177E46CD103C1B42 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -84,8 +126,6 @@
 				409B8870656A1098CC5CB16A /* iosApp */,
 			);
 			name = iosApp;
-			packageProductDependencies = (
-			);
 			productName = iosApp;
 			productReference = F3AF8F2F3A719734FFE27DF5 /* NetGuardApp.app */;
 			productType = "com.apple.product-type.application";
@@ -135,6 +175,40 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		055810E8374F6414E536854E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		0CF76FD8177E46CD103C1B42 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		7A433ACB0140756901DA9789 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -154,6 +228,28 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:embedAndSignAppleFrameworkForXcode\n";
 		};
+		DBA3567AEFEA1A948ED8C11F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iosApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -169,6 +265,7 @@
 /* Begin XCBuildConfiguration section */
 		2281EE7EFA93E5DB158BF57F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04C3F971ABBB11945354EF71 /* Pods-iosApp.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -190,6 +287,7 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-lsqlite3";
+				PRODUCT_BUNDLE_IDENTIFIER = com.uniguard.NetGuardApp;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -256,6 +354,7 @@
 		};
 		8E3ABAFB7A37091C2B992B4F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 07CA6C96BE16B082263AA76E /* Pods-iosApp.release.xcconfig */;
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -277,6 +376,7 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-lsqlite3";
+				PRODUCT_BUNDLE_IDENTIFIER = com.uniguard.NetGuardApp;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

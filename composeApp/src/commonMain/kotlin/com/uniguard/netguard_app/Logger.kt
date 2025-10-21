@@ -52,3 +52,4 @@ inline fun log(
 ) {
     Napier.log(priority, tag, throwable, message())
 }
+

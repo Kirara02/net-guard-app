@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.AuthData
+import com.uniguard.netguard_app.domain.model.RegisterRequest
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.domain.repository.AuthRepository
+import com.uniguard.netguard_app.firebase.FirebaseTopicManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,6 +45,8 @@ class AuthViewModel(
             if (result is ApiResult.Success) {
                 _currentUser.value = result.data.user
                 _isLoggedIn.value = true
+
+                FirebaseTopicManager.subscribe("serverdown")
             }
         }
     }
@@ -57,7 +61,7 @@ class AuthViewModel(
     ) {
         viewModelScope.launch {
             _registerState.value = ApiResult.Loading
-            val registerRequest = com.uniguard.netguard_app.domain.model.RegisterRequest(
+            val registerRequest = RegisterRequest(
                 name = name,
                 email = email,
                 password = password,
@@ -71,11 +75,14 @@ class AuthViewModel(
             if (result is ApiResult.Success) {
                 _currentUser.value = result.data.user
                 _isLoggedIn.value = true
+
+                FirebaseTopicManager.subscribe("serverdown")
             }
         }
     }
 
     fun logout() {
+        FirebaseTopicManager.unsubscribe("serverdown")
         authRepository.clearAuthData()
         _currentUser.value = null
         _isLoggedIn.value = false
