@@ -2,15 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.uniguard.netguard_app.server_check</string>
+	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-    <key>UIBackgroundModes</key>
-    <array>
-        <string>remote-notification</string>
-    </array>
-    <key>NSUserNotificationAlertUsageDescription</key>
-    <string>Kami memerlukan izin untuk mengirimkan notifikasi server status.</string>
-    <key>FirebaseAppDelegateProxyEnabled</key>
-    <false/>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>NSUserNotificationAlertUsageDescription</key>
+	<string>Kami memerlukan izin untuk mengirimkan notifikasi server status.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>processing</string>
+		<string>fetch</string>
+	</array>
 </dict>
 </plist>

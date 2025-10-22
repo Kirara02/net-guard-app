@@ -55,21 +55,6 @@ fun DashboardScreen(
                         }
                     },
                     actions = {
-                        IconButton(onClick = { /* TODO: Show notifications */ }) {
-                            BadgedBox(
-                                badge = {
-                                    if (viewModel.downServers > 0) {
-                                        Badge { Text(viewModel.downServers.toString()) }
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    Icons.Default.Notifications,
-                                    contentDescription = "Notifications",
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        }
                         IconButton(onClick = {
                             authViewModel.logout()
                             onLogout()
@@ -287,7 +272,7 @@ fun DashboardScreen(
                         } else {
                             items(recentIncidents) { incident ->
                                 EnhancedIncidentCard(
-                                    serverName = incident.serverName ?: "Unknown Server",
+                                    serverName = incident.serverName,
                                     status = incident.status,
                                     timestamp = formatRelativeTime(incident.timestamp),
                                     url = incident.url

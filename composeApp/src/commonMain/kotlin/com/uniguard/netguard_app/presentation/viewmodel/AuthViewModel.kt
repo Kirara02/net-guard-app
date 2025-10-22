@@ -8,14 +8,19 @@ import com.uniguard.netguard_app.domain.model.RegisterRequest
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.firebase.FirebaseTopicManager
+import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AuthViewModel(
     private val authRepository: AuthRepository
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
+
+    private val serverMonitoringScheduler: ServerMonitoringScheduler by inject()
 
     private val _loginState = MutableStateFlow<ApiResult<AuthData>>(ApiResult.Initial)
     val loginState: StateFlow<ApiResult<AuthData>> = _loginState.asStateFlow()
@@ -47,6 +52,9 @@ class AuthViewModel(
                 _isLoggedIn.value = true
 
                 FirebaseTopicManager.subscribe("serverdown")
+
+                // Start server monitoring when user logs in
+                serverMonitoringScheduler.scheduleServerMonitoring(intervalMinutes = 10)
             }
         }
     }
@@ -77,11 +85,17 @@ class AuthViewModel(
                 _isLoggedIn.value = true
 
                 FirebaseTopicManager.subscribe("serverdown")
+
+                // Start server monitoring when user registers
+                serverMonitoringScheduler.scheduleServerMonitoring(intervalMinutes = 10)
             }
         }
     }
 
     fun logout() {
+        // Stop server monitoring when user logs out
+        serverMonitoringScheduler.cancelServerMonitoring()
+
         FirebaseTopicManager.unsubscribe("serverdown")
         authRepository.clearAuthData()
         _currentUser.value = null

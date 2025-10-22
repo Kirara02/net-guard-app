@@ -2,6 +2,7 @@ import SwiftUI
 import FirebaseCore
 import FirebaseMessaging
 import UserNotifications
+import BackgroundTasks
 import ComposeApp
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
@@ -20,6 +21,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
         // ✅ Register for remote notifications
         UIApplication.shared.registerForRemoteNotifications()
+
+        // Register background tasks
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.uniguard.netguard_app.server_check", using: nil) { task in
+            self.handleBackgroundTask(task)
+        }
 
         print("✅ Firebase initialized")
 
@@ -95,6 +101,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                 print("✅ Local notification displayed: \(title)")
             }
         }
+    }
+
+    // ✅ Handle background tasks
+    private func handleBackgroundTask(_ task: BGTask) {
+        // For now, create a simple instance without Koin dependency injection
+        // In a real app, you'd want to properly initialize Koin and get the instance
+        let worker = ServerMonitoringWorker()
+        worker.handleBackgroundTask(task: task)
     }
 }
 

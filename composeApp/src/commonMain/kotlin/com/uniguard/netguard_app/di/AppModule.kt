@@ -15,6 +15,7 @@ import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.DashboardViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.ServerViewModel
 import com.uniguard.netguard_app.utils.KtorNapierLogger
+import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
@@ -76,6 +77,8 @@ val appModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<HistoryRepository> { HistoryRepositoryImpl(get(), get(), get()) }
     single<ServerRepository> { ServerRepositoryImpl(get(), get(), get()) }
+
+    single { ServerMonitoringScheduler() }
 
     factory { AuthViewModel(get()) }
     factory { DashboardViewModel(get(), get(),get()) }
