@@ -14,6 +14,7 @@ import com.uniguard.netguard_app.domain.repository.ServerRepository
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.DashboardViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.ServerViewModel
+import com.uniguard.netguard_app.presentation.viewmodel.SplashViewModel
 import com.uniguard.netguard_app.utils.KtorNapierLogger
 import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
 import io.ktor.client.HttpClient
@@ -83,6 +84,7 @@ val appModule = module {
     factory { AuthViewModel(get()) }
     factory { DashboardViewModel(get(), get(),get()) }
     factory { ServerViewModel(get(), get()) }
+    factory { SplashViewModel(get(), get()) }
 }
 
 expect val databaseProviderModule: Module

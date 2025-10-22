@@ -3,6 +3,9 @@ package com.uniguard.netguard_app.presentation.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
+data object Splash
+
+@Serializable
 data object Login
 
 @Serializable

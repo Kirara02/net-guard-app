@@ -13,6 +13,7 @@ import com.uniguard.netguard_app.presentation.ui.screens.LoginScreen
 import com.uniguard.netguard_app.presentation.ui.screens.ProfileScreen
 import com.uniguard.netguard_app.presentation.ui.screens.RegisterScreen
 import com.uniguard.netguard_app.presentation.ui.screens.ServerManagementScreen
+import com.uniguard.netguard_app.presentation.ui.screens.SplashScreen
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 
 @Composable
@@ -20,12 +21,16 @@ fun AppNavigation(
     navController: NavHostController = rememberNavController(),
 ) {
     val authViewModel = rememberKoinViewModel<AuthViewModel>()
-    val isLoggedIn = authViewModel.isLoggedIn.collectAsState().value
 
     NavHost(
         navController = navController,
-        startDestination = if (isLoggedIn) Dashboard else Login
+        startDestination = Splash
     ) {
+        // Splash Screen
+        composable<Splash> {
+            SplashScreen(navController = navController)
+        }
+
         // Authentication Routes
         composable<Login> {
             LoginScreen(

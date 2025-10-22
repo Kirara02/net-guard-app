@@ -88,9 +88,9 @@ class NetGuardApi(
             val response = client.get("$baseUrl/auth/me") {
                 header("Authorization", "Bearer $token")
             }
-            val userResponse: AuthResponse = response.body()
-            if (userResponse.success && userResponse.data?.user != null) {
-                ApiResult.Success(userResponse.data.user)
+            val userResponse: UserResponse = response.body()
+            if (userResponse.success && userResponse.data != null) {
+                ApiResult.Success(userResponse.data)
             } else {
                 ApiResult.Error(userResponse.error ?: "Failed to get user")
             }

@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ServerRepositoryImpl(
+    databaseProvider: DatabaseProvider,
     private val api: NetGuardApi,
-    private val databaseProvider: DatabaseProvider,
     private val authPreferences: AuthPreferences
 ) : ServerRepository {
 

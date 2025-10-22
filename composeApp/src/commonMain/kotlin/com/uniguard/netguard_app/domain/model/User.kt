@@ -39,11 +39,22 @@ data class AuthResponse(
     val error: String? = null
 )
 
+
+
 @Serializable
 data class AuthData(
     val token: String,
     val user: User
 )
+
+@Serializable
+data class UserResponse(
+    val success: Boolean,
+    val message: String? = "Something Wrong" ,
+    val data: User? = null,
+    val error: String? = null
+)
+
 
 @Serializable
 data class ErrorResponse(
