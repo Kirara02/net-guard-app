@@ -1,6 +1,7 @@
 package com.uniguard.netguard_app.di
 
 import com.uniguard.netguard_app.BuildKonfig
+import com.uniguard.netguard_app.data.remote.api.AuthInterceptor
 import com.uniguard.netguard_app.data.remote.api.ClientException
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.data.remote.api.ServerException
@@ -54,6 +55,8 @@ val appModule = module {
                 requestTimeoutMillis = timeout
                 socketTimeoutMillis = timeout
             }
+            // Install AuthInterceptor for automatic token handling
+            install(AuthInterceptor(get()).plugin)
             HttpResponseValidator {
                 validateResponse { response ->
                     when (response.status.value) {
@@ -74,6 +77,8 @@ val appModule = module {
     }
 
     single { NetGuardApi(get()) }
+
+    single { AuthInterceptor(get()) }
 
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<HistoryRepository> { HistoryRepositoryImpl(get(), get(), get()) }
