@@ -187,46 +187,38 @@ fun DashboardScreen(
                                     modifier = Modifier.padding(bottom = 12.dp)
                                 )
 
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    ActionCard(
-                                        title = "Servers",
-                                        subtitle = "Manage & Monitor",
-                                        icon = Icons.Default.Dns,
-                                        onClick = onNavigateToServerList,
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    ActionCard(
-                                        title = "History",
-                                        subtitle = "View Incidents",
-                                        icon = Icons.Default.History,
-                                        onClick = onNavigateToHistory,
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                }
+                                // Responsive grid layout for Quick Actions
+                                val actionCards = listOf(
+                                    Triple("Servers", "Manage & Monitor", Icons.Default.Dns to onNavigateToServerList),
+                                    Triple("History", "View Incidents", Icons.Default.History to onNavigateToHistory),
+                                    Triple("Settings", "App Settings", Icons.Default.Settings to onNavigateToSettings),
+                                    Triple("Refresh", "Sync Data", Icons.Default.Refresh to { viewModel.loadDashboardData() })
+                                )
 
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    ActionCard(
-                                        title = "Settings",
-                                        subtitle = "App Settings",
-                                        icon = Icons.Default.Settings,
-                                        onClick = onNavigateToSettings,
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    ActionCard(
-                                        title = "Refresh",
-                                        subtitle = "Sync Data",
-                                        icon = Icons.Default.Refresh,
-                                        onClick = { viewModel.loadDashboardData() },
-                                        modifier = Modifier.weight(1f)
-                                    )
+                                // Use responsive columns based on screen width
+                                actionCards.chunked(2).forEach { rowCards ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        rowCards.forEach { (title, subtitle, iconAndAction) ->
+                                            val (icon, onClick, ) = iconAndAction
+                                            ActionCard(
+                                                title = title,
+                                                subtitle = subtitle,
+                                                icon = icon,
+                                                onClick = onClick,
+                                                modifier = Modifier.weight(1f)
+                                            )
+                                        }
+                                        // Fill empty space if odd number of cards in row
+                                        if (rowCards.size == 1) {
+                                            Spacer(modifier = Modifier.weight(1f))
+                                        }
+                                    }
+                                    if (rowCards != actionCards.chunked(2).last()) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                    }
                                 }
                             }
                         }

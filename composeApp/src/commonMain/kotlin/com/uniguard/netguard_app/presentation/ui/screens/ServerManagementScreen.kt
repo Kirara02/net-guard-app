@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -441,7 +442,7 @@ private fun ServerCard(
     val statusIcon = when (serverStatus?.status) {
         "UP" -> Icons.Default.CheckCircle
         "DOWN" -> Icons.Default.Error
-        else -> Icons.Default.Help
+        else -> Icons.AutoMirrored.Filled.Help
     }
 
     Card(
