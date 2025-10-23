@@ -21,4 +21,4 @@ data object ServerList
 data object History
 
 @Serializable
-data object Profile
+data object Settings

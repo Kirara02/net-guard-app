@@ -27,7 +27,7 @@ fun DashboardScreen(
     authViewModel: AuthViewModel = rememberKoinViewModel<AuthViewModel>(),
     onNavigateToServerList: () -> Unit,
     onNavigateToHistory: () -> Unit,
-    onNavigateToProfile: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     onLogout: () -> Unit
 ) {
     val recentIncidents by viewModel.recentIncidents.collectAsState()
@@ -213,10 +213,10 @@ fun DashboardScreen(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     ActionCard(
-                                        title = "Profile",
-                                        subtitle = "Settings",
-                                        icon = Icons.Default.Person,
-                                        onClick = onNavigateToProfile,
+                                        title = "Settings",
+                                        subtitle = "App Settings",
+                                        icon = Icons.Default.Settings,
+                                        onClick = onNavigateToSettings,
                                         modifier = Modifier.weight(1f)
                                     )
                                     ActionCard(
