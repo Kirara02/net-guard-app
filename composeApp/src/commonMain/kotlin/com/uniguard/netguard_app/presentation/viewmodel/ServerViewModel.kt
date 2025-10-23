@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.uniguard.netguard_app.data.remote.api.TokenExpiredException
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.Server
-import com.uniguard.netguard_app.domain.model.ServerStatus
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.domain.repository.ServerRepository
+import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
+import com.uniguard.netguardapp.db.ServerStatusEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 
 class ServerViewModel(
     private val serverRepository: ServerRepository,
+    private val serverStatusRepository: ServerStatusRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
@@ -30,8 +32,12 @@ class ServerViewModel(
     private val _selectedServer = MutableStateFlow<Server?>(null)
     val selectedServer: StateFlow<Server?> = _selectedServer.asStateFlow()
 
+    private val _serverStatuses = MutableStateFlow<Map<String, ServerStatusEntity>>(emptyMap())
+    val serverStatuses: StateFlow<Map<String, ServerStatusEntity>> = _serverStatuses.asStateFlow()
+
     init {
         loadServers()
+        loadServerStatuses()
     }
 
     fun loadServers() {
@@ -192,6 +198,14 @@ class ServerViewModel(
 
     fun clearError() {
         _error.value = null
+    }
+
+    private fun loadServerStatuses() {
+        viewModelScope.launch {
+            serverStatusRepository.getAllServerStatuses().collect { statuses ->
+                _serverStatuses.value = statuses.associateBy { it.server_id }
+            }
+        }
     }
 
     // Computed properties for stats

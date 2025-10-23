@@ -1,5 +1,6 @@
 package com.uniguard.netguard_app.presentation.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,10 +18,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.Server
-import com.uniguard.netguard_app.domain.model.ServerStatus
 import com.uniguard.netguard_app.presentation.ui.components.PrimaryButton
 import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
 import com.uniguard.netguard_app.presentation.viewmodel.ServerViewModel
+import com.uniguard.netguard_app.utils.formatRelativeTime
+import com.uniguard.netguardapp.db.ServerStatusEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,6 +31,7 @@ fun ServerManagementScreen(
     onNavigateBack: () -> Unit
 ) {
     val servers by viewModel.servers.collectAsState()
+    val serverStatuses by viewModel.serverStatuses.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
     val selectedServer by viewModel.selectedServer.collectAsState()
@@ -52,7 +55,11 @@ fun ServerManagementScreen(
                             Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                         }
                         IconButton(onClick = { showAddDialog = true }) {
-                            Icon(Icons.Default.Add, contentDescription = "Add Server")
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = "Add Server",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 )
@@ -80,7 +87,7 @@ fun ServerManagementScreen(
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         // Stats Header
                         item {
@@ -90,17 +97,42 @@ fun ServerManagementScreen(
                                     containerColor = MaterialTheme.colorScheme.primaryContainer
                                 )
                             ) {
-                                Row(
+                                Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(16.dp),
-                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                        .padding(16.dp)
                                 ) {
-                                    StatItem(
-                                        label = "Total",
-                                        value = viewModel.totalServers.toString(),
-                                        color = MaterialTheme.colorScheme.primary
+                                    Text(
+                                        text = "Server Overview",
+                                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+                                        StatItem(
+                                            label = "Total",
+                                            value = viewModel.totalServers.toString(),
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                        StatItem(
+                                            label = "Online",
+                                            value = serverStatuses.values.count { it.status == "UP" }.toString(),
+                                            color = Color(0xFF4CAF50)
+                                        )
+                                        StatItem(
+                                            label = "Offline",
+                                            value = serverStatuses.values.count { it.status == "DOWN" }.toString(),
+                                            color = Color(0xFFF44336)
+                                        )
+                                        StatItem(
+                                            label = "Unknown",
+                                            value = (viewModel.totalServers - serverStatuses.size).toString(),
+                                            color = Color(0xFF9E9E9E)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -146,18 +178,90 @@ fun ServerManagementScreen(
                                 }
                             }
                         } else {
-                            items(servers) { server ->
-                                ServerCard(
-                                    server = server,
-                                    onEdit = {
-                                        viewModel.selectServer(server)
-                                        showEditDialog = true
-                                    },
-                                    onDelete = {
-                                        viewModel.selectServer(server)
-                                        showDeleteDialog = true
-                                    }
-                                )
+                            // Group servers by status for better organization
+                            val onlineServers = servers.filter { serverStatuses[it.id]?.status == "UP" }
+                            val offlineServers = servers.filter { serverStatuses[it.id]?.status == "DOWN" }
+                            val unknownServers = servers.filter { serverStatuses[it.id]?.status != "UP" && serverStatuses[it.id]?.status != "DOWN" }
+
+                            // Online Servers Section
+                            if (onlineServers.isNotEmpty()) {
+                                item {
+                                    Text(
+                                        text = "🟢 Online Servers (${onlineServers.size})",
+                                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                                        color = Color(0xFF4CAF50),
+                                        modifier = Modifier.padding(vertical = 8.dp)
+                                    )
+                                }
+                                items(onlineServers) { server ->
+                                    val serverStatus = serverStatuses[server.id]
+                                    ServerCard(
+                                        server = server,
+                                        serverStatus = serverStatus,
+                                        onEdit = {
+                                            viewModel.selectServer(server)
+                                            showEditDialog = true
+                                        },
+                                        onDelete = {
+                                            viewModel.selectServer(server)
+                                            showDeleteDialog = true
+                                        }
+                                    )
+                                }
+                            }
+
+                            // Offline Servers Section
+                            if (offlineServers.isNotEmpty()) {
+                                item {
+                                    Text(
+                                        text = "🔴 Offline Servers (${offlineServers.size})",
+                                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                                        color = Color(0xFFF44336),
+                                        modifier = Modifier.padding(vertical = 8.dp)
+                                    )
+                                }
+                                items(offlineServers) { server ->
+                                    val serverStatus = serverStatuses[server.id]
+                                    ServerCard(
+                                        server = server,
+                                        serverStatus = serverStatus,
+                                        onEdit = {
+                                            viewModel.selectServer(server)
+                                            showEditDialog = true
+                                        },
+                                        onDelete = {
+                                            viewModel.selectServer(server)
+                                            showDeleteDialog = true
+                                        }
+                                    )
+                                }
+                            }
+
+                            // Unknown Servers Section
+                            if (unknownServers.isNotEmpty()) {
+                                item {
+                                    Text(
+                                        text = "⚪ Unmonitored Servers (${unknownServers.size})",
+                                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                                        color = Color(0xFF9E9E9E),
+                                        modifier = Modifier.padding(vertical = 8.dp)
+                                    )
+                                }
+                                items(unknownServers) { server ->
+                                    val serverStatus = serverStatuses[server.id]
+                                    ServerCard(
+                                        server = server,
+                                        serverStatus = serverStatus,
+                                        onEdit = {
+                                            viewModel.selectServer(server)
+                                            showEditDialog = true
+                                        },
+                                        onDelete = {
+                                            viewModel.selectServer(server)
+                                            showDeleteDialog = true
+                                        }
+                                    )
+                                }
                             }
                         }
 
@@ -324,18 +428,37 @@ private fun StatItem(
 @Composable
 private fun ServerCard(
     server: Server,
+    serverStatus: ServerStatusEntity?,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val statusColor = when (serverStatus?.status) {
+        "UP" -> Color(0xFF4CAF50)
+        "DOWN" -> Color(0xFFF44336)
+        else -> Color(0xFF9E9E9E)
+    }
+
+    val statusIcon = when (serverStatus?.status) {
+        "UP" -> Icons.Default.CheckCircle
+        "DOWN" -> Icons.Default.Error
+        else -> Icons.Default.Help
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = when (serverStatus?.status) {
+                "UP" -> MaterialTheme.colorScheme.surface
+                "DOWN" -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)
+                else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            }
+        )
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Server Header
+            // Server Header with Status Badge
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -343,21 +466,50 @@ private fun ServerCard(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Icon(
-                    Icons.Default.Dns,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
+                // Status Icon
+                Box(
+                    modifier = Modifier.size(40.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        statusIcon,
+                        contentDescription = serverStatus?.status ?: "Unknown",
+                        tint = statusColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(
-                        text = server.name,
-                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    // Server Name and Status Badge
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = server.name,
+                            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        // Status Badge
+                        Surface(
+                            color = statusColor.copy(alpha = 0.1f),
+                            shape = MaterialTheme.shapes.small,
+                            border = BorderStroke(1.dp, statusColor.copy(alpha = 0.3f))
+                        ) {
+                            Text(
+                                text = serverStatus?.status ?: "UNKNOWN",
+                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
+                                color = statusColor,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+
                     Text(
                         text = server.url,
                         style = MaterialTheme.typography.bodySmall,
@@ -366,24 +518,81 @@ private fun ServerCard(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                }
-                // Action buttons
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    IconButton(onClick = onEdit) {
-                        Icon(
-                            Icons.Default.Edit,
-                            contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                    // Status information
+                    serverStatus?.let { status ->
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Schedule,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Text(
+                                    text = formatRelativeTime(status.last_checked),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+
+                            status.response_time?.let { responseTime ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Default.Timer,
+                                        contentDescription = null,
+                                        tint = when {
+                                            responseTime < 500 -> Color(0xFF4CAF50)
+                                            responseTime < 2000 -> Color(0xFFFF9800)
+                                            else -> Color(0xFFF44336)
+                                        },
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Text(
+                                        text = "${responseTime}ms",
+                                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                                        color = when {
+                                            responseTime < 500 -> Color(0xFF4CAF50)
+                                            responseTime < 2000 -> Color(0xFFFF9800)
+                                            else -> Color(0xFFF44336)
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
-                    IconButton(onClick = onDelete) {
-                        Icon(
-                            Icons.Default.Delete,
-                            contentDescription = "Delete",
-                            tint = MaterialTheme.colorScheme.error
-                        )
+                }
+
+                // Action buttons
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        IconButton(onClick = onEdit) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = "Edit",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(onClick = onDelete) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
                 }
             }
