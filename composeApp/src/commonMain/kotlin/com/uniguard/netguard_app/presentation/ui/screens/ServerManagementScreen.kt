@@ -101,16 +101,6 @@ fun ServerManagementScreen(
                                         value = viewModel.totalServers.toString(),
                                         color = MaterialTheme.colorScheme.primary
                                     )
-                                    StatItem(
-                                        label = "Online",
-                                        value = viewModel.onlineServers.toString(),
-                                        color = Color(0xFF4CAF50)
-                                    )
-                                    StatItem(
-                                        label = "Down",
-                                        value = viewModel.downServers.toString(),
-                                        color = Color(0xFFF44336)
-                                    )
                                 }
                             }
                         }
@@ -337,17 +327,6 @@ private fun ServerCard(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    val statusColor = when (server.status) {
-        ServerStatus.UP -> Color(0xFF4CAF50)
-        ServerStatus.DOWN -> Color(0xFFF44336)
-        else -> Color(0xFFFF9800)
-    }
-
-    val statusIcon = when (server.status) {
-        ServerStatus.UP -> Icons.Default.CheckCircle
-        ServerStatus.DOWN -> Icons.Default.Error
-        else -> Icons.Default.Warning
-    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -365,9 +344,9 @@ private fun ServerCard(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Icon(
-                    statusIcon,
+                    Icons.Default.Dns,
                     contentDescription = null,
-                    tint = statusColor,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )
                 Column(
@@ -386,28 +365,7 @@ private fun ServerCard(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = server.status.name,
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                            color = statusColor
-                        )
-                        server.lastChecked?.let {
-                            Text(
-                                text = "•",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = "Last checked: ${it.take(19)}", // Format timestamp
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
+
                 }
                 // Action buttons
                 Row(

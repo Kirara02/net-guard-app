@@ -26,5 +26,5 @@ interface HistoryRepository {
     suspend fun getRecentServerStatus(serverId: String): History?
 
     // Dashboard specific
-    suspend fun getRecentIncidents(limit: Int = 5): ApiResult<List<History>>
+    suspend fun getRecentIncidents(limit: Int? = null): ApiResult<List<History>>
 }

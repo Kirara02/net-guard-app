@@ -9,11 +9,14 @@ import com.uniguard.netguard_app.data.remote.api.TokenExpiredException
 import com.uniguard.netguard_app.data.repository.AuthRepositoryImpl
 import com.uniguard.netguard_app.data.repository.HistoryRepositoryImpl
 import com.uniguard.netguard_app.data.repository.ServerRepositoryImpl
+import com.uniguard.netguard_app.data.repository.ServerStatusRepositoryImpl
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.domain.repository.HistoryRepository
 import com.uniguard.netguard_app.domain.repository.ServerRepository
+import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.DashboardViewModel
+import com.uniguard.netguard_app.presentation.viewmodel.HistoryViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.ServerViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.SplashViewModel
 import com.uniguard.netguard_app.utils.KtorNapierLogger
@@ -83,11 +86,13 @@ val appModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<HistoryRepository> { HistoryRepositoryImpl(get(), get(), get()) }
     single<ServerRepository> { ServerRepositoryImpl(get(), get(), get()) }
+    single<ServerStatusRepository> { ServerStatusRepositoryImpl(get()) }
 
     single { ServerMonitoringScheduler() }
 
     factory { AuthViewModel(get()) }
-    factory { DashboardViewModel(get(), get(),get()) }
+    factory { DashboardViewModel(get(), get(), get(), get()) }
+    factory { HistoryViewModel(get()) }
     factory { ServerViewModel(get(), get()) }
     factory { SplashViewModel(get(), get()) }
 }

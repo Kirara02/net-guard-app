@@ -6,12 +6,13 @@ import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.domain.repository.AuthRepository
+import com.uniguard.netguard_app.utils.getCurrentTimestamp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
+import kotlin.time.Instant
 
 class SplashViewModel(
     private val authRepository: AuthRepository,
@@ -28,7 +29,7 @@ class SplashViewModel(
     private fun checkAuthentication() {
         viewModelScope.launch {
             // Minimum splash screen duration
-            val startTime = Clock.System.now().toEpochMilliseconds()
+            val startTime = Instant.parse(getCurrentTimestamp()).toEpochMilliseconds()
 
 
             // Check if user has stored token
@@ -63,7 +64,7 @@ class SplashViewModel(
     }
 
     private suspend fun ensureMinimumSplashTime(startTime: Long, minDuration: Long = 2000) {
-        val elapsed = Clock.System.now().toEpochMilliseconds() - startTime
+        val elapsed = Instant.parse(getCurrentTimestamp()).toEpochMilliseconds() - startTime
         if (elapsed < minDuration) {
             delay(minDuration - elapsed)
         }

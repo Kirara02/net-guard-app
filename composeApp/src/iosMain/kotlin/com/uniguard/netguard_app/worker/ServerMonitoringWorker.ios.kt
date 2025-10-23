@@ -7,7 +7,9 @@ import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.ServerStatus
 import com.uniguard.netguard_app.domain.model.UpdateServerStatusRequest
+import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
 import com.uniguard.netguard_app.utils.createNetworkMonitor
+import com.uniguard.netguard_app.utils.getCurrentTimestamp
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
@@ -25,6 +27,7 @@ import platform.BackgroundTasks.BGTaskScheduler
 import platform.Foundation.NSDate
 import platform.Foundation.dateWithTimeIntervalSinceNow
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Instant
 
 @OptIn(ExperimentalForeignApi::class)
 class ServerMonitoringWorker : KoinComponent {
@@ -34,6 +37,9 @@ class ServerMonitoringWorker : KoinComponent {
     private val databaseProvider: DatabaseProvider by inject()
     private val authPreferences: AuthPreferences by inject()
     private val networkMonitor = createNetworkMonitor()
+
+    private val serverStatusRepository: ServerStatusRepository by inject()
+
 
     fun scheduleMonitoring(intervalMinutes: Long = 30) {
         val scheduler = BGTaskScheduler.sharedScheduler
@@ -107,12 +113,33 @@ class ServerMonitoringWorker : KoinComponent {
             for (serverEntity in servers) {
                 Logger.d("iOS BGTaskScheduler: Checking server ${serverEntity.name} (${serverEntity.url})", tag = "ServerMonitoring")
 
+                val startTime = Instant.parse(getCurrentTimestamp())
+
                 try {
+
                     val response: HttpResponse = httpClient.get(serverEntity.url)
                     val isUp = response.status.isSuccess()
 
+                    val endTime = Instant.parse(getCurrentTimestamp())
+                    val durationMillis = (endTime.epochSeconds - startTime.epochSeconds) * 1000 +
+                            ((endTime.nanosecondsOfSecond - startTime.nanosecondsOfSecond) / 1_000_000)
+
                     val status = if (isUp) ServerStatus.UP else ServerStatus.DOWN
                     Logger.i("iOS BGTaskScheduler: Server ${serverEntity.name} is ${status.name}", tag = "ServerMonitoring")
+
+                    val updateLocalResult = serverStatusRepository.updateServerStatus(
+                        serverId = serverEntity.id,
+                        status = status.name,
+                        lastChecked = getCurrentTimestamp(),
+                        responseTime = durationMillis,
+                        updatedAt = getCurrentTimestamp()
+                    )
+
+                    when (updateLocalResult) {
+                        is ApiResult.Success -> Logger.d("Updated local status for ${serverEntity.name}", tag = "ServerMonitoring")
+                        is ApiResult.Error -> Logger.e("Failed local update for ${serverEntity.name}: ${updateLocalResult.message}", tag = "ServerMonitoring")
+                        else -> {}
+                    }
 
                     // If server is down, update status via API
                     if (!isUp) {
@@ -121,7 +148,7 @@ class ServerMonitoringWorker : KoinComponent {
                             serverId = serverEntity.id,
                             request = UpdateServerStatusRequest(
                                 status = status.name,
-                                responseTime = null
+                                responseTime = durationMillis
                             )
                         )
 
@@ -138,8 +165,28 @@ class ServerMonitoringWorker : KoinComponent {
                     }
 
                 } catch (e: Exception) {
+                    val endTime = Instant.parse(getCurrentTimestamp())
+                    val durationMillis = (endTime.epochSeconds - startTime.epochSeconds) * 1000 +
+                            ((endTime.nanosecondsOfSecond - startTime.nanosecondsOfSecond) / 1_000_000)
+
                     Logger.w("iOS BGTaskScheduler: Exception checking server ${serverEntity.name}: ${e.message}", tag = "ServerMonitoring")
-                    // Server is down - update status
+
+                    // Update local status in database for DOWN server
+                    val updateLocalResult = serverStatusRepository.updateServerStatus(
+                        serverId = serverEntity.id,
+                        status = ServerStatus.DOWN.name,
+                        lastChecked = getCurrentTimestamp(),
+                        responseTime = durationMillis,
+                        updatedAt = getCurrentTimestamp()
+                    )
+
+                    when (updateLocalResult) {
+                        is ApiResult.Success -> Logger.d("Updated local DOWN status for ${serverEntity.name}", tag = "ServerMonitoring")
+                        is ApiResult.Error -> Logger.e("Failed local DOWN update for ${serverEntity.name}: ${updateLocalResult.message}", tag = "ServerMonitoring")
+                        else -> {}
+                    }
+
+                    // Server is down - update status via API
                     val updateResult = api.updateServerStatus(
                         token = token,
                         serverId = serverEntity.id,

@@ -198,9 +198,4 @@ class ServerViewModel(
     val totalServers: Int
         get() = _servers.value.size
 
-    val onlineServers: Int
-        get() = _servers.value.count { it.status == ServerStatus.UP }
-
-    val downServers: Int
-        get() = _servers.value.count { it.status == ServerStatus.DOWN }
 }

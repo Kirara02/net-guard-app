@@ -1,6 +1,6 @@
 /** ============================
  *  SQLDelight Schema: AppDatabase
- *  Tables: ServerEntity, HistoryEntity
+ *  Tables: ServerEntity, ServerStatusEntity, HistoryEntity
  *  ============================ */
 
 CREATE TABLE ServerEntity (
@@ -11,6 +11,14 @@ CREATE TABLE ServerEntity (
     created_at TEXT NOT NULL
 );
 
+CREATE TABLE ServerStatusEntity (
+    server_id TEXT NOT NULL PRIMARY KEY REFERENCES ServerEntity(id) ON DELETE CASCADE,
+    status TEXT NOT NULL, -- "UP", "DOWN", "UNKNOWN"
+    last_checked TEXT NOT NULL,
+    response_time INTEGER,
+    updated_at TEXT NOT NULL
+);
+
 CREATE TABLE HistoryEntity (
     id TEXT NOT NULL PRIMARY KEY,
     server_id TEXT NOT NULL REFERENCES ServerEntity(id) ON DELETE CASCADE,
@@ -19,7 +27,6 @@ CREATE TABLE HistoryEntity (
     status TEXT NOT NULL, -- e.g. "DOWN", "RESOLVED", etc.
     timestamp TEXT NOT NULL,
     created_by TEXT NOT NULL,
-    assigned_to TEXT,
     resolved_by TEXT,
     resolved_at TEXT,
     resolve_note TEXT
@@ -48,6 +55,29 @@ WHERE id = ?;
 clearServers:
 DELETE FROM ServerEntity;
 
+/** ============================
+ *  ServerStatusEntity Queries
+ *  ============================ */
+
+getAllServerStatuses:
+SELECT * FROM ServerStatusEntity
+ORDER BY updated_at DESC;
+
+getServerStatus:
+SELECT * FROM ServerStatusEntity
+WHERE server_id = ?;
+
+insertOrUpdateServerStatus:
+INSERT OR REPLACE INTO ServerStatusEntity(server_id, status, last_checked, response_time, updated_at)
+VALUES (?, ?, ?, ?, ?);
+
+deleteServerStatus:
+DELETE FROM ServerStatusEntity
+WHERE server_id = ?;
+
+clearServerStatuses:
+DELETE FROM ServerStatusEntity;
+
 
 /** ============================
  *  HistoryEntity Queries
@@ -71,11 +101,10 @@ INSERT OR REPLACE INTO HistoryEntity(
     status,
     timestamp,
     created_by,
-    assigned_to,
     resolved_by,
     resolved_at,
     resolve_note
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteHistoryById:
 DELETE FROM HistoryEntity

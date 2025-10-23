@@ -4,8 +4,10 @@ import com.uniguard.netguard_app.data.local.database.DatabaseProvider
 import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
+import com.uniguard.netguard_app.domain.model.CreateServerRequest
 import com.uniguard.netguard_app.domain.model.Server
 import com.uniguard.netguard_app.domain.model.ServerStatus
+import com.uniguard.netguard_app.domain.model.UpdateServerStatusRequest
 import com.uniguard.netguard_app.domain.repository.ServerRepository
 import com.uniguard.netguardapp.db.ServerEntity
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +43,7 @@ class ServerRepositoryImpl(
     override suspend fun createServer(name: String, url: String): ApiResult<Server> {
         val token = authPreferences.getToken()
         return if (token != null) {
-            val result = api.createServer(token, com.uniguard.netguard_app.domain.model.CreateServerRequest(name, url))
+            val result = api.createServer(token, CreateServerRequest(name, url))
             when (result) {
                 is ApiResult.Success -> {
                     // Save to local database
@@ -58,7 +60,7 @@ class ServerRepositoryImpl(
     override suspend fun updateServer(serverId: String, name: String, url: String): ApiResult<Server> {
         val token = authPreferences.getToken()
         return if (token != null) {
-            val result = api.updateServer(token, serverId, com.uniguard.netguard_app.domain.model.CreateServerRequest(name, url))
+            val result = api.updateServer(token, serverId, CreateServerRequest(name, url))
             when (result) {
                 is ApiResult.Success -> {
                     // Update local database
@@ -95,7 +97,7 @@ class ServerRepositoryImpl(
             val result = api.updateServerStatus(
                 token,
                 serverId,
-                com.uniguard.netguard_app.domain.model.UpdateServerStatusRequest(status.name, responseTime)
+                UpdateServerStatusRequest(status.name, responseTime)
             )
             when (result) {
                 is ApiResult.Success -> {
@@ -173,9 +175,6 @@ class ServerRepositoryImpl(
             url = url,
             createdBy = created_by,
             createdAt = created_at,
-            status = ServerStatus.UNKNOWN, // Status will be determined by monitoring
-            lastChecked = null,
-            responseTime = null
         )
     }
 }

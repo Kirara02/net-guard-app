@@ -9,10 +9,7 @@ data class Server(
     val name: String,
     val url: String,
     @SerialName("created_by") val createdBy: String,
-    @SerialName("created_at") val createdAt: String,
-    val status: ServerStatus = ServerStatus.UNKNOWN,
-    val lastChecked: String? = null,
-    val responseTime: Long? = null
+    @SerialName("created_at") val createdAt: String
 )
 
 @Serializable

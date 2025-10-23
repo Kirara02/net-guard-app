@@ -12,10 +12,10 @@ data class History(
     val status: String,
     val timestamp: String,
     @SerialName("created_by") val createdBy: String,
-    @SerialName("assigned_to") val assignedTo: String? = null,
     @SerialName("resolved_by") val resolvedBy: String? = null,
     @SerialName("resolved_at") val resolvedAt: String? = null,
-    @SerialName("resolve_note") val resolveNote: String? = null
+    @SerialName("resolve_note") val resolveNote: String? = null,
+    @SerialName("assigned_to") val assignedTo: String? = null
 )
 
 @Serializable

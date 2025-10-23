@@ -1,6 +1,5 @@
 package com.uniguard.netguard_app.worker
 
-import android.content.Context
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -39,7 +38,7 @@ actual class ServerMonitoringScheduler actual constructor() {
         Logger.i("Android WorkManager: Server monitoring cancelled", tag = "ServerMonitoring")
     }
 
-    companion object {
+    companion object Companion {
         private const val WORK_NAME = "server_monitoring_work"
     }
 }

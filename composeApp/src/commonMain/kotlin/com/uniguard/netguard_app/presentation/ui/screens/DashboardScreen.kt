@@ -270,7 +270,7 @@ fun DashboardScreen(
                                 }
                             }
                         } else {
-                            items(recentIncidents) { incident ->
+                            items(recentIncidents.take(3)) { incident ->
                                 EnhancedIncidentCard(
                                     serverName = incident.serverName,
                                     status = incident.status,

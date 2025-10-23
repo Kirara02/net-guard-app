@@ -6,6 +6,7 @@ import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.History
 import com.uniguard.netguard_app.domain.model.MonthlyReportData
+import com.uniguard.netguard_app.domain.model.ResolveHistoryRequest
 import com.uniguard.netguard_app.domain.repository.HistoryRepository
 import com.uniguard.netguardapp.db.HistoryEntity
 import kotlinx.coroutines.flow.Flow
@@ -64,7 +65,7 @@ class HistoryRepositoryImpl(
             val result = api.resolveHistory(
                 token,
                 historyId,
-                com.uniguard.netguard_app.domain.model.ResolveHistoryRequest(resolveNote)
+                ResolveHistoryRequest(resolveNote)
             )
             when (result) {
                 is ApiResult.Success -> {
@@ -118,7 +119,6 @@ class HistoryRepositoryImpl(
             status = history.status,
             timestamp = history.timestamp,
             created_by = history.createdBy,
-            assigned_to = history.assignedTo,
             resolved_by = history.resolvedBy,
             resolved_at = history.resolvedAt,
             resolve_note = history.resolveNote
@@ -154,7 +154,6 @@ class HistoryRepositoryImpl(
                 status = entity.status,
                 timestamp = entity.timestamp,
                 createdBy = entity.created_by,
-                assignedTo = entity.assigned_to,
                 resolvedBy = entity.resolved_by,
                 resolvedAt = entity.resolved_at,
                 resolveNote = entity.resolve_note
@@ -162,11 +161,11 @@ class HistoryRepositoryImpl(
         }
     }
 
-    override suspend fun getRecentIncidents(limit: Int): ApiResult<List<History>> {
+    override suspend fun getRecentIncidents(limit: Int?): ApiResult<List<History>> {
         return try {
             val entities = historyQueries.getAllHistory().executeAsList()
                 .sortedByDescending { it.timestamp }
-                .take(limit)
+                .let { if (limit != null) it.take(limit) else it }
             val histories = entities.map { it.toDomain() }
             ApiResult.Success(histories)
         } catch (e: Exception) {
@@ -184,7 +183,6 @@ class HistoryRepositoryImpl(
             status = status,
             timestamp = timestamp,
             createdBy = created_by,
-            assignedTo = assigned_to,
             resolvedBy = resolved_by,
             resolvedAt = resolved_at,
             resolveNote = resolve_note

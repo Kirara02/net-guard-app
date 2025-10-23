@@ -9,6 +9,8 @@ import com.uniguard.netguard_app.domain.model.Server
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.domain.repository.HistoryRepository
 import com.uniguard.netguard_app.domain.repository.ServerRepository
+import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
+import com.uniguard.netguardapp.db.ServerStatusEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,14 +19,16 @@ import kotlinx.coroutines.launch
 class DashboardViewModel(
     private val serverRepository: ServerRepository,
     private val historyRepository: HistoryRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val serverStatusRepository: ServerStatusRepository
 ) : ViewModel() {
 
     private val _servers = MutableStateFlow<List<Server>>(emptyList())
-    val servers: StateFlow<List<Server>> = _servers.asStateFlow()
 
     private val _recentIncidents = MutableStateFlow<List<History>>(emptyList())
     val recentIncidents: StateFlow<List<History>> = _recentIncidents.asStateFlow()
+
+    private val _serverStatuses = MutableStateFlow<List<ServerStatusEntity>>(emptyList())
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -50,8 +54,13 @@ class DashboardViewModel(
                     _servers.value = serverList
                 }
 
+                // Load server statuses
+                serverStatusRepository.getAllServerStatuses().collect { statusList ->
+                    _serverStatuses.value = statusList
+                }
+
                 // Load recent incidents
-                val incidentsResult = historyRepository.getRecentIncidents(limit = 5)
+                val incidentsResult = historyRepository.getRecentIncidents()
                 when (incidentsResult) {
                     is ApiResult.Success -> {
                         _recentIncidents.value = incidentsResult.data
@@ -78,6 +87,7 @@ class DashboardViewModel(
         }
     }
 
+
     private suspend fun syncDataFromRemote() {
         try {
             // Sync servers from remote
@@ -96,10 +106,10 @@ class DashboardViewModel(
         get() = _servers.value.size
 
     val onlineServers: Int
-        get() = _servers.value.count { it.status == com.uniguard.netguard_app.domain.model.ServerStatus.UP }
+        get() = _serverStatuses.value.count { it.status == "UP" }
 
     val downServers: Int
-        get() = _servers.value.count { it.status == com.uniguard.netguard_app.domain.model.ServerStatus.DOWN }
+        get() = _serverStatuses.value.count { it.status == "DOWN" }
 
     val totalIncidents: Int
         get() = _recentIncidents.value.size
