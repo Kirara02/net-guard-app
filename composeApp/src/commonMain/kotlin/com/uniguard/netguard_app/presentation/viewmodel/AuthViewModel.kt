@@ -94,14 +94,17 @@ class AuthViewModel(
 
     fun logout() {
         // Stop server monitoring when user logs out
-        serverMonitoringScheduler.cancelServerMonitoring()
-        FirebaseTopicManager.unsubscribe("serverdown")
         authRepository.clearAuthData()
         _currentUser.value = null
         _isLoggedIn.value = false
         _loginState.value = ApiResult.Initial
         _registerState.value = ApiResult.Initial
         _userProfileState.value = ApiResult.Initial
+    }
+
+    fun cleanupServices() {
+        serverMonitoringScheduler.cancelServerMonitoring()
+        FirebaseTopicManager.unsubscribe("serverdown")
     }
 
     fun loadUserProfile() {

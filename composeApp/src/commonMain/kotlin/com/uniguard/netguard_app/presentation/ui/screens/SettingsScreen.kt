@@ -168,7 +168,10 @@ fun SettingsScreen(
                 // Logout Button
                 SecondaryButton(
                     text = "Logout",
-                    onClick = { viewModel.logout() },
+                    onClick = {
+                        viewModel.cleanupServices()
+                        viewModel.logout() 
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

@@ -56,6 +56,7 @@ fun DashboardScreen(
                     },
                     actions = {
                         IconButton(onClick = {
+                            authViewModel.cleanupServices()
                             authViewModel.logout()
                             onLogout()
                         }) {
