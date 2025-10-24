@@ -135,6 +135,10 @@ kotlin {
             // Firebase
             implementation(libs.gitlive.firebase.kotlin.messaging)
 
+            // Coil for image loading
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

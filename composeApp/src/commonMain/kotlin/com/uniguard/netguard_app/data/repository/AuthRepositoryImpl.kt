@@ -6,6 +6,7 @@ import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.AuthData
 import com.uniguard.netguard_app.domain.model.LoginRequest
 import com.uniguard.netguard_app.domain.model.RegisterRequest
+import com.uniguard.netguard_app.domain.model.UpdateProfileRequest
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 
@@ -56,6 +57,25 @@ class AuthRepositoryImpl(
         val token = getSavedToken()
         return if (token != null) {
             api.getCurrentUser(token)
+        } else {
+            ApiResult.Error("No authentication token found")
+        }
+    }
+
+    override suspend fun updateProfile(request: UpdateProfileRequest): ApiResult<User> {
+        val token = getSavedToken()
+        return if (token != null) {
+            val result = api.updateProfile(token, request)
+            when (result) {
+                is ApiResult.Success -> {
+                    // Update saved user data with new profile info
+                    saveAuthData(token, result.data)
+                    result
+                }
+                is ApiResult.Error -> result
+                is ApiResult.Loading -> result
+                is ApiResult.Initial -> result
+            }
         } else {
             ApiResult.Error("No authentication token found")
         }

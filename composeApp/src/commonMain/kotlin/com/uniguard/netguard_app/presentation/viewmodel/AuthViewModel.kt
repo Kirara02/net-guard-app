@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.AuthData
 import com.uniguard.netguard_app.domain.model.RegisterRequest
+import com.uniguard.netguard_app.domain.model.UpdateProfileRequest
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.firebase.FirebaseTopicManager
@@ -33,6 +34,9 @@ class AuthViewModel(
 
     private val _userProfileState = MutableStateFlow<ApiResult<User>>(ApiResult.Initial)
     val userProfileState: StateFlow<ApiResult<User>> = _userProfileState.asStateFlow()
+
+    private val _updateProfileState = MutableStateFlow<ApiResult<User>>(ApiResult.Initial)
+    val updateProfileState: StateFlow<ApiResult<User>> = _updateProfileState.asStateFlow()
 
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
@@ -75,7 +79,6 @@ class AuthViewModel(
                 password = password,
                 division = division,
                 phone = phone,
-                role = role
             )
             val result = authRepository.register(registerRequest)
             _registerState.value = result
@@ -112,6 +115,23 @@ class AuthViewModel(
             _userProfileState.value = ApiResult.Loading
             val result = authRepository.getCurrentUser()
             _userProfileState.value = result
+
+            if (result is ApiResult.Success) {
+                _currentUser.value = result.data
+            }
+        }
+    }
+
+    fun updateProfile(name: String, division: String, phone: String) {
+        viewModelScope.launch {
+            _updateProfileState.value = ApiResult.Loading
+            val updateProfileRequest = UpdateProfileRequest(
+                name = name,
+                division = division,
+                phone = phone
+            )
+            val result = authRepository.updateProfile(updateProfileRequest)
+            _updateProfileState.value = result
 
             if (result is ApiResult.Success) {
                 _currentUser.value = result.data

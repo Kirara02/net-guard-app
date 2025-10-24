@@ -8,6 +8,7 @@ interface AuthRepository {
     suspend fun login(email: String, password: String): ApiResult<AuthData>
     suspend fun register(request: com.uniguard.netguard_app.domain.model.RegisterRequest): ApiResult<AuthData>
     suspend fun getCurrentUser(): ApiResult<User>
+    suspend fun updateProfile(request: com.uniguard.netguard_app.domain.model.UpdateProfileRequest): ApiResult<User>
     fun saveAuthData(token: String, user: User)
     fun getSavedToken(): String?
     fun getSavedUser(): User?

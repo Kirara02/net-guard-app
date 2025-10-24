@@ -1,14 +1,16 @@
 package com.uniguard.netguard_app.data.remote.api
 
 import com.uniguard.netguard_app.domain.model.*
-import com.uniguard.netguard_app.utils.Constants
+//import com.uniguard.netguard_app.utils.Constants
+import com.uniguard.netguard_app.utils.getPlatformApiUrl
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 class NetGuardApi(
     httpClient: HttpClient,
-    private val baseUrl: String = Constants.API_BASE_URL
+//    private val baseUrl: String = Constants.API_BASE_URL
+    private val baseUrl: String = getPlatformApiUrl()
 ) {
 
     private val client = httpClient
@@ -86,6 +88,24 @@ class NetGuardApi(
                 ApiResult.Success(userResponse.data)
             } else {
                 ApiResult.Error(userResponse.error ?: "Failed to get user")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
+    suspend fun updateProfile(token: String, request: UpdateProfileRequest): ApiResult<User> {
+        return try {
+            val response = client.put("$baseUrl/auth/profile") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+            val updateProfileResponse: UpdateProfileResponse = response.body()
+            if (updateProfileResponse.success && updateProfileResponse.data != null) {
+                ApiResult.Success(updateProfileResponse.data)
+            } else {
+                ApiResult.Error(updateProfileResponse.error ?: "Failed to update profile")
             }
         } catch (e: Exception) {
             ApiResult.Error(e.message ?: "Network error")

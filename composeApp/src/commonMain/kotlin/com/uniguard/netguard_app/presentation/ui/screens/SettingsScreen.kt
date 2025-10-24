@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.ApiResult
+import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.presentation.ui.components.*
 import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
@@ -23,11 +24,21 @@ fun SettingsScreen(
     onNavigateBack: () -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
+    val updateProfileState by viewModel.updateProfileState.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
+
+    var showEditProfileDialog by remember { mutableStateOf(false) }
 
     // Load user settings when screen opens
     LaunchedEffect(Unit) {
         viewModel.loadUserProfile()
+    }
+
+    // Handle update profile success
+    LaunchedEffect(updateProfileState) {
+        if (updateProfileState is ApiResult.Success) {
+            showEditProfileDialog = false
+        }
     }
 
     NetGuardTheme {
@@ -76,7 +87,7 @@ fun SettingsScreen(
                             email = user.email,
                             division = user.division,
                             phone = user.phone,
-                            role = user.role.uppercase()
+                            onEditClick = { showEditProfileDialog = true }
                         )
                     }
                     is ApiResult.Error -> {
@@ -88,7 +99,7 @@ fun SettingsScreen(
                                 email = user.email,
                                 division = user.division,
                                 phone = user.phone,
-                                role = user.role.uppercase()
+                                onEditClick = { showEditProfileDialog = true }
                             )
                         } ?: run {
                             // Show error if no cached data
@@ -111,7 +122,7 @@ fun SettingsScreen(
                                 email = user.email,
                                 division = user.division,
                                 phone = user.phone,
-                                role = user.role.uppercase()
+                                onEditClick = { showEditProfileDialog = true }
                             )
                         } ?: run {
                             // Show loading if no cached data
@@ -170,11 +181,125 @@ fun SettingsScreen(
                     text = "Logout",
                     onClick = {
                         viewModel.cleanupServices()
-                        viewModel.logout() 
+                        viewModel.logout()
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
         }
+
+        // Edit Profile Dialog
+        if (showEditProfileDialog) {
+            EditProfileDialog(
+                currentUser = currentUser,
+                updateProfileState = updateProfileState,
+                onDismiss = { showEditProfileDialog = false },
+                onUpdateProfile = { name, division, phone ->
+                    viewModel.updateProfile(name, division, phone)
+                }
+            )
+        }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditProfileDialog(
+    currentUser: User?,
+    updateProfileState: ApiResult<User>,
+    onDismiss: () -> Unit,
+    onUpdateProfile: (name: String, division: String, phone: String) -> Unit
+) {
+    var name by remember { mutableStateOf(currentUser?.name ?: "") }
+    var division by remember { mutableStateOf(currentUser?.division ?: "") }
+    var phone by remember { mutableStateOf(currentUser?.phone ?: "") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                "Edit Profile",
+                style = MaterialTheme.typography.headlineSmall
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+
+                OutlinedTextField(
+                    value = division,
+                    onValueChange = { division = it },
+                    label = { Text("Division") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+
+                OutlinedTextField(
+                    value = phone,
+                    onValueChange = { phone = it },
+                    label = { Text("Phone") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Phone
+                    )
+                )
+
+                when (updateProfileState) {
+                    is ApiResult.Loading -> {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Updating profile...")
+                        }
+                    }
+                    is ApiResult.Error -> {
+                        Text(
+                            text = updateProfileState.message,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (name.isNotBlank() && division.isNotBlank() && phone.isNotBlank()) {
+                        onUpdateProfile(name, division, phone)
+                    }
+                },
+                enabled = name.isNotBlank() && division.isNotBlank() && phone.isNotBlank() &&
+                        updateProfileState !is ApiResult.Loading
+            ) {
+                Text("Update")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                enabled = updateProfileState !is ApiResult.Loading
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
 }

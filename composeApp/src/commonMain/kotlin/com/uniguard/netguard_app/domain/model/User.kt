@@ -9,7 +9,6 @@ data class User(
     val email: String,
     val division: String,
     val phone: String,
-    val role: String,
     val isActive: Boolean = true,
     val createdAt: String? = null
 )
@@ -26,8 +25,7 @@ data class RegisterRequest(
     val email: String,
     val password: String,
     val division: String,
-    val phone: String,
-    val role: String = "USER"
+    val phone: String
 )
 
 
@@ -60,4 +58,19 @@ data class UserResponse(
 data class ErrorResponse(
     val success: Boolean,
     val error: String
+)
+
+@Serializable
+data class UpdateProfileRequest(
+    val name: String,
+    val division: String,
+    val phone: String
+)
+
+@Serializable
+data class UpdateProfileResponse(
+    val success: Boolean,
+    val message: String,
+    val data: User? = null,
+    val error: String? = null
 )

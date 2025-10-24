@@ -344,8 +344,7 @@ fun ProfileCard(
     name: String,
     email: String,
     division: String,
-    phone: String,
-    role: String
+    phone: String
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -387,12 +386,6 @@ fun ProfileCard(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "$division • $role",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
 
             Text(
                 text = phone,
