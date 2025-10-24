@@ -1,21 +1,14 @@
 package com.uniguard.netguard_app.data.remote.api
 
 import com.uniguard.netguard_app.domain.model.*
-import com.uniguard.netguard_app.utils.getPlatformApiUrl
+import com.uniguard.netguard_app.utils.Constants
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.json.Json
-import io.ktor.client.plugins.HttpResponseValidator
-import io.ktor.client.plugins.HttpTimeout
-
 class NetGuardApi(
     httpClient: HttpClient,
-    private val baseUrl: String = getPlatformApiUrl()
+    private val baseUrl: String = Constants.API_BASE_URL
 ) {
 
     private val client = httpClient

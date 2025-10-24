@@ -81,6 +81,21 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         completionHandler(.newData)
     }
 
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        Messaging.messaging().apnsToken = deviceToken
+        print("✅ APNs device token registered with FirebaseMessaging")
+    }
+
+    func application(
+        _ application: UIApplication,
+        didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
+        print("❌ Failed to register for remote notifications: \(error.localizedDescription)")
+    }
+
     // ✅ Helper function to show a manual (local) notification
     private func showLocalNotification(title: String, body: String) {
         let content = UNMutableNotificationContent()
