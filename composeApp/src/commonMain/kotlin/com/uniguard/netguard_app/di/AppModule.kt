@@ -32,11 +32,14 @@ import kotlinx.serialization.json.Json
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import org.koin.mp.KoinPlatform
 
 
 fun KoinApplication.init() {
     modules(appModule, databaseProviderModule, authPreferencesModule)
 }
+
+inline fun <reified T> getKoinInstance(): T = KoinPlatform.getKoin().get()
 
 val appModule = module {
     single {

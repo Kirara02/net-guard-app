@@ -90,253 +90,252 @@ fun HistoryScreen(
 
     var serverDropdownExpanded by remember { mutableStateOf(false) }
     var statusDropdownExpanded by remember { mutableStateOf(false) }
-    NetGuardTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Incident History") },
-                    navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { viewModel.refreshData() }) {
-                            Icon(Icons.Default.Refresh, contentDescription = "Refresh")
-                        }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Incident History") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                )
-            }
-        ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                if (isLoading) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            CircularProgressIndicator()
-                            Text(
-                                "Loading history...",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
+                },
+                actions = {
+                    IconButton(onClick = { viewModel.refreshData() }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
-                } else {
+                }
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        // Filter Options
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        CircularProgressIndicator()
+                        Text(
+                            "Loading history...",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    // Filter Options
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        // Server Dropdown
+                        ExposedDropdownMenuBox(
+                            expanded = serverDropdownExpanded,
+                            onExpandedChange = { serverDropdownExpanded = it },
+                            modifier = Modifier.weight(1f)
                         ) {
-                            // Server Dropdown
-                            ExposedDropdownMenuBox(
-                                expanded = serverDropdownExpanded,
-                                onExpandedChange = { serverDropdownExpanded = it },
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                OutlinedTextField(
-                                    value = serverFilter,
-                                    onValueChange = { },
-                                    label = { Text("Server") },
-                                    placeholder = { Text("Select server") },
-                                    readOnly = true,
-                                    trailingIcon = {
-                                        Icon(
-                                            Icons.Default.ArrowDropDown,
-                                            contentDescription = null
-                                        )
-                                    },
-                                    modifier = Modifier.menuAnchor(
-                                        type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
-                                        enabled = true
+                            OutlinedTextField(
+                                value = serverFilter,
+                                onValueChange = { },
+                                label = { Text("Server") },
+                                placeholder = { Text("Select server") },
+                                readOnly = true,
+                                trailingIcon = {
+                                    Icon(
+                                        Icons.Default.ArrowDropDown,
+                                        contentDescription = null
                                     )
+                                },
+                                modifier = Modifier.menuAnchor(
+                                    type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                                    enabled = true
                                 )
-                                ExposedDropdownMenu(
-                                    expanded = serverDropdownExpanded,
-                                    onDismissRequest = { serverDropdownExpanded = false }
-                                ) {
+                            )
+                            ExposedDropdownMenu(
+                                expanded = serverDropdownExpanded,
+                                onDismissRequest = { serverDropdownExpanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("All Servers") },
+                                    onClick = {
+                                        viewModel.updateServerFilter("")
+                                        serverDropdownExpanded = false
+                                    }
+                                )
+                                serverOptions.forEach { server ->
                                     DropdownMenuItem(
-                                        text = { Text("All Servers") },
+                                        text = { Text(server) },
                                         onClick = {
-                                            viewModel.updateServerFilter("")
+                                            viewModel.updateServerFilter(server)
                                             serverDropdownExpanded = false
                                         }
                                     )
-                                    serverOptions.forEach { server ->
-                                        DropdownMenuItem(
-                                            text = { Text(server) },
-                                            onClick = {
-                                                viewModel.updateServerFilter(server)
-                                                serverDropdownExpanded = false
-                                            }
-                                        )
-                                    }
                                 }
                             }
+                        }
 
-                            // Status Dropdown
-                            ExposedDropdownMenuBox(
-                                expanded = statusDropdownExpanded,
-                                onExpandedChange = { statusDropdownExpanded = it },
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                OutlinedTextField(
-                                    value = statusFilter,
-                                    onValueChange = { },
-                                    label = { Text("Status") },
-                                    placeholder = { Text("Select status") },
-                                    readOnly = true,
-                                    trailingIcon = {
-                                        Icon(
-                                            Icons.Default.ArrowDropDown,
-                                            contentDescription = null
-                                        )
-                                    },
-                                    modifier = Modifier.menuAnchor(
-                                        type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
-                                        enabled = true
+                        // Status Dropdown
+                        ExposedDropdownMenuBox(
+                            expanded = statusDropdownExpanded,
+                            onExpandedChange = { statusDropdownExpanded = it },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            OutlinedTextField(
+                                value = statusFilter,
+                                onValueChange = { },
+                                label = { Text("Status") },
+                                placeholder = { Text("Select status") },
+                                readOnly = true,
+                                trailingIcon = {
+                                    Icon(
+                                        Icons.Default.ArrowDropDown,
+                                        contentDescription = null
                                     )
+                                },
+                                modifier = Modifier.menuAnchor(
+                                    type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                                    enabled = true
                                 )
-                                ExposedDropdownMenu(
-                                    expanded = statusDropdownExpanded,
-                                    onDismissRequest = { statusDropdownExpanded = false }
-                                ) {
+                            )
+                            ExposedDropdownMenu(
+                                expanded = statusDropdownExpanded,
+                                onDismissRequest = { statusDropdownExpanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("All Statuses") },
+                                    onClick = {
+                                        viewModel.updateStatusFilter("")
+                                        statusDropdownExpanded = false
+                                    }
+                                )
+                                statusOptions.forEach { status ->
                                     DropdownMenuItem(
-                                        text = { Text("All Statuses") },
+                                        text = { Text(status) },
                                         onClick = {
-                                            viewModel.updateStatusFilter("")
+                                            viewModel.updateStatusFilter(status)
                                             statusDropdownExpanded = false
                                         }
                                     )
-                                    statusOptions.forEach { status ->
-                                        DropdownMenuItem(
-                                            text = { Text(status) },
-                                            onClick = {
-                                                viewModel.updateStatusFilter(status)
-                                                statusDropdownExpanded = false
-                                            }
-                                        )
-                                    }
                                 }
                             }
-                        }
-
-                        // Clear Filters Button
-                        if (serverFilter.isNotEmpty() || statusFilter.isNotEmpty()) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.End
-                            ) {
-                                TextButton(onClick = { viewModel.clearFilters() }) {
-                                    Text("Clear Filters")
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // History List
-                        val displayHistories = if (serverFilter.isNotEmpty() || statusFilter.isNotEmpty()) {
-                            filteredHistories
-                        } else {
-                            histories
-                        }
-
-                        if (displayHistories.isEmpty()) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    if (histories.isEmpty()) "No incident history found" else "No incidents match the current filters",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        } else {
-                            LazyColumn(
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                items(displayHistories) { history ->
-                                    IncidentHistoryCard(
-                                        serverName = history.serverName,
-                                        status = history.status,
-                                        timestamp = formatRelativeTime(history.timestamp),
-                                        duration = null, // TODO: Calculate duration if needed
-                                        resolvedBy = history.resolvedBy,
-                                        onResolveClick = if (history.status == "DOWN") {
-                                            {
-                                                selectedHistory = history
-                                                showResolveDialog = true
-                                            }
-                                        } else null
-                                    )
-                                }
-                            }
-                
-                            // Resolve Dialog
-                            ResolveDialog(
-                                showDialog = showResolveDialog,
-                                onDismiss = {
-                                    showResolveDialog = false
-                                    selectedHistory = null
-                                },
-                                onConfirm = { comment ->
-                                    selectedHistory?.let { history ->
-                                        viewModel.resolveHistory(history.id, comment)
-                                    }
-                                    showResolveDialog = false
-                                    selectedHistory = null
-                                },
-                                serverName = selectedHistory?.serverName ?: ""
-                            )
                         }
                     }
-                }
 
-                // Error message
-                error?.let {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        Card(
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.errorContainer
-                            )
+                    // Clear Filters Button
+                    if (serverFilter.isNotEmpty() || statusFilter.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                Icon(
-                                    Icons.Default.Error,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.error
-                                )
-                                Text(
-                                    text = it,
-                                    color = MaterialTheme.colorScheme.error,
-                                    style = MaterialTheme.typography.bodyMedium
+                            TextButton(onClick = { viewModel.clearFilters() }) {
+                                Text("Clear Filters")
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // History List
+                    val displayHistories = if (serverFilter.isNotEmpty() || statusFilter.isNotEmpty()) {
+                        filteredHistories
+                    } else {
+                        histories
+                    }
+
+                    if (displayHistories.isEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                if (histories.isEmpty()) "No incident history found" else "No incidents match the current filters",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(displayHistories) { history ->
+                                IncidentHistoryCard(
+                                    serverName = history.serverName,
+                                    status = history.status,
+                                    timestamp = formatRelativeTime(history.timestamp),
+                                    duration = null, // TODO: Calculate duration if needed
+                                    resolvedBy = history.resolvedBy,
+                                    onResolveClick = if (history.status == "DOWN") {
+                                        {
+                                            selectedHistory = history
+                                            showResolveDialog = true
+                                        }
+                                    } else null
                                 )
                             }
+                        }
+
+                        // Resolve Dialog
+                        ResolveDialog(
+                            showDialog = showResolveDialog,
+                            onDismiss = {
+                                showResolveDialog = false
+                                selectedHistory = null
+                            },
+                            onConfirm = { comment ->
+                                selectedHistory?.let { history ->
+                                    viewModel.resolveHistory(history.id, comment)
+                                }
+                                showResolveDialog = false
+                                selectedHistory = null
+                            },
+                            serverName = selectedHistory?.serverName ?: ""
+                        )
+                    }
+                }
+            }
+
+            // Error message
+            error?.let {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Error,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                            Text(
+                                text = it,
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                     }
                 }

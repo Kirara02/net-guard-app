@@ -3,11 +3,14 @@ package com.uniguard.netguard_app.data.local.preferences
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.uniguard.netguard_app.domain.model.User
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 
@@ -18,6 +21,7 @@ actual class AuthPreferences(private val context: Context) {
     private object PreferencesKeys {
         val TOKEN = stringPreferencesKey("token")
         val USER_DATA = stringPreferencesKey("user_data")
+        val THEME_PREFERENCE = booleanPreferencesKey("theme_preference")
     }
 
     actual fun saveToken(token: String) {
@@ -59,7 +63,8 @@ actual class AuthPreferences(private val context: Context) {
     actual fun clearAll() {
         runBlocking {
             context.dataStore.edit { preferences ->
-                preferences.clear()
+                preferences.remove(PreferencesKeys.TOKEN)
+                preferences.remove(PreferencesKeys.USER_DATA)
             }
         }
     }
@@ -67,4 +72,17 @@ actual class AuthPreferences(private val context: Context) {
     actual fun isLoggedIn(): Boolean {
         return getToken() != null && getUser() != null
     }
+
+    actual fun saveThemePreference(isDarkMode: Boolean) {
+        runBlocking {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.THEME_PREFERENCE] = isDarkMode
+            }
+        }
+    }
+
+    actual val themePreferenceFlow: Flow<Boolean> =
+        context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.THEME_PREFERENCE] ?: false
+        }
 }

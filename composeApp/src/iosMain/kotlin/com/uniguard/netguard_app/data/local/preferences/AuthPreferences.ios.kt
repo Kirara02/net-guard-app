@@ -1,6 +1,9 @@
 package com.uniguard.netguard_app.data.local.preferences
 
 import com.uniguard.netguard_app.domain.model.User
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.Json
 import platform.Foundation.NSUserDefaults
 
@@ -11,6 +14,7 @@ actual class AuthPreferences {
     private object Keys {
         const val TOKEN = "auth_token"
         const val USER_DATA = "user_data"
+        const val THEME_PREFERENCE = "theme_preference"
     }
 
     actual fun saveToken(token: String) {
@@ -48,4 +52,16 @@ actual class AuthPreferences {
     actual fun isLoggedIn(): Boolean {
         return getToken() != null && getUser() != null
     }
+
+    actual fun saveThemePreference(isDarkMode: Boolean) {
+        userDefaults.setBool(isDarkMode, Keys.THEME_PREFERENCE)
+        userDefaults.synchronize()
+        _themePreferenceFlow.value = isDarkMode
+    }
+
+    private val _themePreferenceFlow = MutableStateFlow(
+        userDefaults.boolForKey(Keys.THEME_PREFERENCE)
+    )
+
+    actual val themePreferenceFlow : Flow<Boolean> = _themePreferenceFlow.asStateFlow()
 }

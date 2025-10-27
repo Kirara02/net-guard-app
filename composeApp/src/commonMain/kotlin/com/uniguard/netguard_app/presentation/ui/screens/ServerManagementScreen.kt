@@ -41,363 +41,361 @@ fun ServerManagementScreen(
     var showEditDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    NetGuardTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Server Management") },
-                    navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { viewModel.refreshServers() }) {
-                            Icon(Icons.Default.Refresh, contentDescription = "Refresh")
-                        }
-                        IconButton(onClick = { showAddDialog = true }) {
-                            Icon(
-                                Icons.Default.Add,
-                                contentDescription = "Add Server",
-                                tint = MaterialTheme.colorScheme.primary
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Server Management") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { viewModel.refreshServers() }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                    }
+                    IconButton(onClick = { showAddDialog = true }) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Add Server",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            if (isLoading && servers.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        CircularProgressIndicator()
+                        Text("Loading servers...")
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Stats Header
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
                             )
-                        }
-                    }
-                )
-            }
-        ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                if (isLoading && servers.isEmpty()) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            CircularProgressIndicator()
-                            Text("Loading servers...")
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "Server Overview",
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
+                                    StatItem(
+                                        label = "Total",
+                                        value = viewModel.totalServers.toString(),
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                    StatItem(
+                                        label = "Online",
+                                        value = serverStatuses.values.count { it.status == "UP" }.toString(),
+                                        color = Color(0xFF4CAF50)
+                                    )
+                                    StatItem(
+                                        label = "Offline",
+                                        value = serverStatuses.values.count { it.status == "DOWN" }.toString(),
+                                        color = Color(0xFFF44336)
+                                    )
+                                    StatItem(
+                                        label = "Unknown",
+                                        value = (viewModel.totalServers - serverStatuses.size).toString(),
+                                        color = Color(0xFF9E9E9E)
+                                    )
+                                }
+                            }
                         }
                     }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        // Stats Header
+
+                    // Server List
+                    if (servers.isEmpty()) {
                         item {
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
                                 )
                             ) {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(16.dp)
+                                        .padding(32.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
                                 ) {
+                                    Icon(
+                                        Icons.Default.Dns,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(48.dp)
+                                    )
                                     Text(
-                                        text = "Server Overview",
-                                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        text = "No servers configured",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceEvenly
-                                    ) {
-                                        StatItem(
-                                            label = "Total",
-                                            value = viewModel.totalServers.toString(),
-                                            color = MaterialTheme.colorScheme.primary
-                                        )
-                                        StatItem(
-                                            label = "Online",
-                                            value = serverStatuses.values.count { it.status == "UP" }.toString(),
-                                            color = Color(0xFF4CAF50)
-                                        )
-                                        StatItem(
-                                            label = "Offline",
-                                            value = serverStatuses.values.count { it.status == "DOWN" }.toString(),
-                                            color = Color(0xFFF44336)
-                                        )
-                                        StatItem(
-                                            label = "Unknown",
-                                            value = (viewModel.totalServers - serverStatuses.size).toString(),
-                                            color = Color(0xFF9E9E9E)
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        // Server List
-                        if (servers.isEmpty()) {
-                            item {
-                                Card(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                    )
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(32.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                                    ) {
-                                        Icon(
-                                            Icons.Default.Dns,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            modifier = Modifier.size(48.dp)
-                                        )
-                                        Text(
-                                            text = "No servers configured",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Text(
-                                            text = "Add your first server to start monitoring",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        PrimaryButton(
-                                            text = "Add Server",
-                                            onClick = { showAddDialog = true },
-                                            modifier = Modifier.fillMaxWidth(0.6f)
-                                        )
-                                    }
-                                }
-                            }
-                        } else {
-                            // Group servers by status for better organization
-                            val onlineServers = servers.filter { serverStatuses[it.id]?.status == "UP" }
-                            val offlineServers = servers.filter { serverStatuses[it.id]?.status == "DOWN" }
-                            val unknownServers = servers.filter { serverStatuses[it.id]?.status != "UP" && serverStatuses[it.id]?.status != "DOWN" }
-
-                            // Online Servers Section
-                            if (onlineServers.isNotEmpty()) {
-                                item {
                                     Text(
-                                        text = "🟢 Online Servers (${onlineServers.size})",
-                                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-                                        color = Color(0xFF4CAF50),
-                                        modifier = Modifier.padding(vertical = 8.dp)
+                                        text = "Add your first server to start monitoring",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
-                                }
-                                items(onlineServers) { server ->
-                                    val serverStatus = serverStatuses[server.id]
-                                    ServerCard(
-                                        server = server,
-                                        serverStatus = serverStatus,
-                                        onEdit = {
-                                            viewModel.selectServer(server)
-                                            showEditDialog = true
-                                        },
-                                        onDelete = {
-                                            viewModel.selectServer(server)
-                                            showDeleteDialog = true
-                                        }
-                                    )
-                                }
-                            }
-
-                            // Offline Servers Section
-                            if (offlineServers.isNotEmpty()) {
-                                item {
-                                    Text(
-                                        text = "🔴 Offline Servers (${offlineServers.size})",
-                                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-                                        color = Color(0xFFF44336),
-                                        modifier = Modifier.padding(vertical = 8.dp)
-                                    )
-                                }
-                                items(offlineServers) { server ->
-                                    val serverStatus = serverStatuses[server.id]
-                                    ServerCard(
-                                        server = server,
-                                        serverStatus = serverStatus,
-                                        onEdit = {
-                                            viewModel.selectServer(server)
-                                            showEditDialog = true
-                                        },
-                                        onDelete = {
-                                            viewModel.selectServer(server)
-                                            showDeleteDialog = true
-                                        }
-                                    )
-                                }
-                            }
-
-                            // Unknown Servers Section
-                            if (unknownServers.isNotEmpty()) {
-                                item {
-                                    Text(
-                                        text = "⚪ Unmonitored Servers (${unknownServers.size})",
-                                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-                                        color = Color(0xFF9E9E9E),
-                                        modifier = Modifier.padding(vertical = 8.dp)
-                                    )
-                                }
-                                items(unknownServers) { server ->
-                                    val serverStatus = serverStatuses[server.id]
-                                    ServerCard(
-                                        server = server,
-                                        serverStatus = serverStatus,
-                                        onEdit = {
-                                            viewModel.selectServer(server)
-                                            showEditDialog = true
-                                        },
-                                        onDelete = {
-                                            viewModel.selectServer(server)
-                                            showDeleteDialog = true
-                                        }
+                                    PrimaryButton(
+                                        text = "Add Server",
+                                        onClick = { showAddDialog = true },
+                                        modifier = Modifier.fillMaxWidth(0.6f)
                                     )
                                 }
                             }
                         }
+                    } else {
+                        // Group servers by status for better organization
+                        val onlineServers = servers.filter { serverStatuses[it.id]?.status == "UP" }
+                        val offlineServers = servers.filter { serverStatuses[it.id]?.status == "DOWN" }
+                        val unknownServers = servers.filter { serverStatuses[it.id]?.status != "UP" && serverStatuses[it.id]?.status != "DOWN" }
 
-                        // Error message
-                        error?.let {
+                        // Online Servers Section
+                        if (onlineServers.isNotEmpty()) {
                             item {
-                                Card(
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.errorContainer
-                                    )
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(16.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                    ) {
-                                        Icon(
-                                            Icons.Default.Error,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.error
-                                        )
-                                        Text(
-                                            text = it,
-                                            color = MaterialTheme.colorScheme.error,
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Spacer(modifier = Modifier.weight(1f))
-                                        IconButton(onClick = { viewModel.clearError() }) {
-                                            Icon(
-                                                Icons.Default.Close,
-                                                contentDescription = "Dismiss",
-                                                tint = MaterialTheme.colorScheme.error
-                                            )
-                                        }
+                                Text(
+                                    text = "🟢 Online Servers (${onlineServers.size})",
+                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                                    color = Color(0xFF4CAF50),
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                            }
+                            items(onlineServers) { server ->
+                                val serverStatus = serverStatuses[server.id]
+                                ServerCard(
+                                    server = server,
+                                    serverStatus = serverStatus,
+                                    onEdit = {
+                                        viewModel.selectServer(server)
+                                        showEditDialog = true
+                                    },
+                                    onDelete = {
+                                        viewModel.selectServer(server)
+                                        showDeleteDialog = true
                                     }
-                                }
+                                )
+                            }
+                        }
+
+                        // Offline Servers Section
+                        if (offlineServers.isNotEmpty()) {
+                            item {
+                                Text(
+                                    text = "🔴 Offline Servers (${offlineServers.size})",
+                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                                    color = Color(0xFFF44336),
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                            }
+                            items(offlineServers) { server ->
+                                val serverStatus = serverStatuses[server.id]
+                                ServerCard(
+                                    server = server,
+                                    serverStatus = serverStatus,
+                                    onEdit = {
+                                        viewModel.selectServer(server)
+                                        showEditDialog = true
+                                    },
+                                    onDelete = {
+                                        viewModel.selectServer(server)
+                                        showDeleteDialog = true
+                                    }
+                                )
+                            }
+                        }
+
+                        // Unknown Servers Section
+                        if (unknownServers.isNotEmpty()) {
+                            item {
+                                Text(
+                                    text = "⚪ Unmonitored Servers (${unknownServers.size})",
+                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                                    color = Color(0xFF9E9E9E),
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                            }
+                            items(unknownServers) { server ->
+                                val serverStatus = serverStatuses[server.id]
+                                ServerCard(
+                                    server = server,
+                                    serverStatus = serverStatus,
+                                    onEdit = {
+                                        viewModel.selectServer(server)
+                                        showEditDialog = true
+                                    },
+                                    onDelete = {
+                                        viewModel.selectServer(server)
+                                        showDeleteDialog = true
+                                    }
+                                )
                             }
                         }
                     }
-                }
 
-                // Loading overlay
-                if (isLoading && servers.isNotEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.3f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Card(
-                            modifier = Modifier.padding(32.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    // Error message
+                    error?.let {
+                        item {
+                            Card(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.errorContainer
+                                )
                             ) {
-                                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                                Text("Syncing servers...")
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Default.Error,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                    Text(
+                                        text = it,
+                                        color = MaterialTheme.colorScheme.error,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    IconButton(onClick = { viewModel.clearError() }) {
+                                        Icon(
+                                            Icons.Default.Close,
+                                            contentDescription = "Dismiss",
+                                            tint = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        // Add Server Dialog
-        if (showAddDialog) {
-            ServerDialog(
-                title = "Add Server",
-                initialName = "",
-                initialUrl = "",
-                onConfirm = { name, url ->
-                    viewModel.addServer(name, url)
-                    showAddDialog = false
-                },
-                onDismiss = { showAddDialog = false }
-            )
-        }
-
-        // Edit Server Dialog
-        if (showEditDialog && selectedServer != null) {
-            ServerDialog(
-                title = "Edit Server",
-                initialName = selectedServer!!.name,
-                initialUrl = selectedServer!!.url,
-                onConfirm = { name, url ->
-                    viewModel.updateServer(selectedServer!!.id, name, url)
-                    showEditDialog = false
-                    viewModel.selectServer(null)
-                },
-                onDismiss = {
-                    showEditDialog = false
-                    viewModel.selectServer(null)
-                }
-            )
-        }
-
-        // Delete Confirmation Dialog
-        if (showDeleteDialog && selectedServer != null) {
-            AlertDialog(
-                onDismissRequest = {
-                    showDeleteDialog = false
-                    viewModel.selectServer(null)
-                },
-                title = { Text("Delete Server") },
-                text = {
-                    Text("Are you sure you want to delete '${selectedServer!!.name}'? This action cannot be undone.")
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            viewModel.deleteServer(selectedServer!!.id)
-                            showDeleteDialog = false
-                            viewModel.selectServer(null)
-                        },
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = MaterialTheme.colorScheme.error
-                        )
+            // Loading overlay
+            if (isLoading && servers.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        modifier = Modifier.padding(32.dp)
                     ) {
-                        Text("Delete")
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                            Text("Syncing servers...")
+                        }
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
+                }
+            }
+        }
+    }
+
+    // Add Server Dialog
+    if (showAddDialog) {
+        ServerDialog(
+            title = "Add Server",
+            initialName = "",
+            initialUrl = "",
+            onConfirm = { name, url ->
+                viewModel.addServer(name, url)
+                showAddDialog = false
+            },
+            onDismiss = { showAddDialog = false }
+        )
+    }
+
+    // Edit Server Dialog
+    if (showEditDialog && selectedServer != null) {
+        ServerDialog(
+            title = "Edit Server",
+            initialName = selectedServer!!.name,
+            initialUrl = selectedServer!!.url,
+            onConfirm = { name, url ->
+                viewModel.updateServer(selectedServer!!.id, name, url)
+                showEditDialog = false
+                viewModel.selectServer(null)
+            },
+            onDismiss = {
+                showEditDialog = false
+                viewModel.selectServer(null)
+            }
+        )
+    }
+
+    // Delete Confirmation Dialog
+    if (showDeleteDialog && selectedServer != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showDeleteDialog = false
+                viewModel.selectServer(null)
+            },
+            title = { Text("Delete Server") },
+            text = {
+                Text("Are you sure you want to delete '${selectedServer!!.name}'? This action cannot be undone.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.deleteServer(selectedServer!!.id)
                         showDeleteDialog = false
                         viewModel.selectServer(null)
-                    }) {
-                        Text("Cancel")
-                    }
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Delete")
                 }
-            )
-        }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showDeleteDialog = false
+                    viewModel.selectServer(null)
+                }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 

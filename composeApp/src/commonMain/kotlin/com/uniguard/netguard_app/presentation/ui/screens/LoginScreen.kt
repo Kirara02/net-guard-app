@@ -1,5 +1,6 @@
 package com.uniguard.netguard_app.presentation.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.presentation.ui.components.*
-import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 
 @Composable
@@ -41,9 +41,11 @@ fun LoginScreen(
         }
     }
 
-    NetGuardTheme {
+    Scaffold { paddingValues ->
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
             color = MaterialTheme.colorScheme.background
         ) {
             Column(
@@ -118,7 +120,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Toast Host for error messages
-//                ToastHost()
+    //                ToastHost()
 
                 Spacer(modifier = Modifier.height(24.dp))
 

@@ -1,16 +1,14 @@
 package com.uniguard.netguard_app.data.remote.api
 
 import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.di.getKoinInstance
 import com.uniguard.netguard_app.firebase.FirebaseTopicManager
 import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
 import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import org.koin.mp.KoinPlatform.getKoin
 
 class AuthInterceptor(
     private val authPreferences: AuthPreferences
@@ -40,7 +38,7 @@ class AuthInterceptor(
                 // Only clear auth data if it's not an auth endpoint
                 if (!isAuthEndpoint) {
                     authPreferences.clearAll()
-                    getKoin().get<ServerMonitoringScheduler>().cancelServerMonitoring()
+                    getKoinInstance<ServerMonitoringScheduler>().cancelServerMonitoring()
                     // Unsubscribe from Firebase topics
                     FirebaseTopicManager.unsubscribe("serverdown")
                     // Emit event to trigger navigation to login

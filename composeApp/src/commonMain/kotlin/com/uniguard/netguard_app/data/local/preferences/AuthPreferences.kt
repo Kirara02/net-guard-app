@@ -1,6 +1,7 @@
 package com.uniguard.netguard_app.data.local.preferences
 
 import com.uniguard.netguard_app.domain.model.User
+import kotlinx.coroutines.flow.Flow
 
 expect class AuthPreferences {
     fun saveToken(token: String)
@@ -9,4 +10,6 @@ expect class AuthPreferences {
     fun getUser(): User?
     fun clearAll()
     fun isLoggedIn(): Boolean
+    fun saveThemePreference(isDarkMode: Boolean)
+    val themePreferenceFlow: Flow<Boolean>
 }

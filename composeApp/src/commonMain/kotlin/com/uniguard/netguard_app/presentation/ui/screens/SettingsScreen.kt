@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
+import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.di.getKoinInstance
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.presentation.ui.components.*
@@ -26,8 +28,11 @@ fun SettingsScreen(
     val userProfileState by viewModel.userProfileState.collectAsState()
     val updateProfileState by viewModel.updateProfileState.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
+    val authPreferences = getKoinInstance<AuthPreferences>()
+
 
     var showEditProfileDialog by remember { mutableStateOf(false) }
+    val isDarkMode by authPreferences.themePreferenceFlow.collectAsState(initial = false)
 
     // Load user settings when screen opens
     LaunchedEffect(Unit) {
@@ -41,47 +46,58 @@ fun SettingsScreen(
         }
     }
 
-    NetGuardTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Settings") },
-                    navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                        }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Settings") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                )
-            }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                when (userProfileState) {
-                    is ApiResult.Loading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                }
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            when (userProfileState) {
+                is ApiResult.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                CircularProgressIndicator()
-                                Text(
-                                    "Loading settings...",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
+                            CircularProgressIndicator()
+                            Text(
+                                "Loading settings...",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                     }
-                    is ApiResult.Success -> {
-                        val user = (userProfileState as ApiResult.Success).data
+                }
+                is ApiResult.Success -> {
+                    val user = (userProfileState as ApiResult.Success).data
+                    ProfileCard(
+                        name = user.name,
+                        email = user.email,
+                        division = user.division,
+                        phone = user.phone,
+                        onEditClick = { showEditProfileDialog = true }
+                    )
+                }
+                is ApiResult.Error -> {
+                    val error = (userProfileState as ApiResult.Error).message
+                    // Fallback to cached user data if available
+                    currentUser?.let { user ->
                         ProfileCard(
                             name = user.name,
                             email = user.email,
@@ -89,116 +105,102 @@ fun SettingsScreen(
                             phone = user.phone,
                             onEditClick = { showEditProfileDialog = true }
                         )
-                    }
-                    is ApiResult.Error -> {
-                        val error = (userProfileState as ApiResult.Error).message
-                        // Fallback to cached user data if available
-                        currentUser?.let { user ->
-                            ProfileCard(
-                                name = user.name,
-                                email = user.email,
-                                division = user.division,
-                                phone = user.phone,
-                                onEditClick = { showEditProfileDialog = true }
+                    } ?: run {
+                        // Show error if no cached data
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ErrorMessage(
+                                message = error,
+                                onRetry = { viewModel.loadUserProfile() }
                             )
-                        } ?: run {
-                            // Show error if no cached data
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                ErrorMessage(
-                                    message = error,
-                                    onRetry = { viewModel.loadUserProfile() }
-                                )
-                            }
-                        }
-                    }
-                    is ApiResult.Initial -> {
-                        // Show cached data initially
-                        currentUser?.let { user ->
-                            ProfileCard(
-                                name = user.name,
-                                email = user.email,
-                                division = user.division,
-                                phone = user.phone,
-                                onEditClick = { showEditProfileDialog = true }
-                            )
-                        } ?: run {
-                            // Show loading if no cached data
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
                         }
                     }
                 }
+                is ApiResult.Initial -> {
+                    // Show cached data initially
+                    currentUser?.let { user ->
+                        ProfileCard(
+                            name = user.name,
+                            email = user.email,
+                            division = user.division,
+                            phone = user.phone,
+                            onEditClick = { showEditProfileDialog = true }
+                        )
+                    } ?: run {
+                        // Show loading if no cached data
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+            }
 
-                Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-                // Settings Options
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+            // Settings Options
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Theme Switch
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    SettingsItem(
-                        title = "Monitoring Settings",
-                        subtitle = "Configure server monitoring interval",
-                        onClick = { /* TODO */ }
-                    )
-
-                    SettingsItem(
-                        title = "Notification Settings",
-                        subtitle = "Configure push notifications",
-                        onClick = { /* TODO */ }
-                    )
-
-                    SettingsItem(
-                        title = "Change Password",
-                        subtitle = "Update your account password",
-                        onClick = { /* TODO */ }
-                    )
-
-                    SettingsItem(
-                        title = "App Settings",
-                        subtitle = "Theme, language, and preferences",
-                        onClick = { /* TODO */ }
-                    )
-
-                    SettingsItem(
-                        title = "About",
-                        subtitle = "App version and information",
-                        onClick = { /* TODO */ }
+                    Column {
+                        Text(
+                            "Dark Mode",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            "Toggle between light and dark theme",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = isDarkMode,
+                        onCheckedChange = { newValue ->
+                            authPreferences.saveThemePreference(newValue)
+                            // Force app restart or theme update
+                            // Note: In a real app, you might want to use a ViewModel or state management
+                            // to trigger theme changes across the app
+                        }
                     )
                 }
+                SettingsItem(
+                    title = "Change Password",
+                    subtitle = "Update your account password",
+                    onClick = { /* TODO */ }
+                )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Logout Button
-                SecondaryButton(
-                    text = "Logout",
-                    onClick = {
-                        viewModel.cleanupServices()
-                        viewModel.logout()
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                SettingsItem(
+                    title = "About",
+                    subtitle = "App version and information",
+                    onClick = { /* TODO */ }
                 )
             }
         }
+    }
 
-        // Edit Profile Dialog
-        if (showEditProfileDialog) {
-            EditProfileDialog(
-                currentUser = currentUser,
-                updateProfileState = updateProfileState,
-                onDismiss = { showEditProfileDialog = false },
-                onUpdateProfile = { name, division, phone ->
-                    viewModel.updateProfile(name, division, phone)
-                }
-            )
-        }
+    // Edit Profile Dialog
+    if (showEditProfileDialog) {
+        EditProfileDialog(
+            currentUser = currentUser,
+            updateProfileState = updateProfileState,
+            onDismiss = { showEditProfileDialog = false },
+            onUpdateProfile = { name, division, phone ->
+                viewModel.updateProfile(name, division, phone)
+            }
+        )
     }
 }
 

@@ -27,7 +27,10 @@ fun PrimaryButton(
     Button(
         onClick = onClick,
         modifier = modifier.height(48.dp),
-        enabled = enabled && !isLoading
+        enabled = enabled && !isLoading,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        )
     ) {
         if (isLoading) {
             CircularProgressIndicator(
@@ -330,7 +333,10 @@ fun IncidentHistoryCard(
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = it,
-                    modifier = Modifier.align(Alignment.End)
+                    modifier = Modifier.align(Alignment.End),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
                 ) {
                     Text("Resolve")
                 }
@@ -497,7 +503,7 @@ fun ErrorMessage(
 // Status Indicator
 @Composable
 fun StatusIndicator(status: String) {
-    val (color, text) = when (status.uppercase()) {
+    val (color, _) = when (status.uppercase()) {
         "UP", "ONLINE", "RESOLVED" -> Color.Green to status
         "DOWN", "OFFLINE" -> Color.Red to status
         else -> Color.Gray to status
