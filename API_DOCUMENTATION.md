@@ -361,40 +361,6 @@ Authorization: Bearer <jwt_token>
 }
 ```
 
-### **GET /api/history/report/monthly**
-Get monthly server down report
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
-
-**Query Parameters:**
-- `year` (required): Year (e.g., 2024)
-- `month` (required): Month (1-12)
-
-**Response (200):**
-```json
-{
-  "success": true,
-  "message": "Monthly report generated successfully",
-  "data": {
-    "year": 2024,
-    "month": 10,
-    "report": [
-      {
-        "server_id": "server-uuid",
-        "server_name": "API Server",
-        "url": "https://api.company.com",
-        "down_count": 5,
-        "resolved_count": 4,
-        "avg_resolution_time": 3600.5
-      }
-    ]
-  }
-}
-```
-
 ## 📊 Error Response Format
 
 **All error responses follow this format:**

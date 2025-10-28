@@ -27,6 +27,8 @@ import com.uniguard.netguard_app.presentation.navigation.Dashboard
 import com.uniguard.netguard_app.presentation.navigation.Login
 import com.uniguard.netguard_app.presentation.viewmodel.SplashState
 import com.uniguard.netguard_app.presentation.viewmodel.SplashViewModel
+import netguardapp.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SplashScreen(
@@ -79,7 +81,7 @@ fun SplashScreen(
 
         // App Name
         Text(
-            text = "NetGuard",
+            text = stringResource(Res.string.splash_app_name),
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -90,7 +92,7 @@ fun SplashScreen(
 
         // Tagline
         Text(
-            text = "Server Monitoring & Protection",
+            text = stringResource(Res.string.splash_tagline),
             fontSize = 16.sp,
             color = Color.White.copy(alpha = 0.8f),
             textAlign = TextAlign.Center
@@ -109,7 +111,7 @@ fun SplashScreen(
 
         // Loading text
         Text(
-            text = "Checking authentication...",
+            text = stringResource(Res.string.splash_loading),
             fontSize = 14.sp,
             color = Color.White.copy(alpha = 0.7f),
             textAlign = TextAlign.Center

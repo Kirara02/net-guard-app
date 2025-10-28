@@ -2,7 +2,7 @@ package com.uniguard.netguard_app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.domain.repository.AuthRepository
@@ -16,7 +16,7 @@ import kotlin.time.Instant
 
 class SplashViewModel(
     private val authRepository: AuthRepository,
-    private val authPreferences: AuthPreferences
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val _splashState = MutableStateFlow<SplashState>(SplashState.Loading)
@@ -33,7 +33,7 @@ class SplashViewModel(
 
 
             // Check if user has stored token
-            val token = authPreferences.getToken()
+            val token = appPreferences.getToken()
             if (token.isNullOrEmpty()) {
                 // No token stored, go to login
                 ensureMinimumSplashTime(startTime)
@@ -50,7 +50,7 @@ class SplashViewModel(
                 }
                 is ApiResult.Error -> {
                     // Token is invalid/expired, clear it and go to login
-                    authPreferences.clearAll()
+                    appPreferences.clearAll()
                     ensureMinimumSplashTime(startTime)
                     _splashState.value = SplashState.NavigateToLogin
                 }

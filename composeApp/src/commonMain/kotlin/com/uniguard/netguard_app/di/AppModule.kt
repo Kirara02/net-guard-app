@@ -8,15 +8,18 @@ import com.uniguard.netguard_app.data.remote.api.ServerException
 import com.uniguard.netguard_app.data.remote.api.TokenExpiredException
 import com.uniguard.netguard_app.data.repository.AuthRepositoryImpl
 import com.uniguard.netguard_app.data.repository.HistoryRepositoryImpl
+import com.uniguard.netguard_app.data.repository.ReportRepositoryImpl
 import com.uniguard.netguard_app.data.repository.ServerRepositoryImpl
 import com.uniguard.netguard_app.data.repository.ServerStatusRepositoryImpl
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.domain.repository.HistoryRepository
+import com.uniguard.netguard_app.domain.repository.ReportRepository
 import com.uniguard.netguard_app.domain.repository.ServerRepository
 import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.DashboardViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.HistoryViewModel
+import com.uniguard.netguard_app.presentation.viewmodel.ReportViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.ServerViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.SplashViewModel
 import com.uniguard.netguard_app.utils.KtorNapierLogger
@@ -36,10 +39,11 @@ import org.koin.mp.KoinPlatform
 
 
 fun KoinApplication.init() {
-    modules(appModule, databaseProviderModule, authPreferencesModule)
+    modules(appModule, databaseProviderModule, appPreferencesModule, localeModule)
 }
 
 inline fun <reified T> getKoinInstance(): T = KoinPlatform.getKoin().get()
+
 
 val appModule = module {
     single {
@@ -88,6 +92,7 @@ val appModule = module {
 
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<HistoryRepository> { HistoryRepositoryImpl(get(), get(), get()) }
+    single<ReportRepository> { ReportRepositoryImpl(get(), get()) }
     single<ServerRepository> { ServerRepositoryImpl(get(), get(), get()) }
     single<ServerStatusRepository> { ServerStatusRepositoryImpl(get()) }
 
@@ -96,9 +101,12 @@ val appModule = module {
     factory { AuthViewModel(get()) }
     factory { DashboardViewModel(get(), get(), get(), get()) }
     factory { HistoryViewModel(get()) }
+    factory { ReportViewModel(get(), get()) }
     factory { ServerViewModel(get(), get()) }
     factory { SplashViewModel(get(), get()) }
 }
 
 expect val databaseProviderModule: Module
-expect val authPreferencesModule: Module
+expect val appPreferencesModule: Module
+
+expect val localeModule: Module

@@ -20,10 +20,11 @@ import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.Server
 import com.uniguard.netguard_app.presentation.ui.components.PrimaryButton
-import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
 import com.uniguard.netguard_app.presentation.viewmodel.ServerViewModel
 import com.uniguard.netguard_app.utils.formatRelativeTime
 import com.uniguard.netguardapp.db.ServerStatusEntity
+import netguardapp.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,20 +45,20 @@ fun ServerManagementScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Server Management") },
+                title = { Text(stringResource(Res.string.server_management_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(Res.string.back))
                     }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.refreshServers() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(Res.string.refresh))
                     }
                     IconButton(onClick = { showAddDialog = true }) {
                         Icon(
                             Icons.Default.Add,
-                            contentDescription = "Add Server",
+                            contentDescription = stringResource(Res.string.server_management_add_server),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -80,7 +81,7 @@ fun ServerManagementScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         CircularProgressIndicator()
-                        Text("Loading servers...")
+                        Text(stringResource(Res.string.server_management_loading))
                     }
                 }
             } else {
@@ -103,7 +104,7 @@ fun ServerManagementScreen(
                                     .padding(16.dp)
                             ) {
                                 Text(
-                                    text = "Server Overview",
+                                    text = stringResource(Res.string.server_management_overview),
                                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                                     color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
@@ -113,22 +114,22 @@ fun ServerManagementScreen(
                                     horizontalArrangement = Arrangement.SpaceEvenly
                                 ) {
                                     StatItem(
-                                        label = "Total",
+                                        label = stringResource(Res.string.server_management_total),
                                         value = viewModel.totalServers.toString(),
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                     StatItem(
-                                        label = "Online",
+                                        label = stringResource(Res.string.server_management_online),
                                         value = serverStatuses.values.count { it.status == "UP" }.toString(),
                                         color = Color(0xFF4CAF50)
                                     )
                                     StatItem(
-                                        label = "Offline",
+                                        label = stringResource(Res.string.server_management_offline),
                                         value = serverStatuses.values.count { it.status == "DOWN" }.toString(),
                                         color = Color(0xFFF44336)
                                     )
                                     StatItem(
-                                        label = "Unknown",
+                                        label = stringResource(Res.string.server_management_unknown),
                                         value = (viewModel.totalServers - serverStatuses.size).toString(),
                                         color = Color(0xFF9E9E9E)
                                     )
@@ -160,17 +161,17 @@ fun ServerManagementScreen(
                                         modifier = Modifier.size(48.dp)
                                     )
                                     Text(
-                                        text = "No servers configured",
+                                        text = stringResource(Res.string.server_management_no_servers),
                                         style = MaterialTheme.typography.titleMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     Text(
-                                        text = "Add your first server to start monitoring",
+                                        text = stringResource(Res.string.server_management_no_servers_desc),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     PrimaryButton(
-                                        text = "Add Server",
+                                        text = stringResource(Res.string.server_management_add_server),
                                         onClick = { showAddDialog = true },
                                         modifier = Modifier.fillMaxWidth(0.6f)
                                     )
@@ -187,7 +188,7 @@ fun ServerManagementScreen(
                         if (onlineServers.isNotEmpty()) {
                             item {
                                 Text(
-                                    text = "🟢 Online Servers (${onlineServers.size})",
+                                    text = stringResource(Res.string.server_management_online_servers, onlineServers.size),
                                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
                                     color = Color(0xFF4CAF50),
                                     modifier = Modifier.padding(vertical = 8.dp)
@@ -214,7 +215,7 @@ fun ServerManagementScreen(
                         if (offlineServers.isNotEmpty()) {
                             item {
                                 Text(
-                                    text = "🔴 Offline Servers (${offlineServers.size})",
+                                    text = stringResource(Res.string.server_management_offline_servers, offlineServers.size),
                                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
                                     color = Color(0xFFF44336),
                                     modifier = Modifier.padding(vertical = 8.dp)
@@ -241,7 +242,7 @@ fun ServerManagementScreen(
                         if (unknownServers.isNotEmpty()) {
                             item {
                                 Text(
-                                    text = "⚪ Unmonitored Servers (${unknownServers.size})",
+                                    text = stringResource(Res.string.server_management_unmonitored_servers, unknownServers.size),
                                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
                                     color = Color(0xFF9E9E9E),
                                     modifier = Modifier.padding(vertical = 8.dp)
@@ -294,7 +295,7 @@ fun ServerManagementScreen(
                                     IconButton(onClick = { viewModel.clearError() }) {
                                         Icon(
                                             Icons.Default.Close,
-                                            contentDescription = "Dismiss",
+                                            contentDescription = stringResource(Res.string.server_management_dismiss),
                                             tint = MaterialTheme.colorScheme.error
                                         )
                                     }
@@ -322,7 +323,7 @@ fun ServerManagementScreen(
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                            Text("Syncing servers...")
+                            Text(stringResource(Res.string.server_management_syncing))
                         }
                     }
                 }
@@ -333,7 +334,7 @@ fun ServerManagementScreen(
     // Add Server Dialog
     if (showAddDialog) {
         ServerDialog(
-            title = "Add Server",
+            title = stringResource(Res.string.server_management_add_title),
             initialName = "",
             initialUrl = "",
             onConfirm = { name, url ->
@@ -347,7 +348,7 @@ fun ServerManagementScreen(
     // Edit Server Dialog
     if (showEditDialog && selectedServer != null) {
         ServerDialog(
-            title = "Edit Server",
+            title = stringResource(Res.string.server_management_edit_title),
             initialName = selectedServer!!.name,
             initialUrl = selectedServer!!.url,
             onConfirm = { name, url ->
@@ -369,9 +370,9 @@ fun ServerManagementScreen(
                 showDeleteDialog = false
                 viewModel.selectServer(null)
             },
-            title = { Text("Delete Server") },
+            title = { Text(stringResource(Res.string.server_management_delete_title)) },
             text = {
-                Text("Are you sure you want to delete '${selectedServer!!.name}'? This action cannot be undone.")
+                Text(stringResource(Res.string.server_management_delete_confirm, selectedServer!!.name))
             },
             confirmButton = {
                 TextButton(
@@ -384,7 +385,7 @@ fun ServerManagementScreen(
                         contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
-                    Text("Delete")
+                    Text(stringResource(Res.string.server_management_delete))
                 }
             },
             dismissButton = {
@@ -392,7 +393,7 @@ fun ServerManagementScreen(
                     showDeleteDialog = false
                     viewModel.selectServer(null)
                 }) {
-                    Text("Cancel")
+                    Text(stringResource(Res.string.server_management_cancel))
                 }
             }
         )
@@ -581,14 +582,14 @@ private fun ServerCard(
                         IconButton(onClick = onEdit) {
                             Icon(
                                 Icons.Default.Edit,
-                                contentDescription = "Edit",
+                                contentDescription = stringResource(Res.string.server_management_edit),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
                         IconButton(onClick = onDelete) {
                             Icon(
                                 Icons.Default.Delete,
-                                contentDescription = "Delete",
+                                contentDescription = stringResource(Res.string.server_management_delete_action),
                                 tint = MaterialTheme.colorScheme.error
                             )
                         }
@@ -625,7 +626,7 @@ private fun ServerDialog(
                         name = it
                         nameError = null
                     },
-                    label = { Text("Server Name") },
+                    label = { Text(stringResource(Res.string.server_management_name)) },
                     isError = nameError != null,
                     supportingText = nameError?.let { { Text(it) } },
                     modifier = Modifier.fillMaxWidth()
@@ -637,8 +638,8 @@ private fun ServerDialog(
                         url = it
                         urlError = null
                     },
-                    label = { Text("Server URL") },
-                    placeholder = { Text("https://example.com") },
+                    label = { Text(stringResource(Res.string.server_management_url)) },
+                    placeholder = { Text(stringResource(Res.string.server_management_url_placeholder)) },
                     isError = urlError != null,
                     supportingText = urlError?.let { { Text(it) } },
                     modifier = Modifier.fillMaxWidth()
@@ -669,12 +670,12 @@ private fun ServerDialog(
                     }
                 }
             ) {
-                Text("Save")
+                Text(stringResource(Res.string.server_management_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(Res.string.server_management_cancel))
             }
         }
     )

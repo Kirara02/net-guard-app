@@ -1,0 +1,177 @@
+<resources>
+    <string name="app_name">NetGuard</string>
+
+    <string name="settings">Settings</string>
+    <string name="settings_desc">App Settings</string>
+    <string name="settings_loading">Loading settings...</string>
+
+    <string name="dark_mode">Dark Mode</string>
+    <string name="dark_mode_desc">Toggle between light and dark theme</string>
+
+    <string name="language">Language</string>
+    <string name="language_desc">Select language</string>
+
+    <string name="change_password">Change Password</string>
+    <string name="change_password_desc">Update your account password</string>
+
+    <string name="about">About</string>
+    <string name="about_desc">App version and information</string>
+
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="edit_profile_name">Name</string>
+    <string name="edit_profile_division">Division</string>
+    <string name="edit_profile_phone">Phone</string>
+    <string name="edit_profile_updating">Updating profile...</string>
+
+    <string name="update">Update</string>
+    <string name="select_language">Select Language</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="change">Change</string>
+
+    <!-- Login Screen -->
+    <string name="login_title">Login</string>
+    <string name="login_subtitle">Welcome back! Please sign in to your account</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_forgot_password">Forgot Password?</string>
+    <string name="login_no_account">Don't have an account?</string>
+    <string name="login_sign_up">Sign Up</string>
+    <string name="login_loading">Signing in...</string>
+    <string name="login_error_empty_fields">Please fill in all fields</string>
+    <string name="login_error_invalid_email">Please enter a valid email address</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Create Account</string>
+    <string name="register_subtitle">Join us to monitor your servers</string>
+    <string name="register_name">Full Name</string>
+    <string name="register_email">Email</string>
+    <string name="register_division">Division</string>
+    <string name="register_phone">Phone Number</string>
+    <string name="register_password">Password</string>
+    <string name="register_confirm_password">Confirm Password</string>
+    <string name="register_button">Create Account</string>
+    <string name="register_have_account">Already have an account?</string>
+    <string name="register_sign_in">Sign In</string>
+    <string name="register_loading">Creating account...</string>
+    <string name="register_error_empty_fields">Please fill in all fields</string>
+    <string name="register_error_invalid_email">Please enter a valid email address</string>
+    <string name="register_error_password_mismatch">Passwords do not match</string>
+    <string name="register_error_password_too_short">Password must be at least 6 characters</string>
+
+    <!-- Dashboard Screen -->
+    <string name="dashboard_title">NetGuard Dashboard</string>
+    <string name="dashboard_loading">Loading dashboard...</string>
+    <string name="dashboard_welcome_title">Welcome back!</string>
+    <string name="dashboard_welcome_subtitle">Monitor your servers with ease</string>
+    <string name="dashboard_total_servers">Total Servers</string>
+    <string name="dashboard_online">Online</string>
+    <string name="dashboard_down">Down</string>
+    <string name="dashboard_incidents">Incidents</string>
+    <string name="dashboard_quick_actions">Quick Actions</string>
+    <string name="dashboard_servers">Servers</string>
+    <string name="dashboard_servers_desc">Manage &amp; Monitor</string>
+    <string name="dashboard_history">History</string>
+    <string name="dashboard_history_desc">View Incidents</string>
+    <string name="dashboard_report">Report</string>
+    <string name="dashboard_report_desc">View Reports</string>
+    <string name="dashboard_recent_incidents">Recent Incidents</string>
+    <string name="dashboard_all_good">All servers are running smoothly!</string>
+
+    <!-- Common Components -->
+    <string name="resolve">Resolve</string>
+    <string name="retry">Retry</string>
+    <string name="last_checked">Last checked</string>
+    <string name="response_time">Response</string>
+    <string name="duration">Duration</string>
+    <string name="resolved_by">Resolved by</string>
+
+    <!-- Server Management Screen -->
+    <string name="server_management_title">Server Management</string>
+    <string name="server_management_loading">Loading servers...</string>
+    <string name="server_management_overview">Server Overview</string>
+    <string name="server_management_total">Total</string>
+    <string name="server_management_online">Online</string>
+    <string name="server_management_offline">Offline</string>
+    <string name="server_management_unknown">Unknown</string>
+    <string name="server_management_no_servers">No servers configured</string>
+    <string name="server_management_no_servers_desc">Add your first server to start monitoring</string>
+    <string name="server_management_add_server">Add Server</string>
+    <string name="server_management_online_servers">🟢 Online Servers</string>
+    <string name="server_management_offline_servers">🔴 Offline Servers</string>
+    <string name="server_management_unmonitored_servers">⚪ Unmonitored Servers</string>
+    <string name="server_management_syncing">Syncing servers...</string>
+    <string name="server_management_add_title">Add Server</string>
+    <string name="server_management_edit_title">Edit Server</string>
+    <string name="server_management_delete_title">Delete Server</string>
+    <string name="server_management_delete_confirm">Are you sure you want to delete \'%1$s\'? This action cannot be undone.</string>
+    <string name="server_management_delete">Delete</string>
+    <string name="server_management_cancel">Cancel</string>
+    <string name="server_management_save">Save</string>
+    <string name="server_management_name">Server Name</string>
+    <string name="server_management_url">Server URL</string>
+    <string name="server_management_url_placeholder">https://example.com</string>
+    <string name="server_management_name_required">Name is required</string>
+    <string name="server_management_url_required">URL is required</string>
+    <string name="server_management_url_invalid">URL must start with http:// or https://</string>
+    <string name="server_management_edit">Edit</string>
+    <string name="server_management_delete_action">Delete</string>
+    <string name="server_management_dismiss">Dismiss</string>
+
+    <!-- Common Strings -->
+    <string name="back">Back</string>
+    <string name="refresh">Refresh</string>
+
+    <!-- History Screen -->
+    <string name="history_title">Incident History</string>
+    <string name="history_loading">Loading history...</string>
+    <string name="history_resolve_incident">Resolve Incident</string>
+    <string name="history_resolve_for_server">Resolve incident for server: %1$s</string>
+    <string name="history_resolution_comment">Resolution Comment</string>
+    <string name="history_resolution_placeholder">Enter resolution details...</string>
+    <string name="history_resolve">Resolve</string>
+    <string name="history_cancel">Cancel</string>
+    <string name="history_server">Server</string>
+    <string name="history_select_server">Select server</string>
+    <string name="history_all_servers">All Servers</string>
+    <string name="history_status">Status</string>
+    <string name="history_select_status">Select status</string>
+    <string name="history_all_statuses">All Statuses</string>
+    <string name="history_clear_filters">Clear Filters</string>
+    <string name="history_no_history">No incident history found</string>
+    <string name="history_no_matches">No incidents match the current filters</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_app_name">NetGuard</string>
+    <string name="splash_tagline">Server Monitoring &amp; Protection</string>
+    <string name="splash_loading">Checking authentication...</string>
+
+    <!-- Report Screen -->
+    <string name="report_title">Server Reports</string>
+    <string name="report_icon_desc">Report Icon</string>
+    <string name="report_export">Export</string>
+    <string name="report_export_pdf">Export PDF</string>
+    <string name="report_export_excel">Export Excel</string>
+    <string name="report_generating">Generating report...</string>
+    <string name="report_filters">Filters</string>
+    <string name="report_status">Status:</string>
+    <string name="report_all">All</string>
+    <string name="report_down">Down</string>
+    <string name="report_resolved">Resolved</string>
+    <string name="report_server_name">Server Name</string>
+    <string name="report_all_servers">All Servers</string>
+    <string name="report_start_date">Start Date</string>
+    <string name="report_end_date">End Date</string>
+    <string name="report_reset_filters">Reset Filters</string>
+    <string name="report_summary">Report Summary</string>
+    <string name="report_total_reports">Total Reports</string>
+    <string name="report_down_incidents">Down Incidents</string>
+    <string name="report_resolved_reports">Resolved Reports</string>
+    <string name="report_up_reports">Up Reports</string>
+    <string name="report_server_status">Server Status Report</string>
+    <string name="report_recent_incidents">Recent Incidents</string>
+    <string name="report_no_reports">No reports found</string>
+    <string name="report_ok">OK</string>
+    <string name="report_cancel">Cancel</string>
+</resources>

@@ -1,7 +1,7 @@
 package com.uniguard.netguard_app.data.repository
 
 import com.uniguard.netguard_app.data.local.database.DatabaseProvider
-import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.CreateServerRequest
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flow
 class ServerRepositoryImpl(
     databaseProvider: DatabaseProvider,
     private val api: NetGuardApi,
-    private val authPreferences: AuthPreferences
+    private val appPreferences: AppPreferences
 ) : ServerRepository {
 
     private val database = databaseProvider.getDatabase()
@@ -24,7 +24,7 @@ class ServerRepositoryImpl(
 
     // Remote operations
     override suspend fun syncServersFromRemote(): ApiResult<List<Server>> {
-        val token = authPreferences.getToken()
+        val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.getServers(token)
             when (result) {
@@ -41,7 +41,7 @@ class ServerRepositoryImpl(
     }
 
     override suspend fun createServer(name: String, url: String): ApiResult<Server> {
-        val token = authPreferences.getToken()
+        val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.createServer(token, CreateServerRequest(name, url))
             when (result) {
@@ -58,7 +58,7 @@ class ServerRepositoryImpl(
     }
 
     override suspend fun updateServer(serverId: String, name: String, url: String): ApiResult<Server> {
-        val token = authPreferences.getToken()
+        val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.updateServer(token, serverId, CreateServerRequest(name, url))
             when (result) {
@@ -75,7 +75,7 @@ class ServerRepositoryImpl(
     }
 
     override suspend fun deleteServer(serverId: String): ApiResult<Unit> {
-        val token = authPreferences.getToken()
+        val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.deleteServer(token, serverId)
             when (result) {
@@ -92,7 +92,7 @@ class ServerRepositoryImpl(
     }
 
     override suspend fun updateServerStatus(serverId: String, status: ServerStatus, responseTime: Long?): ApiResult<Server> {
-        val token = authPreferences.getToken()
+        val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.updateServerStatus(
                 token,

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.Json
 import platform.Foundation.NSUserDefaults
 
-actual class AuthPreferences {
+actual class AppPreferences {
 
     private val userDefaults = NSUserDefaults.standardUserDefaults()
 
@@ -15,6 +15,7 @@ actual class AuthPreferences {
         const val TOKEN = "auth_token"
         const val USER_DATA = "user_data"
         const val THEME_PREFERENCE = "theme_preference"
+        const val LANG = "language"
     }
 
     actual fun saveToken(token: String) {
@@ -64,4 +65,12 @@ actual class AuthPreferences {
     )
 
     actual val themePreferenceFlow : Flow<Boolean> = _themePreferenceFlow.asStateFlow()
+    private val _langFlow = MutableStateFlow(userDefaults.stringForKey(Keys.LANG) ?: "en")
+    actual val languageFlow : Flow<String> = _langFlow.asStateFlow()
+
+    actual fun saveLanguage(code: String) {
+        userDefaults.setObject(code, Keys.LANG)
+        userDefaults.synchronize()
+        _langFlow.value = code
+    }
 }

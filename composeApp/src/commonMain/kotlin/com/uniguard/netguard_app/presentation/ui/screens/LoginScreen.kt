@@ -1,6 +1,5 @@
 package com.uniguard.netguard_app.presentation.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,6 +13,8 @@ import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.presentation.ui.components.*
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
+import netguardapp.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LoginScreen(
@@ -27,6 +28,9 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
+
+    // Localized error messages
+    val emptyFieldsError = stringResource(Res.string.login_error_empty_fields)
 
     // Handle login result
     LaunchedEffect(loginState) {
@@ -58,7 +62,7 @@ fun LoginScreen(
             ) {
                 // Logo/Title
                 Text(
-                    text = "NetGuard",
+                    text = stringResource(Res.string.app_name),
                     style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -66,7 +70,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Server Monitoring System",
+                    text = stringResource(Res.string.login_subtitle),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -80,7 +84,7 @@ fun LoginScreen(
                         email = it
                         emailError = null
                     },
-                    label = "Email",
+                    label = stringResource(Res.string.login_email),
                     error = emailError,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -93,7 +97,7 @@ fun LoginScreen(
                         password = it
                         passwordError = null
                     },
-                    label = "Password",
+                    label = stringResource(Res.string.login_password),
                     error = passwordError,
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
@@ -103,11 +107,11 @@ fun LoginScreen(
 
                 // Login Button
                 PrimaryButton(
-                    text = "Login",
+                    text = stringResource(Res.string.login_button),
                     onClick = {
                         // Validation
-                        emailError = if (email.isBlank()) "Email is required" else null
-                        passwordError = if (password.isBlank()) "Password is required" else null
+                        emailError = if (email.isBlank()) emptyFieldsError else null
+                        passwordError = if (password.isBlank()) emptyFieldsError else null
 
                         if (emailError == null && passwordError == null) {
                             viewModel.login(email, password)
@@ -127,7 +131,7 @@ fun LoginScreen(
                 // Register Link
                 TextButton(onClick = onNavigateToRegister) {
                     Text(
-                        text = "Don't have an account? Register here",
+                        text = stringResource(Res.string.login_no_account) + " " + stringResource(Res.string.login_sign_up),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

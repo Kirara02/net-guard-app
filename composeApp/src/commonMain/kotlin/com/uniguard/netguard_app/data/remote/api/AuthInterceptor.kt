@@ -1,6 +1,6 @@
 package com.uniguard.netguard_app.data.remote.api
 
-import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.di.getKoinInstance
 import com.uniguard.netguard_app.firebase.FirebaseTopicManager
 import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 class AuthInterceptor(
-    private val authPreferences: AuthPreferences
+    private val appPreferences: AppPreferences
 ) {
 
     private val _unauthorizedEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
@@ -20,7 +20,7 @@ class AuthInterceptor(
     val plugin = createClientPlugin("AuthInterceptor") {
         on(Send) { request ->
             // Add authorization header if token exists
-            val token = authPreferences.getToken()
+            val token = appPreferences.getToken()
             if (token != null && !request.headers.contains("Authorization")) {
                 request.headers["Authorization"] = "Bearer $token"
             }
@@ -37,7 +37,7 @@ class AuthInterceptor(
 
                 // Only clear auth data if it's not an auth endpoint
                 if (!isAuthEndpoint) {
-                    authPreferences.clearAll()
+                    appPreferences.clearAll()
                     getKoinInstance<ServerMonitoringScheduler>().cancelServerMonitoring()
                     // Unsubscribe from Firebase topics
                     FirebaseTopicManager.unsubscribe("serverdown")

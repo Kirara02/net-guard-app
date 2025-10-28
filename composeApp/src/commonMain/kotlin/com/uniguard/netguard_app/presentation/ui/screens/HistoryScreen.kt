@@ -15,9 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.presentation.ui.components.*
-import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
 import com.uniguard.netguard_app.presentation.viewmodel.HistoryViewModel
 import com.uniguard.netguard_app.utils.formatRelativeTime
+import netguardapp.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,16 +33,16 @@ private fun ResolveDialog(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Resolve Incident") },
+            title = { Text(stringResource(Res.string.history_resolve_incident)) },
             text = {
                 Column {
-                    Text("Resolve incident for server: $serverName")
+                    Text(stringResource(Res.string.history_resolve_for_server, serverName))
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
                         value = comment,
                         onValueChange = { comment = it },
-                        label = { Text("Resolution Comment") },
-                        placeholder = { Text("Enter resolution details...") },
+                        label = { Text(stringResource(Res.string.history_resolution_comment)) },
+                        placeholder = { Text(stringResource(Res.string.history_resolution_placeholder)) },
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 3,
                         maxLines = 5
@@ -58,12 +59,12 @@ private fun ResolveDialog(
                     },
                     enabled = comment.isNotBlank()
                 ) {
-                    Text("Resolve")
+                    Text(stringResource(Res.string.history_resolve))
                 }
             },
             dismissButton = {
                 TextButton(onClick = onDismiss) {
-                    Text("Cancel")
+                    Text(stringResource(Res.string.history_cancel))
                 }
             }
         )
@@ -94,15 +95,15 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Incident History") },
+                title = { Text(stringResource(Res.string.history_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(Res.string.back))
                     }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.refreshData() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(Res.string.refresh))
                     }
                 }
             )
@@ -124,7 +125,7 @@ fun HistoryScreen(
                     ) {
                         CircularProgressIndicator()
                         Text(
-                            "Loading history...",
+                            stringResource(Res.string.history_loading),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -149,8 +150,8 @@ fun HistoryScreen(
                             OutlinedTextField(
                                 value = serverFilter,
                                 onValueChange = { },
-                                label = { Text("Server") },
-                                placeholder = { Text("Select server") },
+                                label = { Text(stringResource(Res.string.history_server)) },
+                                placeholder = { Text(stringResource(Res.string.history_select_server)) },
                                 readOnly = true,
                                 trailingIcon = {
                                     Icon(
@@ -168,7 +169,7 @@ fun HistoryScreen(
                                 onDismissRequest = { serverDropdownExpanded = false }
                             ) {
                                 DropdownMenuItem(
-                                    text = { Text("All Servers") },
+                                    text = { Text(stringResource(Res.string.history_all_servers)) },
                                     onClick = {
                                         viewModel.updateServerFilter("")
                                         serverDropdownExpanded = false
@@ -195,8 +196,8 @@ fun HistoryScreen(
                             OutlinedTextField(
                                 value = statusFilter,
                                 onValueChange = { },
-                                label = { Text("Status") },
-                                placeholder = { Text("Select status") },
+                                label = { Text(stringResource(Res.string.history_status)) },
+                                placeholder = { Text(stringResource(Res.string.history_select_status)) },
                                 readOnly = true,
                                 trailingIcon = {
                                     Icon(
@@ -214,7 +215,7 @@ fun HistoryScreen(
                                 onDismissRequest = { statusDropdownExpanded = false }
                             ) {
                                 DropdownMenuItem(
-                                    text = { Text("All Statuses") },
+                                    text = { Text(stringResource(Res.string.history_all_statuses)) },
                                     onClick = {
                                         viewModel.updateStatusFilter("")
                                         statusDropdownExpanded = false
@@ -240,7 +241,7 @@ fun HistoryScreen(
                             horizontalArrangement = Arrangement.End
                         ) {
                             TextButton(onClick = { viewModel.clearFilters() }) {
-                                Text("Clear Filters")
+                                Text(stringResource(Res.string.history_clear_filters))
                             }
                         }
                     }
@@ -260,7 +261,7 @@ fun HistoryScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                if (histories.isEmpty()) "No incident history found" else "No incidents match the current filters",
+                                if (histories.isEmpty()) stringResource(Res.string.history_no_history) else stringResource(Res.string.history_no_matches),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

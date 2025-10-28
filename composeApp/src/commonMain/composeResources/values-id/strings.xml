@@ -1,0 +1,177 @@
+<resources>
+    <string name="app_name">NetGuard</string>
+
+    <string name="settings">Pengaturan</string>
+    <string name="settings_desc">Pengaturan Aplikasi</string>
+    <string name="settings_loading">Memuat pengaturan...</string>
+
+    <string name="dark_mode">Mode Gelap</string>
+    <string name="dark_mode_desc">Ubah tampilan terang atau gelap</string>
+
+    <string name="language">Bahasa</string>
+    <string name="language_desc">Pilih bahasa aplikasi</string>
+
+    <string name="change_password">Ubah Kata Sandi</string>
+    <string name="change_password_desc">Perbarui kata sandi akun Anda</string>
+
+    <string name="about">Tentang</string>
+    <string name="about_desc">Versi aplikasi dan informasi</string>
+
+    <string name="edit_profile_title">Edit Profil</string>
+    <string name="edit_profile_name">Nama</string>
+    <string name="edit_profile_division">Divisi</string>
+    <string name="edit_profile_phone">Nomor HP</string>
+    <string name="edit_profile_updating">Memperbarui profil...</string>
+
+    <string name="update">Perbarui</string>
+    <string name="select_language">Pilih Bahasa</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Batal</string>
+    <string name="change">Ganti</string>
+
+    <!-- Login Screen -->
+    <string name="login_title">Masuk</string>
+    <string name="login_subtitle">Selamat datang kembali! Silakan masuk ke akun Anda</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Kata Sandi</string>
+    <string name="login_button">Masuk</string>
+    <string name="login_forgot_password">Lupa Kata Sandi?</string>
+    <string name="login_no_account">Belum punya akun?</string>
+    <string name="login_sign_up">Daftar</string>
+    <string name="login_loading">Sedang masuk...</string>
+    <string name="login_error_empty_fields">Harap isi semua kolom</string>
+    <string name="login_error_invalid_email">Harap masukkan alamat email yang valid</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Buat Akun</string>
+    <string name="register_subtitle">Bergabunglah dengan kami untuk memantau server Anda</string>
+    <string name="register_name">Nama Lengkap</string>
+    <string name="register_email">Email</string>
+    <string name="register_division">Divisi</string>
+    <string name="register_phone">Nomor Telepon</string>
+    <string name="register_password">Kata Sandi</string>
+    <string name="register_confirm_password">Konfirmasi Kata Sandi</string>
+    <string name="register_button">Buat Akun</string>
+    <string name="register_have_account">Sudah punya akun?</string>
+    <string name="register_sign_in">Masuk</string>
+    <string name="register_loading">Membuat akun...</string>
+    <string name="register_error_empty_fields">Harap isi semua kolom</string>
+    <string name="register_error_invalid_email">Harap masukkan alamat email yang valid</string>
+    <string name="register_error_password_mismatch">Kata sandi tidak cocok</string>
+    <string name="register_error_password_too_short">Kata sandi minimal 6 karakter</string>
+
+    <!-- Dashboard Screen -->
+    <string name="dashboard_title">Dasbor NetGuard</string>
+    <string name="dashboard_loading">Memuat dasbor...</string>
+    <string name="dashboard_welcome_title">Selamat datang kembali!</string>
+    <string name="dashboard_welcome_subtitle">Pantau server Anda dengan mudah</string>
+    <string name="dashboard_total_servers">Total Server</string>
+    <string name="dashboard_online">Online</string>
+    <string name="dashboard_down">Down</string>
+    <string name="dashboard_incidents">Insiden</string>
+    <string name="dashboard_quick_actions">Aksi Cepat</string>
+    <string name="dashboard_servers">Server</string>
+    <string name="dashboard_servers_desc">Kelola &amp; Pantau</string>
+    <string name="dashboard_history">Riwayat</string>
+    <string name="dashboard_history_desc">Lihat Insiden</string>
+    <string name="dashboard_report">Laporan</string>
+    <string name="dashboard_report_desc">Lihat Laporan</string>
+    <string name="dashboard_recent_incidents">Insiden Terbaru</string>
+    <string name="dashboard_all_good">Semua server berjalan lancar!</string>
+
+    <!-- Common Components -->
+    <string name="resolve">Selesaikan</string>
+    <string name="retry">Coba Lagi</string>
+    <string name="last_checked">Terakhir diperiksa</string>
+    <string name="response_time">Respons</string>
+    <string name="duration">Durasi</string>
+    <string name="resolved_by">Diselesaikan oleh</string>
+
+    <!-- Server Management Screen -->
+    <string name="server_management_title">Manajemen Server</string>
+    <string name="server_management_loading">Memuat server...</string>
+    <string name="server_management_overview">Ringkasan Server</string>
+    <string name="server_management_total">Total</string>
+    <string name="server_management_online">Online</string>
+    <string name="server_management_offline">Offline</string>
+    <string name="server_management_unknown">Tidak Diketahui</string>
+    <string name="server_management_no_servers">Tidak ada server yang dikonfigurasi</string>
+    <string name="server_management_no_servers_desc">Tambahkan server pertama Anda untuk mulai memantau</string>
+    <string name="server_management_add_server">Tambah Server</string>
+    <string name="server_management_online_servers">🟢 Server Online</string>
+    <string name="server_management_offline_servers">🔴 Server Offline</string>
+    <string name="server_management_unmonitored_servers">⚪ Server Tidak Dipantau</string>
+    <string name="server_management_syncing">Menyinkronkan server...</string>
+    <string name="server_management_add_title">Tambah Server</string>
+    <string name="server_management_edit_title">Edit Server</string>
+    <string name="server_management_delete_title">Hapus Server</string>
+    <string name="server_management_delete_confirm">Apakah Anda yakin ingin menghapus \'%1$s\'? Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="server_management_delete">Hapus</string>
+    <string name="server_management_cancel">Batal</string>
+    <string name="server_management_save">Simpan</string>
+    <string name="server_management_name">Nama Server</string>
+    <string name="server_management_url">URL Server</string>
+    <string name="server_management_url_placeholder">https://contoh.com</string>
+    <string name="server_management_name_required">Nama diperlukan</string>
+    <string name="server_management_url_required">URL diperlukan</string>
+    <string name="server_management_url_invalid">URL harus dimulai dengan http:// atau https://</string>
+    <string name="server_management_edit">Edit</string>
+    <string name="server_management_delete_action">Hapus</string>
+    <string name="server_management_dismiss">Tutup</string>
+
+    <!-- Common Strings -->
+    <string name="back">Kembali</string>
+    <string name="refresh">Segarkan</string>
+
+    <!-- History Screen -->
+    <string name="history_title">Riwayat Insiden</string>
+    <string name="history_loading">Memuat riwayat...</string>
+    <string name="history_resolve_incident">Selesaikan Insiden</string>
+    <string name="history_resolve_for_server">Selesaikan insiden untuk server: %1$s</string>
+    <string name="history_resolution_comment">Komentar Penyelesaian</string>
+    <string name="history_resolution_placeholder">Masukkan detail penyelesaian...</string>
+    <string name="history_resolve">Selesaikan</string>
+    <string name="history_cancel">Batal</string>
+    <string name="history_server">Server</string>
+    <string name="history_select_server">Pilih server</string>
+    <string name="history_all_servers">Semua Server</string>
+    <string name="history_status">Status</string>
+    <string name="history_select_status">Pilih status</string>
+    <string name="history_all_statuses">Semua Status</string>
+    <string name="history_clear_filters">Hapus Filter</string>
+    <string name="history_no_history">Riwayat insiden tidak ditemukan</string>
+    <string name="history_no_matches">Tidak ada insiden yang cocok dengan filter saat ini</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_app_name">NetGuard</string>
+    <string name="splash_tagline">Pemantauan &amp; Perlindungan Server</string>
+    <string name="splash_loading">Memeriksa autentikasi...</string>
+
+    <!-- Report Screen -->
+    <string name="report_title">Laporan Server</string>
+    <string name="report_icon_desc">Ikon Laporan</string>
+    <string name="report_export">Ekspor</string>
+    <string name="report_export_pdf">Ekspor PDF</string>
+    <string name="report_export_excel">Ekspor Excel</string>
+    <string name="report_generating">Membuat laporan...</string>
+    <string name="report_filters">Filter</string>
+    <string name="report_status">Status:</string>
+    <string name="report_all">Semua</string>
+    <string name="report_down">Down</string>
+    <string name="report_resolved">Diselesaikan</string>
+    <string name="report_server_name">Nama Server</string>
+    <string name="report_all_servers">Semua Server</string>
+    <string name="report_start_date">Tanggal Mulai</string>
+    <string name="report_end_date">Tanggal Akhir</string>
+    <string name="report_reset_filters">Reset Filter</string>
+    <string name="report_summary">Ringkasan Laporan</string>
+    <string name="report_total_reports">Total Laporan</string>
+    <string name="report_down_incidents">Insiden Down</string>
+    <string name="report_resolved_reports">Laporan Diselesaikan</string>
+    <string name="report_up_reports">Laporan Up</string>
+    <string name="report_server_status">Laporan Status Server</string>
+    <string name="report_recent_incidents">Insiden Terbaru</string>
+    <string name="report_no_reports">Tidak ada laporan ditemukan</string>
+    <string name="report_ok">OK</string>
+    <string name="report_cancel">Batal</string>
+</resources>

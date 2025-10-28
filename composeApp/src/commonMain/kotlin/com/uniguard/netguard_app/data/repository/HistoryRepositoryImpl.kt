@@ -1,11 +1,10 @@
 package com.uniguard.netguard_app.data.repository
 
 import com.uniguard.netguard_app.data.local.database.DatabaseProvider
-import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.History
-import com.uniguard.netguard_app.domain.model.MonthlyReportData
 import com.uniguard.netguard_app.domain.model.ResolveHistoryRequest
 import com.uniguard.netguard_app.domain.repository.HistoryRepository
 import com.uniguard.netguardapp.db.HistoryEntity
@@ -15,7 +14,7 @@ import kotlinx.coroutines.flow.flow
 class HistoryRepositoryImpl(
     private val api: NetGuardApi,
     private val databaseProvider: DatabaseProvider,
-    private val authPreferences: AuthPreferences
+    private val appPreferences: AppPreferences
 ) : HistoryRepository {
 
     private val database = databaseProvider.getDatabase()
@@ -23,7 +22,7 @@ class HistoryRepositoryImpl(
 
     // Remote operations
     override suspend fun syncHistoryFromRemote(serverId: String?, limit: Int): ApiResult<List<History>> {
-        val token = authPreferences.getToken()
+        val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.getHistory(token, serverId, limit)
             when (result) {
@@ -40,7 +39,7 @@ class HistoryRepositoryImpl(
     }
 
     override suspend fun createHistory(serverId: String, serverName: String, url: String, status: String): ApiResult<History> {
-        val token = authPreferences.getToken()
+        val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.createHistory(
                 token,
@@ -60,7 +59,7 @@ class HistoryRepositoryImpl(
     }
 
     override suspend fun resolveHistory(historyId: String, resolveNote: String): ApiResult<History> {
-        val token = authPreferences.getToken()
+        val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.resolveHistory(
                 token,
@@ -75,15 +74,6 @@ class HistoryRepositoryImpl(
                 }
                 else -> result
             }
-        } else {
-            ApiResult.Error("No authentication token found")
-        }
-    }
-
-    override suspend fun getMonthlyReport(year: Int, month: Int): ApiResult<MonthlyReportData> {
-        val token = authPreferences.getToken()
-        return if (token != null) {
-            api.getMonthlyReport(token, year, month)
         } else {
             ApiResult.Error("No authentication token found")
         }

@@ -10,6 +10,7 @@ import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.presentation.ui.screens.DashboardScreen
 import com.uniguard.netguard_app.presentation.ui.screens.HistoryScreen
 import com.uniguard.netguard_app.presentation.ui.screens.LoginScreen
+import com.uniguard.netguard_app.presentation.ui.screens.ReportScreen
 import com.uniguard.netguard_app.presentation.ui.screens.SettingsScreen
 import com.uniguard.netguard_app.presentation.ui.screens.RegisterScreen
 import com.uniguard.netguard_app.presentation.ui.screens.ServerManagementScreen
@@ -89,6 +90,9 @@ fun AppNavigation(
                 onNavigateToSettings = {
                     navController.navigate(Settings)
                 },
+                onNavigateToReport = {
+                    navController.navigate(Report)
+                },
                 onLogout = {
                     navController.navigate(Login) {
                         popUpTo(0) { inclusive = true }
@@ -111,6 +115,12 @@ fun AppNavigation(
 
         composable<Settings> {
             SettingsScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<Report> {
+            ReportScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

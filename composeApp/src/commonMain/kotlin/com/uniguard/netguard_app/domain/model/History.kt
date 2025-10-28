@@ -14,8 +14,7 @@ data class History(
     @SerialName("created_by") val createdBy: String,
     @SerialName("resolved_by") val resolvedBy: String? = null,
     @SerialName("resolved_at") val resolvedAt: String? = null,
-    @SerialName("resolve_note") val resolveNote: String? = null,
-    @SerialName("assigned_to") val assignedTo: String? = null
+    @SerialName("resolve_note") val resolveNote: String? = null
 )
 
 @Serializable
@@ -44,29 +43,4 @@ data class HistoriesResponse(
     val success: Boolean,
     val data: List<History> = emptyList(),
     val error: String? = null
-)
-
-@Serializable
-data class MonthlyReportResponse(
-    val success: Boolean,
-    val message: String,
-    val data: MonthlyReportData? = null,
-    val error: String? = null
-)
-
-@Serializable
-data class MonthlyReportData(
-    val year: Int,
-    val month: Int,
-    val report: List<ServerReport>
-)
-
-@Serializable
-data class ServerReport(
-    val serverId: String,
-    val serverName: String,
-    val url: String,
-    val downCount: Int,
-    val resolvedCount: Int,
-    val avgResolutionTime: Double
 )

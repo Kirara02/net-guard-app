@@ -14,6 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import netguardapp.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 // Buttons
 @Composable
@@ -216,13 +218,13 @@ fun ServerInfoCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Last checked: $lastChecked",
+                    text = "${stringResource(Res.string.last_checked)}: $lastChecked",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 responseTime?.let {
                     Text(
-                        text = "Response: ${it}ms",
+                        text = "${stringResource(Res.string.response_time)}: ${it}ms",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -311,7 +313,7 @@ fun IncidentHistoryCard(
                     )
                     resolvedBy?.let {
                         Text(
-                            text = "Resolved by: $it",
+                            text = "${stringResource(Res.string.resolved_by)}: $it",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -322,7 +324,7 @@ fun IncidentHistoryCard(
 
             duration?.let {
                 Text(
-                    text = "Duration: $duration",
+                    text = "${stringResource(Res.string.duration)}: $duration",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
@@ -338,7 +340,7 @@ fun IncidentHistoryCard(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    Text("Resolve")
+                    Text(stringResource(Res.string.resolve))
                 }
             }
         }
@@ -493,7 +495,7 @@ fun ErrorMessage(
             )
             onRetry?.let {
                 TextButton(onClick = it) {
-                    Text("Retry")
+                    Text(stringResource(Res.string.retry))
                 }
             }
         }

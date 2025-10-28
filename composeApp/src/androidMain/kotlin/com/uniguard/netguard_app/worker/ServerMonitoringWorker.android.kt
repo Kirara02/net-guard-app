@@ -5,7 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.uniguard.netguard_app.Logger
 import com.uniguard.netguard_app.data.local.database.DatabaseProvider
-import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.ServerStatus
@@ -32,7 +32,7 @@ class ServerMonitoringWorker(
     private val httpClient: HttpClient by inject()
     private val api: NetGuardApi by inject()
     private val databaseProvider: DatabaseProvider by inject()
-    private val authPreferences: AuthPreferences by inject()
+    private val appPreferences: AppPreferences by inject()
     private val serverStatusRepository: ServerStatusRepository by inject()
 
     private val networkMonitor = createNetworkMonitor()
@@ -54,7 +54,7 @@ class ServerMonitoringWorker(
             Logger.i("Found ${servers.size} servers to monitor", tag = "ServerMonitoring")
             if (servers.isEmpty()) return@withContext Result.success()
 
-            val token = authPreferences.getToken() ?: return@withContext Result.failure()
+            val token = appPreferences.getToken() ?: return@withContext Result.failure()
 
             for (serverEntity in servers) {
                 Logger.d("Checking server ${serverEntity.name} (${serverEntity.url})", tag = "ServerMonitoring")

@@ -11,13 +11,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
-import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.di.getKoinInstance
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.User
+import com.uniguard.netguard_app.localization.Localization
+import com.uniguard.netguard_app.localization.SupportedLanguages
 import com.uniguard.netguard_app.presentation.ui.components.*
-import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
+import netguardapp.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,11 +31,12 @@ fun SettingsScreen(
     val userProfileState by viewModel.userProfileState.collectAsState()
     val updateProfileState by viewModel.updateProfileState.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
-    val authPreferences = getKoinInstance<AuthPreferences>()
+    val appPreferences = getKoinInstance<AppPreferences>()
 
 
     var showEditProfileDialog by remember { mutableStateOf(false) }
-    val isDarkMode by authPreferences.themePreferenceFlow.collectAsState(initial = false)
+    var showLangDialog by remember { mutableStateOf(false) }
+    val isDarkMode by appPreferences.themePreferenceFlow.collectAsState(initial = false)
 
     // Load user settings when screen opens
     LaunchedEffect(Unit) {
@@ -49,7 +53,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(Res.string.settings)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -78,7 +82,7 @@ fun SettingsScreen(
                         ) {
                             CircularProgressIndicator()
                             Text(
-                                "Loading settings...",
+                                stringResource(Res.string.settings_loading),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
@@ -157,11 +161,11 @@ fun SettingsScreen(
                 ) {
                     Column {
                         Text(
-                            "Dark Mode",
+                            stringResource(Res.string.dark_mode),
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
-                            "Toggle between light and dark theme",
+                            stringResource(Res.string.dark_mode_desc),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -169,22 +173,42 @@ fun SettingsScreen(
                     Switch(
                         checked = isDarkMode,
                         onCheckedChange = { newValue ->
-                            authPreferences.saveThemePreference(newValue)
+                            appPreferences.saveThemePreference(newValue)
                             // Force app restart or theme update
                             // Note: In a real app, you might want to use a ViewModel or state management
                             // to trigger theme changes across the app
                         }
                     )
                 }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(stringResource(Res.string.language), style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            stringResource(Res.string.select_language),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Button(onClick = { showLangDialog = true }) {
+                        Text(stringResource(Res.string.change))
+                    }
+                }
+
                 SettingsItem(
-                    title = "Change Password",
-                    subtitle = "Update your account password",
+                    title = stringResource(Res.string.change_password),
+                    subtitle =stringResource(Res.string.change_password_desc),
                     onClick = { /* TODO */ }
                 )
 
                 SettingsItem(
-                    title = "About",
-                    subtitle = "App version and information",
+                    title = stringResource(Res.string.about),
+                    subtitle =stringResource(Res.string.about_desc),
                     onClick = { /* TODO */ }
                 )
             }
@@ -201,6 +225,10 @@ fun SettingsScreen(
                 viewModel.updateProfile(name, division, phone)
             }
         )
+    }
+
+    if (showLangDialog) {
+        LanguagePickerDialog(onDismiss = { showLangDialog = false })
     }
 }
 
@@ -221,7 +249,7 @@ fun EditProfileDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                "Edit Profile",
+                stringResource(Res.string.edit_profile_title),
                 style = MaterialTheme.typography.headlineSmall
             )
         },
@@ -235,7 +263,7 @@ fun EditProfileDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Name") },
+                    label = { Text(stringResource(Res.string.edit_profile_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -243,7 +271,7 @@ fun EditProfileDialog(
                 OutlinedTextField(
                     value = division,
                     onValueChange = { division = it },
-                    label = { Text("Division") },
+                    label = { Text(stringResource(Res.string.edit_profile_division)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -251,7 +279,7 @@ fun EditProfileDialog(
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { phone = it },
-                    label = { Text("Phone") },
+                    label = { Text(stringResource(Res.string.edit_profile_phone)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
@@ -268,7 +296,7 @@ fun EditProfileDialog(
                         ) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp))
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Updating profile...")
+                            Text(stringResource(Res.string.edit_profile_updating))
                         }
                     }
                     is ApiResult.Error -> {
@@ -292,7 +320,7 @@ fun EditProfileDialog(
                 enabled = name.isNotBlank() && division.isNotBlank() && phone.isNotBlank() &&
                         updateProfileState !is ApiResult.Loading
             ) {
-                Text("Update")
+                Text(stringResource(Res.string.update))
             }
         },
         dismissButton = {
@@ -300,7 +328,51 @@ fun EditProfileDialog(
                 onClick = onDismiss,
                 enabled = updateProfileState !is ApiResult.Loading
             ) {
-                Text("Cancel")
+                Text(stringResource(Res.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+fun LanguagePickerDialog(
+    onDismiss: () -> Unit
+) {
+    val prefs = getKoinInstance<AppPreferences>()
+    val locale = getKoinInstance<Localization>()
+    val currentLang by prefs.languageFlow.collectAsState(initial = "en")
+    var temp by remember(currentLang) { mutableStateOf(currentLang) }
+
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(Res.string.select_language)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                SupportedLanguages.languages.forEach { lang ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = temp == lang.code,
+                            onClick = { temp = lang.code }
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(lang.name)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                prefs.saveLanguage(temp)
+                locale.applyLanguage(temp)
+                onDismiss()
+            }) {
+                Text(stringResource(Res.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(Res.string.cancel))
             }
         }
     )

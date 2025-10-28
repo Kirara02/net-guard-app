@@ -22,3 +22,6 @@ data object History
 
 @Serializable
 data object Settings
+
+@Serializable
+data object Report

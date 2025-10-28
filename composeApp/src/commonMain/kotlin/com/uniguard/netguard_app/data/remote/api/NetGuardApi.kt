@@ -1,16 +1,17 @@
 package com.uniguard.netguard_app.data.remote.api
 
 import com.uniguard.netguard_app.domain.model.*
-//import com.uniguard.netguard_app.utils.Constants
-import com.uniguard.netguard_app.utils.getPlatformApiUrl
+import com.uniguard.netguard_app.utils.Constants
+//import com.uniguard.netguard_app.utils.getPlatformApiUrl
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+
 class NetGuardApi(
     httpClient: HttpClient,
-//    private val baseUrl: String = Constants.API_BASE_URL
-    private val baseUrl: String = getPlatformApiUrl()
+    private val baseUrl: String = Constants.API_BASE_URL
+//    private val baseUrl: String = getPlatformApiUrl()
 ) {
 
     private val client = httpClient
@@ -254,19 +255,40 @@ class NetGuardApi(
         }
     }
 
-    suspend fun getMonthlyReport(token: String, year: Int, month: Int): ApiResult<MonthlyReportData> {
+    suspend fun getReports(token: String, params: ReportParams): ApiResult<List<Report>> {
         return try {
-            val response = client.get("$baseUrl/history/report/monthly") {
+            val response = client.get("$baseUrl/report") {
                 header("Authorization", "Bearer $token")
-                parameter("year", year)
-                parameter("month", month)
+                params.status?.let { parameter("status", it.name) }
+                params.serverName?.let { parameter("server_name", it) }
+                params.limit?.let { parameter("limit", it) }
+                params.startDate?.let { parameter("start_date", it) }
+                params.endDate?.let { parameter("end_date", it) }
             }
-            val reportResponse: MonthlyReportResponse = response.body()
-            if (reportResponse.success && reportResponse.data != null) {
-                ApiResult.Success(reportResponse.data)
+            val reportsResponse: ReportsResponse = response.body()
+            if (reportsResponse.success) {
+                ApiResult.Success(reportsResponse.data)
             } else {
-                ApiResult.Error(reportResponse.error ?: "Failed to get monthly report")
+                ApiResult.Error(reportsResponse.error ?: "Failed to get reports")
             }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
+    suspend fun exportReports(token: String, params: ReportParams): ApiResult<ByteArray> {
+        return try {
+            val response = client.get("$baseUrl/report/export") {
+                header("Authorization", "Bearer $token")
+                params.status?.let { parameter("status", it.name) }
+                params.serverName?.let { parameter("server_name", it) }
+                params.limit?.let { parameter("limit", it) }
+                params.startDate?.let { parameter("start_date", it) }
+                params.endDate?.let { parameter("end_date", it) }
+                params.format?.let { parameter("format", it.value) }
+            }
+            val bytes = response.body<ByteArray>()
+            ApiResult.Success(bytes)
         } catch (e: Exception) {
             ApiResult.Error(e.message ?: "Network error")
         }

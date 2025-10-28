@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import netguardapp.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EnhancedStatCard(
@@ -178,8 +180,8 @@ fun ProfileCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                DetailRow("Division", division ?: "Not specified")
-                DetailRow("Phone", phone ?: "Not specified")
+                DetailRow(stringResource(Res.string.edit_profile_division), division ?: "Not specified")
+                DetailRow(stringResource(Res.string.edit_profile_phone), phone ?: "Not specified")
             }
 
             // Edit Button
@@ -191,11 +193,11 @@ fun ProfileCard(
                 ) {
                     Icon(
                         Icons.Default.Edit,
-                        contentDescription = "Edit Profile",
+                        contentDescription = stringResource(Res.string.edit_profile_title),
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Edit Profile")
+                    Text(stringResource(Res.string.edit_profile_title))
                 }
             }
         }

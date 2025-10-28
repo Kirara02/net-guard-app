@@ -1,6 +1,6 @@
 package com.uniguard.netguard_app.data.repository
 
-import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.AuthData
@@ -12,7 +12,7 @@ import com.uniguard.netguard_app.domain.repository.AuthRepository
 
 class AuthRepositoryImpl(
     private val api: NetGuardApi,
-    private val authPreferences: AuthPreferences
+    private val appPreferences: AppPreferences
 ) : AuthRepository {
 
     override suspend fun login(email: String, password: String): ApiResult<AuthData> {
@@ -82,23 +82,23 @@ class AuthRepositoryImpl(
     }
 
     override fun saveAuthData(token: String, user: User) {
-        authPreferences.saveToken(token)
-        authPreferences.saveUser(user)
+        appPreferences.saveToken(token)
+        appPreferences.saveUser(user)
     }
 
     override fun getSavedToken(): String? {
-        return authPreferences.getToken()
+        return appPreferences.getToken()
     }
 
     override fun getSavedUser(): User? {
-        return authPreferences.getUser()
+        return appPreferences.getUser()
     }
 
     override fun clearAuthData() {
-        authPreferences.clearAll()
+        appPreferences.clearAll()
     }
 
     override fun isLoggedIn(): Boolean {
-        return authPreferences.isLoggedIn()
+        return appPreferences.isLoggedIn()
     }
 }

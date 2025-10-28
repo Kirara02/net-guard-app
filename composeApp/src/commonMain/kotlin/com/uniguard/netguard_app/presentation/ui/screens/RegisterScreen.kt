@@ -12,8 +12,9 @@ import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.presentation.ui.components.*
-import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
+import netguardapp.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun RegisterScreen(
@@ -36,6 +37,10 @@ fun RegisterScreen(
     var confirmPasswordError by remember { mutableStateOf<String?>(null) }
     var divisionError by remember { mutableStateOf<String?>(null) }
     var phoneError by remember { mutableStateOf<String?>(null) }
+
+    // Localized error messages
+    val emptyFieldsError = stringResource(Res.string.register_error_empty_fields)
+    val passwordMismatchError = stringResource(Res.string.register_error_password_mismatch)
 
     // Handle register result
     LaunchedEffect(registerState) {
@@ -67,7 +72,7 @@ fun RegisterScreen(
         ) {
             // Title
             Text(
-                text = "Create Account",
+                text = stringResource(Res.string.register_title),
                 style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(top = 48.dp)
@@ -76,7 +81,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Join NetGuard monitoring system",
+                text = stringResource(Res.string.register_subtitle),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -90,7 +95,7 @@ fun RegisterScreen(
                     name = it
                     nameError = null
                 },
-                label = "Full Name",
+                label = stringResource(Res.string.register_name),
                 error = nameError,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -103,7 +108,7 @@ fun RegisterScreen(
                     email = it
                     emailError = null
                 },
-                label = "Email",
+                label = stringResource(Res.string.register_email),
                 error = emailError,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -116,7 +121,7 @@ fun RegisterScreen(
                     division = it
                     divisionError = null
                 },
-                label = "Division/Department",
+                label = stringResource(Res.string.register_division),
                 error = divisionError,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -129,7 +134,7 @@ fun RegisterScreen(
                     phone = it
                     phoneError = null
                 },
-                label = "Phone Number",
+                label = stringResource(Res.string.register_phone),
                 error = phoneError,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -142,7 +147,7 @@ fun RegisterScreen(
                     password = it
                     passwordError = null
                 },
-                label = "Password",
+                label = stringResource(Res.string.register_password),
                 error = passwordError,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
@@ -156,7 +161,7 @@ fun RegisterScreen(
                     confirmPassword = it
                     confirmPasswordError = null
                 },
-                label = "Confirm Password",
+                label = stringResource(Res.string.register_confirm_password),
                 error = confirmPasswordError,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
@@ -166,17 +171,17 @@ fun RegisterScreen(
 
             // Register Button
             PrimaryButton(
-                text = "Create Account",
+                text = stringResource(Res.string.register_button),
                 onClick = {
                     // Validation
-                    nameError = if (name.isBlank()) "Name is required" else null
-                    emailError = if (email.isBlank()) "Email is required" else null
-                    divisionError = if (division.isBlank()) "Division is required" else null
-                    phoneError = if (phone.isBlank()) "Phone number is required" else null
-                    passwordError = if (password.isBlank()) "Password is required" else null
+                    nameError = if (name.isBlank()) emptyFieldsError else null
+                    emailError = if (email.isBlank()) emptyFieldsError else null
+                    divisionError = if (division.isBlank()) emptyFieldsError else null
+                    phoneError = if (phone.isBlank()) emptyFieldsError else null
+                    passwordError = if (password.isBlank()) emptyFieldsError else null
                     confirmPasswordError = when {
-                        confirmPassword.isBlank() -> "Please confirm your password"
-                        confirmPassword != password -> "Passwords do not match"
+                        confirmPassword.isBlank() -> emptyFieldsError
+                        confirmPassword != password -> passwordMismatchError
                         else -> null
                     }
 
@@ -194,7 +199,7 @@ fun RegisterScreen(
             // Login Link
             TextButton(onClick = onNavigateToLogin) {
                 Text(
-                    text = "Already have an account? Login here",
+                    text = stringResource(Res.string.register_have_account) + " " + stringResource(Res.string.register_sign_in),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

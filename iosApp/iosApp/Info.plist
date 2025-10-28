@@ -18,5 +18,10 @@
 		<string>processing</string>
 		<string>fetch</string>
 	</array>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>id</string>
+	</array>
 </dict>
 </plist>

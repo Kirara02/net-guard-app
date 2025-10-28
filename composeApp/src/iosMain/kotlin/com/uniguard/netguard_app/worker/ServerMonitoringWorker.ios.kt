@@ -2,7 +2,7 @@ package com.uniguard.netguard_app.worker
 
 import com.uniguard.netguard_app.Logger
 import com.uniguard.netguard_app.data.local.database.DatabaseProvider
-import com.uniguard.netguard_app.data.local.preferences.AuthPreferences
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.ServerStatus
@@ -35,7 +35,7 @@ class ServerMonitoringWorker : KoinComponent {
     private val httpClient: HttpClient by inject()
     private val api: NetGuardApi by inject()
     private val databaseProvider: DatabaseProvider by inject()
-    private val authPreferences: AuthPreferences by inject()
+    private val appPreferences: AppPreferences by inject()
     private val networkMonitor = createNetworkMonitor()
 
     private val serverStatusRepository: ServerStatusRepository by inject()
@@ -103,7 +103,7 @@ class ServerMonitoringWorker : KoinComponent {
                 return true
             }
 
-            val token = authPreferences.getToken()
+            val token = appPreferences.getToken()
             if (token == null) {
                 Logger.w("iOS BGTaskScheduler: No authentication token found", tag = "ServerMonitoring")
                 return false

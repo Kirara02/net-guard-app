@@ -15,10 +15,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.presentation.ui.components.*
-import com.uniguard.netguard_app.presentation.ui.theme.NetGuardTheme
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.DashboardViewModel
 import com.uniguard.netguard_app.utils.formatRelativeTime
+import netguardapp.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,6 +29,7 @@ fun DashboardScreen(
     onNavigateToServerList: () -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToReport: () -> Unit,
     onLogout: () -> Unit
 ) {
     val recentIncidents by viewModel.recentIncidents.collectAsState()
@@ -48,12 +50,21 @@ fun DashboardScreen(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            "NetGuard Dashboard",
+                            stringResource(Res.string.dashboard_title),
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                         )
                     }
                 },
                 actions = {
+                    IconButton(onClick = {
+                        viewModel.loadDashboardData()
+                    }) {
+                        Icon(
+                            Icons.Default.Refresh,
+                            contentDescription = "Refresh",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                     IconButton(onClick = {
                         authViewModel.cleanupServices()
                         authViewModel.logout()
@@ -85,7 +96,7 @@ fun DashboardScreen(
                     ) {
                         CircularProgressIndicator()
                         Text(
-                            "Loading dashboard...",
+                            stringResource(Res.string.dashboard_loading),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -118,12 +129,12 @@ fun DashboardScreen(
                                 )
                                 Column {
                                     Text(
-                                        "Welcome back!",
+                                        stringResource(Res.string.dashboard_welcome_title),
                                         style = MaterialTheme.typography.titleMedium,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                     Text(
-                                        "Monitor your servers with ease",
+                                        stringResource(Res.string.dashboard_welcome_subtitle),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                                     )
@@ -139,14 +150,14 @@ fun DashboardScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             EnhancedStatCard(
-                                title = "Total Servers",
+                                title = stringResource(Res.string.dashboard_total_servers),
                                 value = viewModel.totalServers.toString(),
                                 icon = Icons.Default.Dns,
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.weight(1f)
                             )
                             EnhancedStatCard(
-                                title = "Online",
+                                title = stringResource(Res.string.dashboard_online),
                                 value = viewModel.onlineServers.toString(),
                                 icon = Icons.Default.CheckCircle,
                                 color = Color(0xFF4CAF50),
@@ -161,14 +172,14 @@ fun DashboardScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             EnhancedStatCard(
-                                title = "Down",
+                                title = stringResource(Res.string.dashboard_down),
                                 value = viewModel.downServers.toString(),
                                 icon = Icons.Default.Error,
                                 color = Color(0xFFF44336),
                                 modifier = Modifier.weight(1f)
                             )
                             EnhancedStatCard(
-                                title = "Incidents",
+                                title = stringResource(Res.string.dashboard_incidents),
                                 value = viewModel.totalIncidents.toString(),
                                 icon = Icons.Default.Warning,
                                 color = Color(0xFFFF9800),
@@ -181,17 +192,17 @@ fun DashboardScreen(
                     item {
                         Column {
                             Text(
-                                text = "Quick Actions",
+                                text = stringResource(Res.string.dashboard_quick_actions),
                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                                 modifier = Modifier.padding(bottom = 12.dp)
                             )
 
                             // Responsive grid layout for Quick Actions
                             val actionCards = listOf(
-                                Triple("Servers", "Manage & Monitor", Icons.Default.Dns to onNavigateToServerList),
-                                Triple("History", "View Incidents", Icons.Default.History to onNavigateToHistory),
-                                Triple("Settings", "App Settings", Icons.Default.Settings to onNavigateToSettings),
-                                Triple("Refresh", "Sync Data", Icons.Default.Refresh to { viewModel.loadDashboardData() })
+                                Triple(stringResource(Res.string.dashboard_servers), stringResource(Res.string.dashboard_servers_desc), Icons.Default.Dns to onNavigateToServerList),
+                                Triple(stringResource(Res.string.dashboard_history), stringResource(Res.string.dashboard_history_desc), Icons.Default.History to onNavigateToHistory),
+                                Triple(stringResource(Res.string.settings), stringResource(Res.string.settings_desc), Icons.Default.Settings to onNavigateToSettings),
+                                Triple(stringResource(Res.string.dashboard_report), stringResource(Res.string.dashboard_report_desc), Icons.Default.Assessment to onNavigateToReport)
                             )
 
                             // Use responsive columns based on screen width
@@ -225,7 +236,7 @@ fun DashboardScreen(
                     // Recent Incidents
                     item {
                         Text(
-                            text = "Recent Incidents",
+                            text = stringResource(Res.string.dashboard_recent_incidents),
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
@@ -254,7 +265,7 @@ fun DashboardScreen(
                                     )
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Text(
-                                        text = "All servers are running smoothly!",
+                                        text = stringResource(Res.string.dashboard_all_good),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )

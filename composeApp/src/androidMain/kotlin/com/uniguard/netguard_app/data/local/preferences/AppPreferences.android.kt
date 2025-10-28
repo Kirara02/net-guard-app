@@ -8,20 +8,22 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.uniguard.netguard_app.domain.model.User
+import com.uniguard.netguard_app.log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "auth_prefs")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_prefs")
 
-actual class AuthPreferences(private val context: Context) {
+actual class AppPreferences(private val context: Context) {
 
     private object PreferencesKeys {
         val TOKEN = stringPreferencesKey("token")
         val USER_DATA = stringPreferencesKey("user_data")
         val THEME_PREFERENCE = booleanPreferencesKey("theme_preference")
+        val LANGUAGE = stringPreferencesKey("language")
     }
 
     actual fun saveToken(token: String) {
@@ -84,5 +86,16 @@ actual class AuthPreferences(private val context: Context) {
     actual val themePreferenceFlow: Flow<Boolean> =
         context.dataStore.data.map { preferences ->
             preferences[PreferencesKeys.THEME_PREFERENCE] ?: false
+        }
+
+    actual fun saveLanguage(code: String) {
+        runBlocking {
+            context.dataStore.edit { prefs -> prefs[PreferencesKeys.LANGUAGE] = code }
+        }
+    }
+
+    actual val languageFlow: Flow<String> =
+        context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.LANGUAGE] ?: "en"
         }
 }
