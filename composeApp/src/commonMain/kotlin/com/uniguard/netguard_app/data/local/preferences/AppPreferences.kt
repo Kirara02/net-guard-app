@@ -14,5 +14,7 @@ expect class AppPreferences {
     val themePreferenceFlow: Flow<Boolean>
     fun saveLanguage(code: String)
     val languageFlow: Flow<String>
+    fun saveMonitoringInterval(intervalMinutes: Long)
+    fun getMonitoringInterval(): Long
 
 }

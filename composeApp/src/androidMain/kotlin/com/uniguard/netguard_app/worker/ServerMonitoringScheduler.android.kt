@@ -11,14 +11,15 @@ import java.util.concurrent.TimeUnit
 
 actual class ServerMonitoringScheduler actual constructor() {
 
-    actual fun scheduleServerMonitoring(intervalMinutes: Long) {
+    actual fun scheduleServerMonitoring(intervalMinutes: Long?) {
+        val interval = intervalMinutes ?: 15L
         val context = applicationContext
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED) // Only run when network is available
             .build()
 
         val workRequest = PeriodicWorkRequestBuilder<ServerMonitoringWorker>(
-            intervalMinutes, TimeUnit.MINUTES
+            interval, TimeUnit.MINUTES
         )
             .setConstraints(constraints)
             .build()
@@ -29,7 +30,7 @@ actual class ServerMonitoringScheduler actual constructor() {
             workRequest
         )
 
-        Logger.i("Android WorkManager: Server monitoring scheduled with $intervalMinutes minutes interval", tag = "ServerMonitoring")
+        Logger.i("Android WorkManager: Server monitoring scheduled with $interval minutes interval", tag = "ServerMonitoring")
     }
 
     actual fun cancelServerMonitoring() {

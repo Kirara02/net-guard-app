@@ -16,6 +16,7 @@ actual class AppPreferences {
         const val USER_DATA = "user_data"
         const val THEME_PREFERENCE = "theme_preference"
         const val LANG = "language"
+        const val MONITORING_INTERVAL = "monitoring_interval"
     }
 
     actual fun saveToken(token: String) {
@@ -72,5 +73,15 @@ actual class AppPreferences {
         userDefaults.setObject(code, Keys.LANG)
         userDefaults.synchronize()
         _langFlow.value = code
+    }
+
+    actual fun saveMonitoringInterval(intervalMinutes: Long) {
+        userDefaults.setObject(intervalMinutes, Keys.MONITORING_INTERVAL)
+        userDefaults.synchronize()
+    }
+
+    actual fun getMonitoringInterval(): Long {
+        val value = userDefaults.objectForKey(Keys.MONITORING_INTERVAL) as? Long
+        return value?.takeIf { it > 0 } ?: 15L
     }
 }

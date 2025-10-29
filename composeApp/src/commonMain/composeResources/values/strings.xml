@@ -174,4 +174,11 @@
     <string name="report_no_reports">No reports found</string>
     <string name="report_ok">OK</string>
     <string name="report_cancel">Cancel</string>
+
+    <!-- Monitoring Settings -->
+    <string name="monitoring_settings">Monitoring Settings</string>
+    <string name="monitoring_settings_desc">Configure server monitoring interval</string>
+    <string name="monitoring_interval">Monitoring Interval</string>
+    <string name="monitoring_interval_desc">Set how often to check server status (minutes)</string>
+    <string name="monitoring_interval_minutes">%1$d minutes</string>
 </resources>

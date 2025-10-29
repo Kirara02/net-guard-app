@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.uniguard.netguard_app.domain.model.User
@@ -24,6 +25,7 @@ actual class AppPreferences(private val context: Context) {
         val USER_DATA = stringPreferencesKey("user_data")
         val THEME_PREFERENCE = booleanPreferencesKey("theme_preference")
         val LANGUAGE = stringPreferencesKey("language")
+        val MONITORING_INTERVAL = longPreferencesKey("monitoring_interval")
     }
 
     actual fun saveToken(token: String) {
@@ -98,4 +100,18 @@ actual class AppPreferences(private val context: Context) {
         context.dataStore.data.map { preferences ->
             preferences[PreferencesKeys.LANGUAGE] ?: "en"
         }
+
+    actual fun saveMonitoringInterval(intervalMinutes: Long) {
+        runBlocking {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.MONITORING_INTERVAL] = intervalMinutes
+            }
+        }
+    }
+
+    actual fun getMonitoringInterval(): Long {
+        return runBlocking {
+            context.dataStore.data.first()[PreferencesKeys.MONITORING_INTERVAL] ?: 15L
+        }
+    }
 }

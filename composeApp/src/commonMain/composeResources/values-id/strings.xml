@@ -174,4 +174,11 @@
     <string name="report_no_reports">Tidak ada laporan ditemukan</string>
     <string name="report_ok">OK</string>
     <string name="report_cancel">Batal</string>
+
+    <!-- Monitoring Settings -->
+    <string name="monitoring_settings">Pengaturan Pemantauan</string>
+    <string name="monitoring_settings_desc">Konfigurasi interval pemantauan server</string>
+    <string name="monitoring_interval">Interval Pemantauan</string>
+    <string name="monitoring_interval_desc">Atur seberapa sering memeriksa status server (menit)</string>
+    <string name="monitoring_interval_minutes">%1$d menit</string>
 </resources>

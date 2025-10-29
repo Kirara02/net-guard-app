@@ -7,6 +7,7 @@ import com.uniguard.netguard_app.domain.model.AuthData
 import com.uniguard.netguard_app.domain.model.RegisterRequest
 import com.uniguard.netguard_app.domain.model.UpdateProfileRequest
 import com.uniguard.netguard_app.domain.model.User
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.firebase.FirebaseTopicManager
 import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
@@ -22,6 +23,7 @@ class AuthViewModel(
 ) : ViewModel(), KoinComponent {
 
     private val serverMonitoringScheduler: ServerMonitoringScheduler by inject()
+    private val appPreferences: AppPreferences by inject()
 
     private val _loginState = MutableStateFlow<ApiResult<AuthData>>(ApiResult.Initial)
     val loginState: StateFlow<ApiResult<AuthData>> = _loginState.asStateFlow()
@@ -58,7 +60,7 @@ class AuthViewModel(
                 FirebaseTopicManager.subscribe("serverdown")
 
                 // Start server monitoring when user logs in
-                serverMonitoringScheduler.scheduleServerMonitoring(intervalMinutes = 10)
+                serverMonitoringScheduler.scheduleServerMonitoring(appPreferences.getMonitoringInterval())
             }
         }
     }
@@ -68,8 +70,7 @@ class AuthViewModel(
         email: String,
         password: String,
         division: String,
-        phone: String,
-        role: String = "USER"
+        phone: String
     ) {
         viewModelScope.launch {
             _registerState.value = ApiResult.Loading
@@ -90,7 +91,7 @@ class AuthViewModel(
                 FirebaseTopicManager.subscribe("serverdown")
 
                 // Start server monitoring when user registers
-                serverMonitoringScheduler.scheduleServerMonitoring(intervalMinutes = 10)
+                serverMonitoringScheduler.scheduleServerMonitoring(appPreferences.getMonitoringInterval())
             }
         }
     }

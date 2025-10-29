@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +20,7 @@ import com.uniguard.netguard_app.localization.Localization
 import com.uniguard.netguard_app.localization.SupportedLanguages
 import com.uniguard.netguard_app.presentation.ui.components.*
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
+import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
 import netguardapp.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
@@ -32,7 +34,7 @@ fun SettingsScreen(
     val updateProfileState by viewModel.updateProfileState.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
     val appPreferences = getKoinInstance<AppPreferences>()
-
+    val serverMonitoringScheduler =  ServerMonitoringScheduler()
 
     var showEditProfileDialog by remember { mutableStateOf(false) }
     var showLangDialog by remember { mutableStateOf(false) }
@@ -200,6 +202,64 @@ fun SettingsScreen(
                     }
                 }
 
+                // Monitoring Interval Setting
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                stringResource(Res.string.monitoring_interval),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                stringResource(Res.string.monitoring_interval_desc),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        var showIntervalDialog by remember { mutableStateOf(false) }
+                        val currentInterval = remember { mutableStateOf(appPreferences.getMonitoringInterval()) }
+
+                        OutlinedButton(
+                            onClick = { showIntervalDialog = true },
+                            modifier = Modifier.padding(start = 16.dp)
+                        ) {
+                            Text(stringResource(Res.string.monitoring_interval_minutes, currentInterval.value))
+                            Icon(
+                                Icons.Default.ArrowDropDown,
+                                contentDescription = null,
+                                modifier = Modifier.padding(start = 4.dp)
+                            )
+                        }
+
+                        if (showIntervalDialog) {
+                            IntervalPickerDialog(
+                                currentInterval = currentInterval.value,
+                                onDismiss = { showIntervalDialog = false },
+                                onIntervalSelected = { newInterval ->
+                                    appPreferences.saveMonitoringInterval(newInterval)
+                                    currentInterval.value = newInterval
+                                    showIntervalDialog = false
+
+                                    // Restart monitoring with new interval if user is logged in
+                                    if (viewModel.isLoggedIn.value) {
+                                        serverMonitoringScheduler.cancelServerMonitoring()
+                                        serverMonitoringScheduler.scheduleServerMonitoring(newInterval)
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+
                 SettingsItem(
                     title = stringResource(Res.string.change_password),
                     subtitle =stringResource(Res.string.change_password_desc),
@@ -230,6 +290,47 @@ fun SettingsScreen(
     if (showLangDialog) {
         LanguagePickerDialog(onDismiss = { showLangDialog = false })
     }
+}
+
+@Composable
+fun IntervalPickerDialog(
+    currentInterval: Long,
+    onDismiss: () -> Unit,
+    onIntervalSelected: (Long) -> Unit
+) {
+    val intervals = listOf(5L, 10L, 15L, 30L, 60L, 120L) // minutes
+    var selectedInterval by remember { mutableStateOf(currentInterval) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(Res.string.monitoring_interval)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                intervals.forEach { interval ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = selectedInterval == interval,
+                            onClick = { selectedInterval = interval }
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(Res.string.monitoring_interval_minutes, interval.toInt()))
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                onIntervalSelected(selectedInterval)
+            }) {
+                Text(stringResource(Res.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(Res.string.cancel))
+            }
+        }
+    )
 }
 
 

@@ -4,8 +4,9 @@ actual class ServerMonitoringScheduler actual constructor() {
 
     private val worker = ServerMonitoringWorker()
 
-    actual fun scheduleServerMonitoring(intervalMinutes: Long) {
-        worker.scheduleMonitoring(intervalMinutes)
+    actual fun scheduleServerMonitoring(intervalMinutes: Long?) {
+        val interval = intervalMinutes ?: 30L
+        worker.scheduleMonitoring(interval)
     }
 
     actual fun cancelServerMonitoring() {
