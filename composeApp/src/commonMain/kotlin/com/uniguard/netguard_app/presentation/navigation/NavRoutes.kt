@@ -25,3 +25,6 @@ data object Settings
 
 @Serializable
 data object Report
+
+@Serializable
+data object About

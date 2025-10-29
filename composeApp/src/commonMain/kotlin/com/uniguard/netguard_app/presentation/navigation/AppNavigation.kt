@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.uniguard.netguard_app.core.rememberKoinViewModel
+import com.uniguard.netguard_app.presentation.ui.screens.AboutScreen
 import com.uniguard.netguard_app.presentation.ui.screens.DashboardScreen
 import com.uniguard.netguard_app.presentation.ui.screens.HistoryScreen
 import com.uniguard.netguard_app.presentation.ui.screens.LoginScreen
@@ -115,12 +116,19 @@ fun AppNavigation(
 
         composable<Settings> {
             SettingsScreen(
+                onNavigateToAbout = { navController.navigate(About) },
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
         composable<Report> {
             ReportScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<About> {
+            AboutScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

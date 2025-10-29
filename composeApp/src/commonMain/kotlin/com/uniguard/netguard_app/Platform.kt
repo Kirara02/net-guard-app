@@ -4,4 +4,9 @@ interface Platform {
     val name: String
 }
 
-expect fun getPlatform(): Platform
+data class AppInfo(
+    val name: String,
+    val version: String
+)
+
+expect fun getAppInfo(): AppInfo

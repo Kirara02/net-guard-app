@@ -181,4 +181,20 @@
     <string name="monitoring_interval">Monitoring Interval</string>
     <string name="monitoring_interval_desc">Set how often to check server status (minutes)</string>
     <string name="monitoring_interval_minutes">%1$d minutes</string>
+
+    <!-- About Screen -->
+    <string name="version">Version %1$s</string>
+    <string name="about_description_title">About NetGuard</string>
+    <string name="about_description">NetGuard is a comprehensive server monitoring application designed to help you keep track of your server status in real-time. With advanced monitoring capabilities and instant notifications, NetGuard ensures your servers are always running smoothly.</string>
+    <string name="features_title">Features</string>
+    <string name="feature_server_monitoring">Real-time server status monitoring</string>
+    <string name="feature_real_time_alerts">Instant push notifications for server issues</string>
+    <string name="feature_history_tracking">Detailed monitoring history and reports</string>
+    <string name="feature_dark_mode">Dark/Light mode support</string>
+    <string name="feature_multi_platform">Cross-platform support (Android &amp; iOS)</string>
+    <string name="developer_info">Developer Information</string>
+    <string name="developed_by">Developed by UniGuard Team</string>
+    <string name="contact_info">Contact Information</string>
+    <string name="contact_email">info@uniguard.co.id</string>
+    <string name="copyright">© %1$s UniGuard. All rights reserved.</string>
 </resources>

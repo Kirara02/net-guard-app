@@ -28,6 +28,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun SettingsScreen(
     viewModel: AuthViewModel = rememberKoinViewModel<AuthViewModel>(),
+    onNavigateToAbout: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
@@ -268,8 +269,8 @@ fun SettingsScreen(
 
                 SettingsItem(
                     title = stringResource(Res.string.about),
-                    subtitle =stringResource(Res.string.about_desc),
-                    onClick = { /* TODO */ }
+                    subtitle = stringResource(Res.string.about_desc),
+                    onClick = { onNavigateToAbout() }
                 )
             }
         }

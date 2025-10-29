@@ -181,4 +181,20 @@
     <string name="monitoring_interval">Interval Pemantauan</string>
     <string name="monitoring_interval_desc">Atur seberapa sering memeriksa status server (menit)</string>
     <string name="monitoring_interval_minutes">%1$d menit</string>
+
+    <!-- About Screen -->
+    <string name="version">Versi %1$s</string>
+    <string name="about_description_title">Tentang NetGuard</string>
+    <string name="about_description">NetGuard adalah aplikasi pemantauan server yang komprehensif yang dirancang untuk membantu Anda melacak status server secara real-time. Dengan kemampuan pemantauan canggih dan notifikasi instan, NetGuard memastikan server Anda selalu berjalan dengan lancar.</string>
+    <string name="features_title">Fitur</string>
+    <string name="feature_server_monitoring">Pemantauan status server real-time</string>
+    <string name="feature_real_time_alerts">Notifikasi push instan untuk masalah server</string>
+    <string name="feature_history_tracking">Riwayat pemantauan dan laporan detail</string>
+    <string name="feature_dark_mode">Dukungan mode gelap/terang</string>
+    <string name="feature_multi_platform">Dukungan lintas platform (Android &amp; iOS)</string>
+    <string name="developer_info">Informasi Pengembang</string>
+    <string name="developed_by">Dikembangkan oleh Tim UniGuard</string>
+    <string name="contact_info">Informasi Kontak</string>
+    <string name="contact_email">info@uniguard.co.id</string>
+    <string name="copyright">© %1$s UniGuard. Seluruh hak cipta.</string>
 </resources>
