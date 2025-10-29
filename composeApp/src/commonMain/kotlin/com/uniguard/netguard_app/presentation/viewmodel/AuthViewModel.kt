@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.AuthData
+import com.uniguard.netguard_app.domain.model.ChangePasswordRequest
 import com.uniguard.netguard_app.domain.model.RegisterRequest
 import com.uniguard.netguard_app.domain.model.UpdateProfileRequest
 import com.uniguard.netguard_app.domain.model.User
@@ -39,6 +40,9 @@ class AuthViewModel(
 
     private val _updateProfileState = MutableStateFlow<ApiResult<User>>(ApiResult.Initial)
     val updateProfileState: StateFlow<ApiResult<User>> = _updateProfileState.asStateFlow()
+
+    private val _changePasswordState = MutableStateFlow<ApiResult<Unit>>(ApiResult.Initial)
+    val changePasswordState: StateFlow<ApiResult<Unit>> = _changePasswordState.asStateFlow()
 
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
@@ -149,6 +153,18 @@ class AuthViewModel(
 
     fun resetLoginState() {
         _loginState.value = ApiResult.Initial
+    }
+
+    fun changePassword(request: ChangePasswordRequest) {
+        viewModelScope.launch {
+            _changePasswordState.value = ApiResult.Loading
+            val result = authRepository.changePassword(request)
+            _changePasswordState.value = result
+        }
+    }
+
+    fun resetChangePasswordState() {
+        _changePasswordState.value = ApiResult.Initial
     }
 
     fun resetRegisterState() {

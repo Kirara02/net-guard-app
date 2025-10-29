@@ -4,6 +4,7 @@ import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.AuthData
+import com.uniguard.netguard_app.domain.model.ChangePasswordRequest
 import com.uniguard.netguard_app.domain.model.LoginRequest
 import com.uniguard.netguard_app.domain.model.RegisterRequest
 import com.uniguard.netguard_app.domain.model.UpdateProfileRequest
@@ -96,6 +97,15 @@ class AuthRepositoryImpl(
 
     override fun clearAuthData() {
         appPreferences.clearAll()
+    }
+
+    override suspend fun changePassword(request: ChangePasswordRequest): ApiResult<Unit> {
+        val token = getSavedToken()
+        return if (token != null) {
+            api.changePassword(token, request)
+        } else {
+            ApiResult.Error("No authentication token found")
+        }
     }
 
     override fun isLoggedIn(): Boolean {

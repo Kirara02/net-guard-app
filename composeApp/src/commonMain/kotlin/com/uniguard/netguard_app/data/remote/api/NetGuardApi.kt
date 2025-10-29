@@ -1,5 +1,6 @@
 package com.uniguard.netguard_app.data.remote.api
 
+import com.uniguard.netguard_app.data.remote.dto.ApiResponse
 import com.uniguard.netguard_app.domain.model.*
 import com.uniguard.netguard_app.utils.Constants
 //import com.uniguard.netguard_app.utils.getPlatformApiUrl
@@ -107,6 +108,38 @@ class NetGuardApi(
                 ApiResult.Success(updateProfileResponse.data)
             } else {
                 ApiResult.Error(updateProfileResponse.error ?: "Failed to update profile")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
+    suspend fun changePassword(token: String, request: ChangePasswordRequest): ApiResult<Unit> {
+        return try {
+            val response = client.put("$baseUrl/auth/change-password") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+            val apiResponse: ApiResponse<Unit> = response.body()
+            if (apiResponse.success) {
+                ApiResult.Success(Unit)
+            } else {
+                // For auth endpoints, try to parse error response
+                try {
+                    val errorResponse: ErrorResponse = response.body()
+                    ApiResult.Error(errorResponse.error)
+                } catch (e: Exception) {
+                    ApiResult.Error(apiResponse.error ?: "Failed to change password")
+                }
+            }
+        } catch (e: ClientException) {
+            // Handle 400 for validation errors - parse error from the exception response
+            try {
+                val errorResponse: ErrorResponse = e.response.body()
+                ApiResult.Error(errorResponse.error)
+            } catch (parseException: Exception) {
+                ApiResult.Error("Failed to change password")
             }
         } catch (e: Exception) {
             ApiResult.Error(e.message ?: "Network error")

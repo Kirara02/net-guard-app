@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.presentation.ui.screens.AboutScreen
+import com.uniguard.netguard_app.presentation.ui.screens.ChangePasswordScreen
 import com.uniguard.netguard_app.presentation.ui.screens.DashboardScreen
 import com.uniguard.netguard_app.presentation.ui.screens.HistoryScreen
 import com.uniguard.netguard_app.presentation.ui.screens.LoginScreen
@@ -18,10 +19,7 @@ import com.uniguard.netguard_app.presentation.ui.screens.ServerManagementScreen
 import com.uniguard.netguard_app.presentation.ui.screens.SplashScreen
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.data.remote.api.AuthInterceptor
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
-import androidx.navigation.NavController
 import org.koin.compose.koinInject
 
 @Composable
@@ -117,6 +115,7 @@ fun AppNavigation(
         composable<Settings> {
             SettingsScreen(
                 onNavigateToAbout = { navController.navigate(About) },
+                onNavigateToChangePassword = { navController.navigate(ChangePassword) },
                 onNavigateBack = { navController.popBackStack() }
             )
         }
@@ -129,6 +128,12 @@ fun AppNavigation(
 
         composable<About> {
             AboutScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<ChangePassword> {
+            ChangePasswordScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

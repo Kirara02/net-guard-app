@@ -197,4 +197,15 @@
     <string name="contact_info">Informasi Kontak</string>
     <string name="contact_email">info@uniguard.co.id</string>
     <string name="copyright">© %1$s UniGuard. Seluruh hak cipta.</string>
+
+    <!-- Change Password Screen -->
+    <string name="change_password_title">Ubah Kata Sandi Anda</string>
+    <string name="change_password_description">Masukkan kata sandi saat ini dan pilih kata sandi baru yang aman.</string>
+    <string name="current_password">Kata Sandi Saat Ini</string>
+    <string name="new_password">Kata Sandi Baru</string>
+    <string name="confirm_new_password">Konfirmasi Kata Sandi Baru</string>
+    <string name="passwords_do_not_match">Kata sandi tidak cocok</string>
+    <string name="changing_password">Mengubah kata sandi...</string>
+    <string name="password_changed_successfully">Kata Sandi Berhasil Diubah</string>
+    <string name="password_changed_description">Kata sandi Anda telah berhasil diperbarui. Anda sekarang dapat menggunakan kata sandi baru untuk masuk.</string>
 </resources>

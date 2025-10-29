@@ -28,3 +28,6 @@ data object Report
 
 @Serializable
 data object About
+
+@Serializable
+data object ChangePassword
