@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Help
@@ -15,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
@@ -628,6 +631,10 @@ private fun ServerDialog(
                     },
                     label = { Text(stringResource(Res.string.server_management_name)) },
                     isError = nameError != null,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                    ),
                     supportingText = nameError?.let { { Text(it) } },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -640,6 +647,10 @@ private fun ServerDialog(
                     },
                     label = { Text(stringResource(Res.string.server_management_url)) },
                     placeholder = { Text(stringResource(Res.string.server_management_url_placeholder)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                    ),
                     isError = urlError != null,
                     supportingText = urlError?.let { { Text(it) } },
                     modifier = Modifier.fillMaxWidth()

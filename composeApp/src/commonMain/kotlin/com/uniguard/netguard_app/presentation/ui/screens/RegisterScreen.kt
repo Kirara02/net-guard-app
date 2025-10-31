@@ -2,11 +2,14 @@ package com.uniguard.netguard_app.presentation.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
@@ -96,6 +99,10 @@ fun RegisterScreen(
                     nameError = null
                 },
                 label = stringResource(Res.string.register_name),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next,
+                ),
                 error = nameError,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -109,6 +116,10 @@ fun RegisterScreen(
                     emailError = null
                 },
                 label = stringResource(Res.string.register_email),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                ),
                 error = emailError,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -135,6 +146,10 @@ fun RegisterScreen(
                     phoneError = null
                 },
                 label = stringResource(Res.string.register_phone),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Next,
+                ),
                 error = phoneError,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -148,6 +163,10 @@ fun RegisterScreen(
                     passwordError = null
                 },
                 label = stringResource(Res.string.register_password),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next,
+                ),
                 error = passwordError,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
@@ -162,6 +181,10 @@ fun RegisterScreen(
                     confirmPasswordError = null
                 },
                 label = stringResource(Res.string.register_confirm_password),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done,
+                ),
                 error = confirmPasswordError,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()

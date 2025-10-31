@@ -2,11 +2,14 @@ package com.uniguard.netguard_app.presentation.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
@@ -85,6 +88,10 @@ fun LoginScreen(
                         emailError = null
                     },
                     label = stringResource(Res.string.login_email),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next,
+                    ),
                     error = emailError,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -98,6 +105,10 @@ fun LoginScreen(
                         passwordError = null
                     },
                     label = stringResource(Res.string.login_password),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done,
+                    ),
                     error = passwordError,
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()

@@ -3,6 +3,7 @@ package com.uniguard.netguard_app.presentation.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -12,6 +13,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.presentation.ui.components.*
@@ -43,6 +46,10 @@ private fun ResolveDialog(
                         onValueChange = { comment = it },
                         label = { Text(stringResource(Res.string.history_resolution_comment)) },
                         placeholder = { Text(stringResource(Res.string.history_resolution_placeholder)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done,
+                        ),
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 3,
                         maxLines = 5
