@@ -5,8 +5,6 @@ import android.widget.Toast
 import com.uniguard.netguard_app.di.applicationContext
 import java.io.File
 
-actual fun getPlatformApiUrl(): String = Constants.API_BASE_URL_ANDROID
-
 actual fun saveFile(data: ByteArray, fileName: String) {
     try {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)

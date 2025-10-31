@@ -28,7 +28,24 @@ buildkonfig {
     packageName = "com.uniguard.netguard_app"
 
     defaultConfigs {
-        buildConfigField(FieldSpec.Type.BOOLEAN, "DEBUG", "true", const = true)
+        buildConfigField(
+            FieldSpec.Type.BOOLEAN,
+            "DEBUG",
+            "true",
+            const = true
+        )
+        buildConfigField(
+            FieldSpec.Type.STRING,
+            "BASEURL",
+            "http://ptt.uniguard.co.id:8006/api",
+            const = true
+        )
+        buildConfigField(
+            FieldSpec.Type.STRING,
+            "DB_NAME",
+            "netguard.db",
+            const = true
+        )
     }
 }
 

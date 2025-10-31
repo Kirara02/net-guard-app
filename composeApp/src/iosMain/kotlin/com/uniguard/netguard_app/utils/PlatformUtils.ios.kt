@@ -13,7 +13,6 @@ import platform.Foundation.writeToURL
 import platform.UIKit.UIApplication
 import platform.UIKit.UIDocumentInteractionController
 
-actual fun getPlatformApiUrl(): String = Constants.API_BASE_URL_IOS
 
 @OptIn(ExperimentalForeignApi::class)
 actual fun saveFile(data: ByteArray, fileName: String) {

@@ -39,7 +39,7 @@ actual class AppPreferences {
         return userJson?.let {
             try {
                 Json.decodeFromString<User>(it)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             }
         }

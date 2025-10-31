@@ -1,9 +1,8 @@
 package com.uniguard.netguard_app.data.remote.api
 
+import com.uniguard.netguard_app.BuildKonfig
 import com.uniguard.netguard_app.data.remote.dto.ApiResponse
 import com.uniguard.netguard_app.domain.model.*
-import com.uniguard.netguard_app.utils.Constants
-//import com.uniguard.netguard_app.utils.getPlatformApiUrl
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -11,8 +10,7 @@ import io.ktor.http.*
 
 class NetGuardApi(
     httpClient: HttpClient,
-    private val baseUrl: String = Constants.API_BASE_URL
-//    private val baseUrl: String = getPlatformApiUrl()
+    private val baseUrl: String = BuildKonfig.BASEURL
 ) {
 
     private val client = httpClient
