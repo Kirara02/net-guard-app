@@ -110,21 +110,9 @@ For support and questions, please open an issue on GitHub or contact the develop
 
 ## Screenshots
 
-### Dashboard
-
-![Dashboard](docs/dashbooard.png)
-
-### Server Management
-
-![Server Management](docs/servers.png)
-
-### Reports
-
-![Reports](docs/report.png)
-
-### About
-
-![About](docs/about.png)
+| Dashboard | Server Management | Reports | About |
+|-----------|-------------------|---------|-------|
+| ![Dashboard](docs/dashbooard.png) | ![Server Management](docs/servers.png) | ![Reports](docs/report.png) | ![About](docs/about.png) |
 
 ---
 
