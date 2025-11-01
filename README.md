@@ -1,35 +1,101 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# NetGuard - Server Monitoring App
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+NetGuard is a comprehensive server monitoring application built with Kotlin Multiplatform, designed to help employees stay informed about server status and ensure timely maintenance. The app provides real-time server monitoring, incident reporting, and comprehensive analytics to keep your infrastructure running smoothly.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## Features
 
-### Build and Run Android Application
+### 🔍 Server Monitoring
+- **Real-time Monitoring**: Continuous server status tracking with automatic background checks
+- **Push Notifications**: Instant alerts when servers go down or recover
+- **Multi-platform Support**: Available on both Android and iOS devices
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+### 📊 Dashboard & Analytics
+- **Visual Dashboard**: Clean, intuitive interface showing server status at a glance
+- **Incident History**: Complete log of server downtime and recovery events
+- **Reporting System**: Generate detailed reports on server performance and incidents
 
-### Build and Run iOS Application
+### 👥 User Management
+- **Secure Authentication**: JWT-based login and registration system
+- **Profile Management**: Update user information and preferences
+- **Password Security**: Change password functionality with validation
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+### 🎨 User Experience
+- **Dark/Light Theme**: Toggle between themes for comfortable viewing
+- **Multi-language Support**: English and Indonesian language options
+- **Responsive Design**: Optimized for both mobile platforms
+
+### 🛠️ Technical Features
+- **Background Monitoring**: Scheduled server checks even when app is closed
+- **Offline Support**: Local data storage for offline access
+- **Firebase Integration**: Push notifications via Firebase Cloud Messaging
+- **SQLite Database**: Local data persistence with SQLDelight
+
+## Architecture
+
+This project is built using Kotlin Multiplatform with the following structure:
+
+- **composeApp/**: Shared code across Android and iOS platforms
+  - `commonMain/`: Platform-agnostic code (business logic, UI, networking)
+  - `androidMain/`: Android-specific implementations
+  - `iosMain/`: iOS-specific implementations
+
+- **iosApp/**: iOS application entry point and SwiftUI components
+
+## Tech Stack
+
+- **Language**: Kotlin Multiplatform
+- **UI Framework**: Jetpack Compose Multiplatform
+- **Networking**: Ktor HTTP Client
+- **Database**: SQLDelight
+- **Dependency Injection**: Koin
+- **Serialization**: Kotlinx.serialization
+- **Push Notifications**: Firebase Cloud Messaging
+- **Background Tasks**: WorkManager (Android), Background Tasks (iOS)
+
+## Getting Started
+
+### Prerequisites
+- JDK 17 or higher
+- Android Studio (for Android development)
+- Xcode (for iOS development)
+- Kotlin Multiplatform plugin
+
+### Build and Run
+
+#### Android
+```bash
+./gradlew :composeApp:assembleDebug
+```
+
+#### iOS
+Open the `iosApp` directory in Xcode and run the project.
+
+## API Integration
+
+The app communicates with a REST API backend that provides:
+- User authentication endpoints
+- Server management APIs
+- Incident reporting and history
+- Real-time server status updates
+
+See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for detailed API specifications.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support and questions, please open an issue on GitHub or contact the development team.
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Built with ❤️ using Kotlin Multiplatform
