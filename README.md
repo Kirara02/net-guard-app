@@ -5,26 +5,31 @@ NetGuard is a comprehensive server monitoring application built with Kotlin Mult
 ## Features
 
 ### 🔍 Server Monitoring
+
 - **Real-time Monitoring**: Continuous server status tracking with automatic background checks
 - **Push Notifications**: Instant alerts when servers go down or recover
 - **Multi-platform Support**: Available on both Android and iOS devices
 
 ### 📊 Dashboard & Analytics
+
 - **Visual Dashboard**: Clean, intuitive interface showing server status at a glance
 - **Incident History**: Complete log of server downtime and recovery events
 - **Reporting System**: Generate detailed reports on server performance and incidents
 
 ### 👥 User Management
+
 - **Secure Authentication**: JWT-based login and registration system
 - **Profile Management**: Update user information and preferences
 - **Password Security**: Change password functionality with validation
 
 ### 🎨 User Experience
+
 - **Dark/Light Theme**: Toggle between themes for comfortable viewing
 - **Multi-language Support**: English and Indonesian language options
 - **Responsive Design**: Optimized for both mobile platforms
 
 ### 🛠️ Technical Features
+
 - **Background Monitoring**: Scheduled server checks even when app is closed
 - **Offline Support**: Local data storage for offline access
 - **Firebase Integration**: Push notifications via Firebase Cloud Messaging
@@ -35,6 +40,7 @@ NetGuard is a comprehensive server monitoring application built with Kotlin Mult
 This project is built using Kotlin Multiplatform with the following structure:
 
 - **composeApp/**: Shared code across Android and iOS platforms
+
   - `commonMain/`: Platform-agnostic code (business logic, UI, networking)
   - `androidMain/`: Android-specific implementations
   - `iosMain/`: iOS-specific implementations
@@ -55,7 +61,8 @@ This project is built using Kotlin Multiplatform with the following structure:
 ## Getting Started
 
 ### Prerequisites
-- JDK 17 or higher
+
+- JDK 21 or higher
 - Android Studio (for Android development)
 - Xcode (for iOS development)
 - Kotlin Multiplatform plugin
@@ -63,16 +70,19 @@ This project is built using Kotlin Multiplatform with the following structure:
 ### Build and Run
 
 #### Android
+
 ```bash
 ./gradlew :composeApp:assembleDebug
 ```
 
 #### iOS
+
 Open the `iosApp` directory in Xcode and run the project.
 
 ## API Integration
 
 The app communicates with a REST API backend that provides:
+
 - User authentication endpoints
 - Server management APIs
 - Incident reporting and history
@@ -95,6 +105,26 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 For support and questions, please open an issue on GitHub or contact the development team.
+
+---
+
+## Screenshots
+
+### Dashboard
+
+![Dashboard](docs/dashbooard.png)
+
+### Server Management
+
+![Server Management](docs/servers.png)
+
+### Reports
+
+![Reports](docs/report.png)
+
+### About
+
+![About](docs/about.png)
 
 ---
 
