@@ -8,10 +8,11 @@ data class User(
     val id: String,
     val name: String,
     val email: String,
-    val division: String,
-    val phone: String,
+    val division: String? = null,
+    val phone: String? = null,
+    val role: String,
     val isActive: Boolean = true,
-    val createdAt: String? = null
+    @SerialName("created_at") val createdAt: String? = null
 )
 
 @Serializable
@@ -44,6 +45,14 @@ data class UserResponse(
     val error: String? = null
 )
 
+@Serializable
+data class UsersResponse(
+    val success: Boolean,
+    val message: String? = "Something Wrong" ,
+    val data: List<User> = emptyList(),
+    val error: String? = null
+)
+
 
 @Serializable
 data class ErrorResponse(
@@ -71,4 +80,24 @@ data class UpdateProfileResponse(
 data class ChangePasswordRequest(
     @SerialName("current_password") val currentPassword: String,
     @SerialName("new_password") val newPassword: String
+)
+
+@Serializable
+data class CreateUserRequest(
+    val name: String,
+    val email: String,
+    val password: String,
+    val division: String? = null,
+    val phone: String? = null,
+    val role: String
+)
+
+@Serializable
+data class UpdateUserRequest(
+    val name: String? = null,
+    val email: String? = null,
+    val password: String? = null,
+    val division: String? = null,
+    val phone: String? = null,
+    val role: String? = null
 )

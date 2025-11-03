@@ -38,7 +38,6 @@ fun ReportScreen(
     val reportsState by viewModel.reportsState.collectAsState()
     val exportState by viewModel.exportState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    val reports by viewModel.reports.collectAsState()
     val serverOptions by viewModel.servers.collectAsState()
 
     // Filter states

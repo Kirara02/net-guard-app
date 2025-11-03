@@ -18,6 +18,7 @@ import com.uniguard.netguard_app.presentation.ui.screens.SplashScreen
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.data.remote.api.AuthInterceptor
 import androidx.compose.runtime.LaunchedEffect
+import com.uniguard.netguard_app.presentation.ui.screens.UsersScreen
 import org.koin.compose.koinInject
 
 @Composable
@@ -74,11 +75,20 @@ fun AppNavigation(
                 onNavigateToReport = {
                     navController.navigate(Report)
                 },
+                onNavigateToUsers = {
+                    navController.navigate(Users)
+                },
                 onLogout = {
                     navController.navigate(Login) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable<Users> {
+            UsersScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 

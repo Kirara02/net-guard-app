@@ -113,6 +113,91 @@ class NetGuardApi(
         }
     }
 
+    // User Management Endpoints
+    suspend fun getUsers(token: String) : ApiResult<List<User>> {
+        return try {
+            val response = client.get("$baseUrl/admin/users") {
+                header("Authorization", "Bearer $token")
+            }
+            val usersResponse: UsersResponse = response.body()
+            if(usersResponse.success) {
+                ApiResult.Success(usersResponse.data)
+            } else {
+                ApiResult.Error(usersResponse.error ?: "Failed to get users")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
+    suspend fun getUserById(token: String, userId: String): ApiResult<User> {
+        return try {
+            val response = client.get("$baseUrl/admin/users/$userId") {
+                header("Authorization", "Bearer $token")
+            }
+            val userResponse: UserResponse = response.body()
+            if (userResponse.success && userResponse.data != null) {
+                ApiResult.Success(userResponse.data)
+            } else {
+                ApiResult.Error(userResponse.error ?: "Failed to get user")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
+    suspend fun createUser(token: String, request: CreateUserRequest): ApiResult<User> {
+        return try {
+            val response = client.post("$baseUrl/admin/users") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+            val userResponse: UserResponse = response.body()
+            if (userResponse.success && userResponse.data != null) {
+                ApiResult.Success(userResponse.data)
+            } else {
+                ApiResult.Error(userResponse.error ?: "Failed to create user")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
+    suspend fun updateUser(token: String, userId: String, request: UpdateUserRequest): ApiResult<User> {
+        return try {
+            val response = client.put("$baseUrl/admin/users/$userId") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+            val userResponse: UserResponse = response.body()
+            if (userResponse.success && userResponse.data != null) {
+                ApiResult.Success(userResponse.data)
+            } else {
+                ApiResult.Error(userResponse.error ?: "Failed to create user")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
+    suspend fun deleteUserById(token: String, userId: String): ApiResult<String> {
+        return try {
+            val response = client.delete("$baseUrl/admin/users/$userId") {
+                header("Authorization", "Bearer $token")
+            }
+            val userResponse: UserResponse = response.body()
+            if (userResponse.success) {
+                ApiResult.Success(userResponse.message!!)
+            } else {
+                ApiResult.Error(userResponse.error ?: "Failed to create user")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
     // Server Management Endpoints
     suspend fun getServers(token: String): ApiResult<List<Server>> {
         return try {

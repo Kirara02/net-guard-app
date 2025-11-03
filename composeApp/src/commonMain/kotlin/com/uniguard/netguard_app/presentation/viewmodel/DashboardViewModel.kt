@@ -10,6 +10,7 @@ import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.domain.repository.HistoryRepository
 import com.uniguard.netguard_app.domain.repository.ServerRepository
 import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
+import com.uniguard.netguard_app.domain.repository.UserRepository
 import com.uniguard.netguardapp.db.ServerStatusEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +21,8 @@ class DashboardViewModel(
     private val serverRepository: ServerRepository,
     private val historyRepository: HistoryRepository,
     private val authRepository: AuthRepository,
-    private val serverStatusRepository: ServerStatusRepository
+    private val serverStatusRepository: ServerStatusRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _servers = MutableStateFlow<List<Server>>(emptyList())
@@ -35,6 +37,9 @@ class DashboardViewModel(
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
+
+    private val _totalUsers = MutableStateFlow(0)
+    val totalUsers: StateFlow<Int> = _totalUsers.asStateFlow()
 
     init {
         loadDashboardData()
@@ -68,12 +73,15 @@ class DashboardViewModel(
                     is ApiResult.Error -> {
                         _error.value = incidentsResult.message
                     }
-                    is ApiResult.Loading -> {
-                        // Handle loading state if needed
+                    else -> {}
+                }
+
+                // Load user count for admin
+                when (val usersResult = userRepository.getUsers()) {
+                    is ApiResult.Success -> {
+                        _totalUsers.value = usersResult.data.size
                     }
-                    is ApiResult.Initial -> {
-                        // Handle initial state if needed
-                    }
+                    else -> {}
                 }
             } catch (e: TokenExpiredException) {
                 // Token expired - trigger logout

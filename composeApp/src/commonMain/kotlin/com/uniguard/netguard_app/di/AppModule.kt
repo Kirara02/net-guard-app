@@ -11,17 +11,20 @@ import com.uniguard.netguard_app.data.repository.HistoryRepositoryImpl
 import com.uniguard.netguard_app.data.repository.ReportRepositoryImpl
 import com.uniguard.netguard_app.data.repository.ServerRepositoryImpl
 import com.uniguard.netguard_app.data.repository.ServerStatusRepositoryImpl
+import com.uniguard.netguard_app.data.repository.UserRepositoryImpl
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.domain.repository.HistoryRepository
 import com.uniguard.netguard_app.domain.repository.ReportRepository
 import com.uniguard.netguard_app.domain.repository.ServerRepository
 import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
+import com.uniguard.netguard_app.domain.repository.UserRepository
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.DashboardViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.HistoryViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.ReportViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.ServerViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.SplashViewModel
+import com.uniguard.netguard_app.presentation.viewmodel.UserViewModel
 import com.uniguard.netguard_app.utils.KtorNapierLogger
 import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
 import io.ktor.client.HttpClient
@@ -95,15 +98,17 @@ val appModule = module {
     single<ReportRepository> { ReportRepositoryImpl(get(), get()) }
     single<ServerRepository> { ServerRepositoryImpl(get(), get(), get()) }
     single<ServerStatusRepository> { ServerStatusRepositoryImpl(get()) }
+    single<UserRepository> { UserRepositoryImpl(get(), get()) }
 
     single { ServerMonitoringScheduler() }
 
     factory { AuthViewModel(get()) }
-    factory { DashboardViewModel(get(), get(), get(), get()) }
+    factory { DashboardViewModel(get(), get(), get(), get(), get()) }
     factory { HistoryViewModel(get()) }
     factory { ReportViewModel(get(), get()) }
     factory { ServerViewModel(get(), get()) }
     factory { SplashViewModel(get(), get()) }
+    factory { UserViewModel(get()) }
 }
 
 expect val databaseProviderModule: Module

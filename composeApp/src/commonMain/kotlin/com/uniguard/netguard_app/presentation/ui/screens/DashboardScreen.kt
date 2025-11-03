@@ -1,5 +1,6 @@
 package com.uniguard.netguard_app.presentation.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.core.rememberKoinViewModel
+import com.uniguard.netguard_app.log
 import com.uniguard.netguard_app.presentation.ui.components.*
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.presentation.viewmodel.DashboardViewModel
@@ -30,11 +32,14 @@ fun DashboardScreen(
     onNavigateToHistory: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToReport: () -> Unit,
+    onNavigateToUsers: () -> Unit,
     onLogout: () -> Unit
 ) {
     val recentIncidents by viewModel.recentIncidents.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val totalUsers by viewModel.totalUsers.collectAsState()
+    val currentUser by authViewModel.currentUser.collectAsState()
 
     Scaffold(
         topBar = {
@@ -188,6 +193,76 @@ fun DashboardScreen(
                         }
                     }
 
+                    // Admin-only User Management Card
+                    currentUser?.let { user ->
+                        log { user.toString() }
+                        if (user.role.lowercase() == "admin") {
+                            item {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { onNavigateToUsers() },
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                                    ),
+                                    elevation = CardDefaults.cardElevation(
+                                        defaultElevation = 4.dp
+                                    )
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                    ) {
+                                        Icon(
+                                            Icons.Default.People,
+                                            contentDescription = "Users",
+                                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            modifier = Modifier.size(32.dp)
+                                        )
+                                        Column(
+                                            modifier = Modifier.weight(1f)
+                                        ) {
+                                            Text(
+                                                text = stringResource(Res.string.dashboard_users),
+                                                style = MaterialTheme.typography.titleMedium,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                            Text(
+                                                text = stringResource(Res.string.dashboard_users_desc),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
+                                            )
+                                        }
+                                        Column(
+                                            horizontalAlignment = Alignment.End
+                                        ) {
+                                            Text(
+                                                text = totalUsers.toString(),
+                                                style = MaterialTheme.typography.headlineMedium,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(
+                                                text = stringResource(Res.string.dashboard_total_users),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                                            )
+                                        }
+                                        Icon(
+                                            Icons.Default.ChevronRight,
+                                            contentDescription = "Navigate to users",
+                                            tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     // Quick Actions
                     item {
                         Column {
@@ -212,7 +287,7 @@ fun DashboardScreen(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     rowCards.forEach { (title, subtitle, iconAndAction) ->
-                                        val (icon, onClick, ) = iconAndAction
+                                        val (icon, onClick ) = iconAndAction
                                         ActionCard(
                                             title = title,
                                             subtitle = subtitle,

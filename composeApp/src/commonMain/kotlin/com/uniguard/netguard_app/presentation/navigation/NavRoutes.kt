@@ -12,6 +12,9 @@ data object Login
 data object Dashboard
 
 @Serializable
+data object Users
+
+@Serializable
 data object ServerList
 
 @Serializable

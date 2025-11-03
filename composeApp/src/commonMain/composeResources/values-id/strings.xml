@@ -208,4 +208,34 @@
     <string name="changing_password">Mengubah kata sandi...</string>
     <string name="password_changed_successfully">Kata Sandi Berhasil Diubah</string>
     <string name="password_changed_description">Kata sandi Anda telah berhasil diperbarui. Anda sekarang dapat menggunakan kata sandi baru untuk masuk.</string>
+
+    <!-- Dashboard Admin Features -->
+    <string name="dashboard_users">Manajemen Pengguna</string>
+    <string name="dashboard_users_desc">Kelola pengguna sistem dan izin</string>
+    <string name="dashboard_total_users">Total Pengguna</string>
+
+    <!-- Users Screen -->
+    <string name="users_title">Manajemen Pengguna</string>
+    <string name="users_add">Tambah Pengguna</string>
+    <string name="users_edit">Edit Pengguna</string>
+    <string name="users_delete">Hapus Pengguna</string>
+    <string name="users_delete_confirm">Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="users_name">Nama</string>
+    <string name="users_email">Email</string>
+    <string name="users_password">Kata Sandi</string>
+    <string name="users_confirm_password">Konfirmasi Kata Sandi</string>
+    <string name="users_new_password">Kata Sandi Baru</string>
+    <string name="users_confirm_new_password">Konfirmasi Kata Sandi Baru</string>
+    <string name="users_change_password">Ubah Kata Sandi</string>
+    <string name="users_division">Divisi</string>
+    <string name="users_phone">Telepon</string>
+    <string name="users_role">Peran</string>
+    <string name="users_role_user">Pengguna</string>
+    <string name="users_role_admin">Admin</string>
+    <string name="users_create">Buat</string>
+    <string name="users_update">Perbarui</string>
+    <string name="users_cancel">Batal</string>
+    <string name="users_processing">Memproses...</string>
+    <string name="users_passwords_not_match">Kata sandi tidak cocok</string>
+    <string name="users_current_user">(Anda)</string>
 </resources>
