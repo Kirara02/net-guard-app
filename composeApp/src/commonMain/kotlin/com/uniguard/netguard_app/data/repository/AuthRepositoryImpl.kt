@@ -6,7 +6,6 @@ import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.AuthData
 import com.uniguard.netguard_app.domain.model.ChangePasswordRequest
 import com.uniguard.netguard_app.domain.model.LoginRequest
-import com.uniguard.netguard_app.domain.model.RegisterRequest
 import com.uniguard.netguard_app.domain.model.UpdateProfileRequest
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.domain.repository.AuthRepository
@@ -33,24 +32,6 @@ class AuthRepositoryImpl(
             }
         } catch (e: Exception) {
             ApiResult.Error(e.message ?: "Login failed")
-        }
-    }
-
-    override suspend fun register(request: RegisterRequest): ApiResult<AuthData> {
-        return try {
-            val result = api.register(request)
-            when (result) {
-                is ApiResult.Success -> {
-                    // Save auth data locally
-                    saveAuthData(result.data.token, result.data.user)
-                    result
-                }
-                is ApiResult.Error -> result
-                is ApiResult.Loading -> result
-                is ApiResult.Initial -> result
-            }
-        } catch (e: Exception) {
-            ApiResult.Error(e.message ?: "Registration failed")
         }
     }
 

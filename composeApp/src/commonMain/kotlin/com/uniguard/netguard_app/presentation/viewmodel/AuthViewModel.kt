@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.AuthData
 import com.uniguard.netguard_app.domain.model.ChangePasswordRequest
-import com.uniguard.netguard_app.domain.model.RegisterRequest
 import com.uniguard.netguard_app.domain.model.UpdateProfileRequest
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.data.local.preferences.AppPreferences
@@ -28,9 +27,6 @@ class AuthViewModel(
 
     private val _loginState = MutableStateFlow<ApiResult<AuthData>>(ApiResult.Initial)
     val loginState: StateFlow<ApiResult<AuthData>> = _loginState.asStateFlow()
-
-    private val _registerState = MutableStateFlow<ApiResult<AuthData>>(ApiResult.Initial)
-    val registerState: StateFlow<ApiResult<AuthData>> = _registerState.asStateFlow()
 
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
@@ -69,44 +65,12 @@ class AuthViewModel(
         }
     }
 
-    fun register(
-        name: String,
-        email: String,
-        password: String,
-        division: String,
-        phone: String
-    ) {
-        viewModelScope.launch {
-            _registerState.value = ApiResult.Loading
-            val registerRequest = RegisterRequest(
-                name = name,
-                email = email,
-                password = password,
-                division = division,
-                phone = phone,
-            )
-            val result = authRepository.register(registerRequest)
-            _registerState.value = result
-
-            if (result is ApiResult.Success) {
-                _currentUser.value = result.data.user
-                _isLoggedIn.value = true
-
-                FirebaseTopicManager.subscribe("serverdown")
-
-                // Start server monitoring when user registers
-                serverMonitoringScheduler.scheduleServerMonitoring(appPreferences.getMonitoringInterval())
-            }
-        }
-    }
-
     fun logout() {
         // Stop server monitoring when user logs out
         authRepository.clearAuthData()
         _currentUser.value = null
         _isLoggedIn.value = false
         _loginState.value = ApiResult.Initial
-        _registerState.value = ApiResult.Initial
         _userProfileState.value = ApiResult.Initial
     }
 
@@ -167,7 +131,4 @@ class AuthViewModel(
         _changePasswordState.value = ApiResult.Initial
     }
 
-    fun resetRegisterState() {
-        _registerState.value = ApiResult.Initial
-    }
 }

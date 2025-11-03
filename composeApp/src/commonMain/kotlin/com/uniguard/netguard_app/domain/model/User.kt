@@ -21,16 +21,6 @@ data class LoginRequest(
 )
 
 @Serializable
-data class RegisterRequest(
-    val name: String,
-    val email: String,
-    val password: String,
-    val division: String,
-    val phone: String
-)
-
-
-@Serializable
 data class AuthResponse(
     val success: Boolean,
     val message: String? = "Something Wrong" ,

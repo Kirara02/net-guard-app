@@ -9,9 +9,6 @@ data object Splash
 data object Login
 
 @Serializable
-data object Register
-
-@Serializable
 data object Dashboard
 
 @Serializable

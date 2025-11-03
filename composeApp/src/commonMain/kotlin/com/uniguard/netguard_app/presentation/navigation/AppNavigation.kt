@@ -1,7 +1,6 @@
 package com.uniguard.netguard_app.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,7 +13,6 @@ import com.uniguard.netguard_app.presentation.ui.screens.HistoryScreen
 import com.uniguard.netguard_app.presentation.ui.screens.LoginScreen
 import com.uniguard.netguard_app.presentation.ui.screens.ReportScreen
 import com.uniguard.netguard_app.presentation.ui.screens.SettingsScreen
-import com.uniguard.netguard_app.presentation.ui.screens.RegisterScreen
 import com.uniguard.netguard_app.presentation.ui.screens.ServerManagementScreen
 import com.uniguard.netguard_app.presentation.ui.screens.SplashScreen
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
@@ -58,22 +56,6 @@ fun AppNavigation(
                         popUpTo<Login> { inclusive = true }
                     }
                 },
-                onNavigateToRegister = {
-                    navController.navigate(Register)
-                }
-            )
-        }
-
-        composable<Register> {
-            RegisterScreen(
-                onRegisterSuccess = {
-                    navController.navigate(Dashboard) {
-                        popUpTo<Register> { inclusive = true }
-                    }
-                },
-                onNavigateToLogin = {
-                    navController.popBackStack()
-                }
             )
         }
 

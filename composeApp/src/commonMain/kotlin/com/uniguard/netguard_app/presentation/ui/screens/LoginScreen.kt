@@ -23,7 +23,6 @@ import org.jetbrains.compose.resources.stringResource
 fun LoginScreen(
     viewModel: AuthViewModel = rememberKoinViewModel<AuthViewModel>(),
     onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
 ) {
     val loginState by viewModel.loginState.collectAsState()
 
@@ -133,19 +132,6 @@ fun LoginScreen(
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-
-                // Toast Host for error messages
-    //                ToastHost()
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Register Link
-                TextButton(onClick = onNavigateToRegister) {
-                    Text(
-                        text = stringResource(Res.string.login_no_account) + " " + stringResource(Res.string.login_sign_up),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
             }
         }
     }

@@ -47,37 +47,6 @@ class NetGuardApi(
         }
     }
 
-    suspend fun register(request: RegisterRequest): ApiResult<AuthData> {
-        return try {
-            val response = client.post("$baseUrl/auth/register") {
-                contentType(ContentType.Application.Json)
-                setBody(request)
-            }
-            val authResponse: AuthResponse = response.body()
-            if (authResponse.success && authResponse.data != null) {
-                ApiResult.Success(authResponse.data)
-            } else {
-                // For auth endpoints, try to parse error response
-                try {
-                    val errorResponse: ErrorResponse = response.body()
-                    ApiResult.Error(errorResponse.error)
-                } catch (e: Exception) {
-                    ApiResult.Error(authResponse.error ?: "Registration failed")
-                }
-            }
-        } catch (e: ClientException) {
-            // Handle 400/409 for validation errors - parse error from the exception response
-            try {
-                val errorResponse: ErrorResponse = e.response.body()
-                ApiResult.Error(errorResponse.error)
-            } catch (parseException: Exception) {
-                ApiResult.Error("Registration failed")
-            }
-        } catch (e: Exception) {
-            ApiResult.Error(e.message ?: "Network error")
-        }
-    }
-
     suspend fun getCurrentUser(token: String): ApiResult<User> {
         return try {
             val response = client.get("$baseUrl/auth/me") {
