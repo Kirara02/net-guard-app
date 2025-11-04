@@ -444,13 +444,14 @@ fun SettingsItem(
 // Text Field with Error
 @Composable
 fun OutlinedTextFieldWithError(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
     error: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    modifier: Modifier = Modifier
+    trailingIcon: (@Composable (() -> Unit))? = null
 ) {
     Column(modifier = modifier) {
         OutlinedTextField(
@@ -460,6 +461,7 @@ fun OutlinedTextFieldWithError(
             keyboardOptions = keyboardOptions,
             visualTransformation = visualTransformation,
             isError = error != null,
+            trailingIcon = trailingIcon,
             modifier = Modifier.fillMaxWidth()
         )
         if (error != null) {

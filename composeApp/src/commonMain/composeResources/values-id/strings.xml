@@ -82,6 +82,10 @@
     <string name="dashboard_recent_incidents">Insiden Terbaru</string>
     <string name="dashboard_all_good">Semua server berjalan lancar!</string>
 
+    <string name="logout_title">Keluar</string>
+    <string name="logout_message">Apakah Anda yakin ingin keluar dari NetGuard?</string>
+    <string name="logout_confirm">Keluar</string>
+
     <!-- Common Components -->
     <string name="resolve">Selesaikan</string>
     <string name="retry">Coba Lagi</string>

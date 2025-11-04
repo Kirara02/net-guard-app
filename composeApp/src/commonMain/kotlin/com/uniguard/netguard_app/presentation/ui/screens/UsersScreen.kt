@@ -265,7 +265,12 @@ fun UsersScreen(
                                             },
                                             leadingContent = {
                                                 val avatarUrl = remember(user.name) {
-                                                    val encodedName = user.name.replace(" ", "%20")
+                                                    val encodedName = if (user.name.contains(" ")) {
+                                                        user.name.replace(" ", "%20")
+                                                    } else {
+                                                        user.name
+                                                    }
+
                                                     "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=$encodedName"
                                                 }
 

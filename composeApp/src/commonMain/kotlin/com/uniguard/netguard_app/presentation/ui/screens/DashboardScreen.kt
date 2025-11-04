@@ -41,6 +41,8 @@ fun DashboardScreen(
     val totalUsers by viewModel.totalUsers.collectAsState()
     val currentUser by authViewModel.currentUser.collectAsState()
 
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -71,9 +73,7 @@ fun DashboardScreen(
                         )
                     }
                     IconButton(onClick = {
-                        authViewModel.cleanupServices()
-                        authViewModel.logout()
-                        onLogout()
+                        showLogoutDialog = true
                     }) {
                         Icon(
                             Icons.AutoMirrored.Filled.Logout,
@@ -390,5 +390,30 @@ fun DashboardScreen(
                 }
             }
         }
+    }
+
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text(stringResource(Res.string.logout_title)) },
+            text = { Text(stringResource(Res.string.logout_message)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showLogoutDialog = false
+                        authViewModel.cleanupServices()
+                        authViewModel.logout()
+                        onLogout()
+                    }
+                ) {
+                    Text(stringResource(Res.string.logout_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) {
+                    Text(stringResource(Res.string.cancel))
+                }
+            }
+        )
     }
 }

@@ -82,6 +82,10 @@
     <string name="dashboard_recent_incidents">Recent Incidents</string>
     <string name="dashboard_all_good">All servers are running smoothly!</string>
 
+    <string name="logout_title">Logout</string>
+    <string name="logout_message">Are you sure you want to log out from NetGuard?</string>
+    <string name="logout_confirm">Logout</string>
+
     <!-- Common Components -->
     <string name="resolve">Resolve</string>
     <string name="retry">Retry</string>
