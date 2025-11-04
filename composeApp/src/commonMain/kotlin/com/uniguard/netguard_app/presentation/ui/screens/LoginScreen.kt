@@ -16,6 +16,10 @@ import com.uniguard.netguard_app.core.rememberKoinViewModel
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.presentation.ui.components.*
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
+import com.uniguard.netguard_app.core.PermissionType
+import com.uniguard.netguard_app.core.SettingsType
+import com.uniguard.netguard_app.core.rememberAppSettings
+import kotlinx.coroutines.launch
 import netguardapp.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
@@ -25,19 +29,36 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
 ) {
     val loginState by viewModel.loginState.collectAsState()
+    val appSettings = rememberAppSettings()
+    val coroutineScope = rememberCoroutineScope()
+
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
+    // ⚙️ State untuk dialog konfirmasi permission
+    var showNotificationDialog by remember { mutableStateOf(false) }
+    var showBatteryDialog by remember { mutableStateOf(false) }
+
     // Localized error messages
     val emptyFieldsError = stringResource(Res.string.login_error_empty_fields)
+
+    LaunchedEffect(Unit) {
+        val checkBattery = appSettings.checkPermission(PermissionType.BatteryOptimization)
+        val checkNotif = appSettings.checkPermission(PermissionType.Notification)
+
+        if (!checkBattery) showBatteryDialog = true
+        if (!checkNotif) showNotificationDialog = true
+    }
+
 
     // Handle login result
     LaunchedEffect(loginState) {
         when (loginState) {
             is ApiResult.Success -> {
+                appSettings.open(SettingsType.BatteryOptimization, false)
                 onLoginSuccess()
             }
             is ApiResult.Error -> {
@@ -134,5 +155,55 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
+    }
+
+    // ⚙️ Alert Dialog: Battery Optimization
+    if (showBatteryDialog) {
+        AlertDialog(
+            onDismissRequest = { showBatteryDialog = false },
+            title = { Text("Battery Optimization") },
+            text = { Text("This app needs to be excluded from battery optimization to run background monitoring. Open system dialog?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showBatteryDialog = false
+                    coroutineScope.launch {
+                        appSettings.requestPermission(PermissionType.BatteryOptimization)
+                    }
+                }) {
+                    Text("OK")
+                }
+
+            },
+            dismissButton = {
+                TextButton(onClick = { showBatteryDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    // ⚙️ Alert Dialog: Notification Permission
+    if (showNotificationDialog) {
+        AlertDialog(
+            onDismissRequest = { showNotificationDialog = false },
+            title = { Text("Notification Permission") },
+            text = { Text("Allow this app to send you notifications?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showNotificationDialog = false
+                    coroutineScope.launch {
+                        appSettings.requestPermission(PermissionType.Notification)
+                    }
+                }) {
+                    Text("Allow")
+                }
+
+            },
+            dismissButton = {
+                TextButton(onClick = { showNotificationDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }

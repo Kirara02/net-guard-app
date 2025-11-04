@@ -14,6 +14,9 @@
     <string name="change_password">Ubah Kata Sandi</string>
     <string name="change_password_desc">Perbarui kata sandi akun Anda</string>
 
+    <string name="app_permissions">Izin Aplikasi</string>
+    <string name="app_permissions_desc">Kelola izin pengoptimalan baterai dan notifikasi</string>
+
     <string name="about">Tentang</string>
     <string name="about_desc">Versi aplikasi dan informasi</string>
 
@@ -238,4 +241,15 @@
     <string name="users_processing">Memproses...</string>
     <string name="users_passwords_not_match">Kata sandi tidak cocok</string>
     <string name="users_current_user">(Anda)</string>
+
+    <!-- Permissions Screen -->
+    <string name="permission_battery">Pengoptimalan Baterai</string>
+    <string name="permission_battery_desc">Izinkan NetGuard berjalan di latar belakang tanpa batasan baterai.</string>
+    <string name="permission_notification">Notifikasi</string>
+    <string name="permission_notification_desc">Izinkan NetGuard mengirimkan pemberitahuan penting kepada Anda.</string>
+    <string name="permission_status_granted">Diizinkan</string>
+    <string name="permission_status_denied">Ditolak</string>
+    <string name="permission_status_checking">Memeriksa...</string>
+    <string name="permission_action_request">Minta Izin</string>
+    <string name="permission_action_settings">Buka Pengaturan</string>
 </resources>

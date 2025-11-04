@@ -31,3 +31,6 @@ data object About
 
 @Serializable
 data object ChangePassword
+
+@Serializable
+data object Permissions

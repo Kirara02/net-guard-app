@@ -30,6 +30,7 @@ fun SettingsScreen(
     viewModel: AuthViewModel = rememberKoinViewModel<AuthViewModel>(),
     onNavigateToAbout: () -> Unit,
     onNavigateToChangePassword: () -> Unit,
+    onNavigateToPermissions: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
@@ -269,10 +270,18 @@ fun SettingsScreen(
                 )
 
                 SettingsItem(
+                    title = stringResource(Res.string.app_permissions),
+                    subtitle = stringResource(Res.string.app_permissions_desc),
+                    onClick = { onNavigateToPermissions() }
+                )
+
+                SettingsItem(
                     title = stringResource(Res.string.about),
                     subtitle = stringResource(Res.string.about_desc),
                     onClick = { onNavigateToAbout() }
                 )
+
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     }

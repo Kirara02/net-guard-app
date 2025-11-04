@@ -18,6 +18,7 @@ import com.uniguard.netguard_app.presentation.ui.screens.SplashScreen
 import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
 import com.uniguard.netguard_app.data.remote.api.AuthInterceptor
 import androidx.compose.runtime.LaunchedEffect
+import com.uniguard.netguard_app.presentation.ui.screens.PermissionsScreen
 import com.uniguard.netguard_app.presentation.ui.screens.UsersScreen
 import org.koin.compose.koinInject
 
@@ -108,6 +109,7 @@ fun AppNavigation(
             SettingsScreen(
                 onNavigateToAbout = { navController.navigate(About) },
                 onNavigateToChangePassword = { navController.navigate(ChangePassword) },
+                onNavigateToPermissions = { navController.navigate(Permissions) },
                 onNavigateBack = { navController.popBackStack() }
             )
         }
@@ -120,6 +122,12 @@ fun AppNavigation(
 
         composable<About> {
             AboutScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<Permissions> {
+            PermissionsScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
