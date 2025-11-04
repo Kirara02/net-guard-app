@@ -120,8 +120,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
     // ✅ Handle background tasks
     private func handleBackgroundTask(_ task: BGTask) {
-        // For now, create a simple instance without Koin dependency injection
-        // In a real app, you'd want to properly initialize Koin and get the instance
+        print("🔥 BGTask triggered by system!")
         let worker = ServerMonitoringWorker()
         worker.handleBackgroundTask(task: task)
     }

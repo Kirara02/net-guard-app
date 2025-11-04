@@ -72,6 +72,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            binaryOption("bundleId", "com.uniguard.NetGuardApp")
         }
     }
 
@@ -157,9 +158,6 @@ kotlin {
             // Coroutines
             implementation(libs.coroutines.core)
 
-            // Firebase
-            implementation(libs.gitlive.firebase.kotlin.messaging)
-
             // Coil for image loading
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
@@ -179,7 +177,7 @@ android {
         applicationId = "com.uniguard.netguard_app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
     }
     signingConfigs {

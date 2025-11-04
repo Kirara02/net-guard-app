@@ -20,7 +20,6 @@ koin = "4.1.1"
 napier = "2.7.1"
 firebase-android-bom = "34.4.0"
 gradlePlugins-google-services = "4.4.4"
-firebase-gitlive-sdk = "2.3.0"
 buildKonfig = "0.17.1"
 coil = "3.3.0"
 
@@ -54,7 +53,6 @@ logger = { module = "io.github.aakira:napier", version.ref = "napier" }
 #Firebase
 firebase-android-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-android-bom" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
-gitlive-firebase-kotlin-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = "firebase-gitlive-sdk" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 

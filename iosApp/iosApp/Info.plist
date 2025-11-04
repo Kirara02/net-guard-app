@@ -6,13 +6,18 @@
 	<array>
 		<string>com.uniguard.netguard_app.server_check</string>
 	</array>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
-	<key>NSUserNotificationAlertUsageDescription</key>
-	<string>Kami memerlukan izin untuk mengirimkan notifikasi server status.</string>
-	<key>UIBackgroundModes</key>
+    <key>NSUserNotificationAlertUsageDescription</key>
+    <string>This app requires permission to send you alerts about server status and important updates.</string>
+    <key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
 		<string>processing</string>
