@@ -309,7 +309,7 @@ fun IntervalPickerDialog(
     onDismiss: () -> Unit,
     onIntervalSelected: (Long) -> Unit
 ) {
-    val intervals = listOf(5L, 10L, 15L, 30L, 60L, 120L) // minutes
+    val intervals = listOf(15L, 30L, 60L, 120L) // minutes
     var selectedInterval by remember { mutableStateOf(currentInterval) }
 
     AlertDialog(

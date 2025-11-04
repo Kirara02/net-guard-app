@@ -2,10 +2,13 @@ package com.uniguard.netguard_app.di
 
 
 import android.app.Application
+import android.content.Context
 import com.uniguard.netguard_app.data.local.database.DatabaseProvider
 import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.localization.Localization
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext
+import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -27,4 +30,18 @@ actual val appPreferencesModule = module {
 }
 actual val localeModule = module {
     single<Localization> { Localization() }
+}
+
+actual fun initKoinIfNeeded(context: Any?) {
+    if (GlobalContext.getOrNull() == null) {
+        startKoin {
+            androidContext(context as Context)
+            modules(
+                appModule,
+                databaseProviderModule,
+                appPreferencesModule,
+                localeModule
+            )
+        }
+    }
 }

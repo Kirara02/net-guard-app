@@ -115,3 +115,5 @@ expect val databaseProviderModule: Module
 expect val appPreferencesModule: Module
 
 expect val localeModule: Module
+
+expect fun initKoinIfNeeded(context: Any? = null)

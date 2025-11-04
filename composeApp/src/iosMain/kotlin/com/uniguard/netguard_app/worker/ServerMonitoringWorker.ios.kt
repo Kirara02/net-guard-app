@@ -4,6 +4,7 @@ import com.uniguard.netguard_app.Logger
 import com.uniguard.netguard_app.data.local.database.DatabaseProvider
 import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
+import com.uniguard.netguard_app.di.initKoinIfNeeded
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.ServerStatus
 import com.uniguard.netguard_app.domain.model.UpdateServerStatusRequest
@@ -89,6 +90,9 @@ class ServerMonitoringWorker : KoinComponent {
 
     private suspend fun performMonitoring(): Boolean {
         Logger.i("iOS BGTaskScheduler: Background monitoring started", tag = "ServerMonitoring")
+
+        // Initialize Koin if not already started (needed when app is killed)
+        initKoinIfNeeded()
 
         return try {
             val database = databaseProvider.getDatabase()
