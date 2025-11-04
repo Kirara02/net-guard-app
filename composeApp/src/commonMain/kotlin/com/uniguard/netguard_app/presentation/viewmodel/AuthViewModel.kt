@@ -8,6 +8,7 @@ import com.uniguard.netguard_app.domain.model.ChangePasswordRequest
 import com.uniguard.netguard_app.domain.model.UpdateProfileRequest
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.data.local.preferences.AppPreferences
+import com.uniguard.netguard_app.di.getKoinInstance
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.firebase.FirebaseTopicManager
 import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
@@ -19,7 +20,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class AuthViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : ViewModel(), KoinComponent {
 
     private val serverMonitoringScheduler: ServerMonitoringScheduler by inject()
@@ -58,9 +59,6 @@ class AuthViewModel(
                 _isLoggedIn.value = true
 
                 FirebaseTopicManager.subscribe("serverdown")
-
-                // Start server monitoring when user logs in
-                serverMonitoringScheduler.scheduleServerMonitoring(appPreferences.getMonitoringInterval())
             }
         }
     }
@@ -72,6 +70,8 @@ class AuthViewModel(
         _isLoggedIn.value = false
         _loginState.value = ApiResult.Initial
         _userProfileState.value = ApiResult.Initial
+        // Reset monitoring scheduled flag for next login
+        appPreferences.setMonitoringScheduled(false)
     }
 
     fun cleanupServices() {

@@ -16,5 +16,7 @@ expect class AppPreferences {
     val languageFlow: Flow<String>
     fun saveMonitoringInterval(intervalMinutes: Long)
     fun getMonitoringInterval(): Long
+    fun setMonitoringScheduled(scheduled: Boolean)
+    fun isMonitoringScheduled(): Boolean
 
 }

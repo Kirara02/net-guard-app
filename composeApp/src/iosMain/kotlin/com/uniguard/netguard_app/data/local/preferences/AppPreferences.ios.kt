@@ -17,6 +17,7 @@ actual class AppPreferences {
         const val THEME_PREFERENCE = "theme_preference"
         const val LANG = "language"
         const val MONITORING_INTERVAL = "monitoring_interval"
+        const val MONITORING_SCHEDULED = "monitoring_scheduled"
     }
 
     actual fun saveToken(token: String) {
@@ -83,5 +84,14 @@ actual class AppPreferences {
     actual fun getMonitoringInterval(): Long {
         val value = userDefaults.objectForKey(Keys.MONITORING_INTERVAL) as? Long
         return value?.takeIf { it > 0 } ?: 15L
+    }
+
+    actual fun setMonitoringScheduled(scheduled: Boolean) {
+        userDefaults.setBool(scheduled, Keys.MONITORING_SCHEDULED)
+        userDefaults.synchronize()
+    }
+
+    actual fun isMonitoringScheduled(): Boolean {
+        return userDefaults.boolForKey(Keys.MONITORING_SCHEDULED)
     }
 }

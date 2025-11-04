@@ -26,6 +26,7 @@ actual class AppPreferences(private val context: Context) {
         val THEME_PREFERENCE = booleanPreferencesKey("theme_preference")
         val LANGUAGE = stringPreferencesKey("language")
         val MONITORING_INTERVAL = longPreferencesKey("monitoring_interval")
+        val MONITORING_SCHEDULED = booleanPreferencesKey("monitoring_scheduled")
     }
 
     actual fun saveToken(token: String) {
@@ -112,6 +113,20 @@ actual class AppPreferences(private val context: Context) {
     actual fun getMonitoringInterval(): Long {
         return runBlocking {
             context.dataStore.data.first()[PreferencesKeys.MONITORING_INTERVAL] ?: 15L
+        }
+    }
+
+    actual fun setMonitoringScheduled(scheduled: Boolean) {
+        runBlocking {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.MONITORING_SCHEDULED] = scheduled
+            }
+        }
+    }
+
+    actual fun isMonitoringScheduled(): Boolean {
+        return runBlocking {
+            context.dataStore.data.first()[PreferencesKeys.MONITORING_SCHEDULED] ?: false
         }
     }
 }

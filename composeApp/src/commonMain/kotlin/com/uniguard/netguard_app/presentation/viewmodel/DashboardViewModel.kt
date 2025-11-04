@@ -2,6 +2,7 @@ package com.uniguard.netguard_app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.data.remote.api.TokenExpiredException
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.History
@@ -11,11 +12,14 @@ import com.uniguard.netguard_app.domain.repository.HistoryRepository
 import com.uniguard.netguard_app.domain.repository.ServerRepository
 import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
 import com.uniguard.netguard_app.domain.repository.UserRepository
+import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
 import com.uniguard.netguardapp.db.ServerStatusEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class DashboardViewModel(
     private val serverRepository: ServerRepository,
@@ -23,7 +27,10 @@ class DashboardViewModel(
     private val authRepository: AuthRepository,
     private val serverStatusRepository: ServerStatusRepository,
     private val userRepository: UserRepository
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
+
+    private val serverMonitoringScheduler: ServerMonitoringScheduler by inject()
+    private val appPreferences: AppPreferences by inject()
 
     private val _servers = MutableStateFlow<List<Server>>(emptyList())
 
@@ -41,7 +48,11 @@ class DashboardViewModel(
     private val _totalUsers = MutableStateFlow(0)
     val totalUsers: StateFlow<Int> = _totalUsers.asStateFlow()
 
+    private var isMonitoringScheduled = false
+
     init {
+        // Check if monitoring is already scheduled from persistent storage
+        isMonitoringScheduled = appPreferences.isMonitoringScheduled()
         loadDashboardData()
     }
 
@@ -83,6 +94,15 @@ class DashboardViewModel(
                     }
                     else -> {}
                 }
+
+                // Schedule server monitoring after data is loaded (only once)
+                // This ensures servers are available in local database before scheduling
+                if (!isMonitoringScheduled) {
+                    serverMonitoringScheduler.scheduleServerMonitoring(appPreferences.getMonitoringInterval())
+                    isMonitoringScheduled = true
+                    appPreferences.setMonitoringScheduled(true)
+                }
+
             } catch (e: TokenExpiredException) {
                 // Token expired - trigger logout
                 authRepository.clearAuthData()
