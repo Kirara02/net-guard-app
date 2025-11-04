@@ -91,12 +91,12 @@ kotlin {
         podfile = project.file("../iosApp/Podfile")
 
         pod("FirebaseCore") {
-            version = "~> 12.4"
+            version = "~> 12.5"
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
 
         pod("FirebaseMessaging") {
-            version = "~> 12.4"
+            version = "~> 12.5"
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
     }
