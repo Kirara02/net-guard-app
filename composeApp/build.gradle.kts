@@ -24,6 +24,8 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+val isReleaseBuild = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+
 buildkonfig {
     packageName = "com.uniguard.netguard_app"
 
@@ -31,23 +33,25 @@ buildkonfig {
         buildConfigField(
             FieldSpec.Type.BOOLEAN,
             "DEBUG",
-            "true",
+            if (isReleaseBuild) "false" else "true", // <-- literal string "false" atau "true"
             const = true
         )
         buildConfigField(
             FieldSpec.Type.STRING,
             "BASEURL",
-            "http://ptt.uniguard.co.id:8006/api",
+            "\"http://ptt.uniguard.co.id:8006/api\"", // <-- string harus di-escape pakai \"
             const = true
         )
         buildConfigField(
             FieldSpec.Type.STRING,
             "DB_NAME",
-            "netguard.db",
+            "\"netguard.db\"",
             const = true
         )
     }
 }
+
+
 
 kotlin {
 
@@ -177,7 +181,7 @@ android {
         applicationId = "com.uniguard.netguard_app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
+        versionCode = 3
         versionName = "1.0"
     }
     signingConfigs {
