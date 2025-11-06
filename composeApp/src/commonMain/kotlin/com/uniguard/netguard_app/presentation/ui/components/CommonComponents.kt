@@ -285,6 +285,7 @@ fun IncidentHistoryCard(
     status: String,
     timestamp: String,
     duration: String? = null,
+    reportedBy: String,
     resolvedBy: String? = null,
     onResolveClick: (() -> Unit)? = null
 ) {
@@ -312,6 +313,12 @@ fun IncidentHistoryCard(
                         text = timestamp,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "${stringResource(Res.string.reported_by)}: $reportedBy",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
                     )
                     resolvedBy?.let {
                         Text(

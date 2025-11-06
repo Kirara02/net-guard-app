@@ -92,6 +92,7 @@
     <string name="last_checked">Terakhir diperiksa</string>
     <string name="response_time">Respons</string>
     <string name="duration">Durasi</string>
+    <string name="reported_by">Dilaporkan oleh</string>
     <string name="resolved_by">Diselesaikan oleh</string>
 
     <!-- Server Management Screen -->

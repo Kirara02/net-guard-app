@@ -185,7 +185,7 @@ fun DashboardScreen(
                             )
                             EnhancedStatCard(
                                 title = stringResource(Res.string.dashboard_incidents),
-                                value = viewModel.totalIncidents.toString(),
+                                value = viewModel.downIncidents.toString(),
                                 icon = Icons.Default.Warning,
                                 color = Color(0xFFFF9800),
                                 modifier = Modifier.weight(1f)

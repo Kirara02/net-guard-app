@@ -92,6 +92,7 @@
     <string name="last_checked">Last checked</string>
     <string name="response_time">Response</string>
     <string name="duration">Duration</string>
+    <string name="reported_by">Reported by</string>
     <string name="resolved_by">Resolved by</string>
 
     <!-- Server Management Screen -->

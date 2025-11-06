@@ -39,13 +39,13 @@ buildkonfig {
         buildConfigField(
             FieldSpec.Type.STRING,
             "BASEURL",
-            "\"http://ptt.uniguard.co.id:8006/api\"", // <-- string harus di-escape pakai \"
+            "http://ptt.uniguard.co.id:8006/api", // <-- string harus di-escape pakai \"
             const = true
         )
         buildConfigField(
             FieldSpec.Type.STRING,
             "DB_NAME",
-            "\"netguard.db\"",
+            "netguard.db",
             const = true
         )
     }
@@ -181,7 +181,7 @@ android {
         applicationId = "com.uniguard.netguard_app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 3
+        versionCode = 4
         versionName = "1.0"
     }
     signingConfigs {

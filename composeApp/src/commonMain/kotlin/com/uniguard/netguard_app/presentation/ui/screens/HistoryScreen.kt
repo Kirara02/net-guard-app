@@ -283,6 +283,7 @@ fun HistoryScreen(
                                     status = history.status,
                                     timestamp = formatRelativeTime(history.timestamp),
                                     duration = null, // TODO: Calculate duration if needed
+                                    reportedBy = history.createdBy,
                                     resolvedBy = history.resolvedBy,
                                     onResolveClick = if (history.status == "DOWN") {
                                         {

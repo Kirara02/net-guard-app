@@ -141,4 +141,8 @@ class DashboardViewModel(
 
     val totalIncidents: Int
         get() = _recentIncidents.value.size
+
+    val downIncidents: Int
+        get() = _recentIncidents.value.count { it.status.equals("DOWN", ignoreCase = true) }
+
 }
