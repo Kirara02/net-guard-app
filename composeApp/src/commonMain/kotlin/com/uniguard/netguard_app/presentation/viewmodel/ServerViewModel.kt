@@ -2,10 +2,12 @@ package com.uniguard.netguard_app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.Server
 import com.uniguard.netguard_app.domain.repository.ServerRepository
 import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
+import com.uniguard.netguard_app.worker.ServerMonitoringScheduler
 import com.uniguard.netguardapp.db.ServerStatusEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +16,11 @@ import kotlinx.coroutines.launch
 
 class ServerViewModel(
     private val serverRepository: ServerRepository,
-    private val serverStatusRepository: ServerStatusRepository
+    private val serverStatusRepository: ServerStatusRepository,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
+
+    val serverMonitoringScheduler =  ServerMonitoringScheduler()
 
     private val _servers = MutableStateFlow<List<Server>>(emptyList())
     val servers: StateFlow<List<Server>> = _servers.asStateFlow()
@@ -103,6 +108,9 @@ class ServerViewModel(
                     is ApiResult.Success -> {
                         // Refresh the list
                         loadServers()
+
+                        serverMonitoringScheduler.cancelServerMonitoring()
+                        serverMonitoringScheduler.scheduleServerMonitoring(appPreferences.getMonitoringInterval())
                     }
                     is ApiResult.Error -> {
                         _error.value = result.message
@@ -129,6 +137,9 @@ class ServerViewModel(
                     is ApiResult.Success -> {
                         // Refresh the list
                         loadServers()
+
+                        serverMonitoringScheduler.cancelServerMonitoring()
+                        serverMonitoringScheduler.scheduleServerMonitoring(appPreferences.getMonitoringInterval())
                     }
                     is ApiResult.Error -> {
                         _error.value = result.message

@@ -106,7 +106,7 @@ val appModule = module {
     factory { DashboardViewModel(get(), get(), get(), get(), get()) }
     factory { HistoryViewModel(get()) }
     factory { ReportViewModel(get(), get()) }
-    factory { ServerViewModel(get(), get()) }
+    factory { ServerViewModel(get(), get(), get()) }
     factory { SplashViewModel(get(), get()) }
     factory { UserViewModel(get()) }
 }
