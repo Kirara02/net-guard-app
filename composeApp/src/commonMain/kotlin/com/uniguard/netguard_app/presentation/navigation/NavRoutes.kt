@@ -12,6 +12,9 @@ data object Login
 data object Dashboard
 
 @Serializable
+data object Groups
+
+@Serializable
 data object Users
 
 @Serializable

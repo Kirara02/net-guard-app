@@ -7,6 +7,7 @@ CREATE TABLE ServerEntity (
     id TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     url TEXT NOT NULL,
+    group_id TEXT NOT NULL,
     created_by TEXT NOT NULL,
     created_at TEXT NOT NULL
 );
@@ -45,8 +46,8 @@ SELECT * FROM ServerEntity
 WHERE id = ?;
 
 insertServer:
-INSERT OR REPLACE INTO ServerEntity(id, name, url, created_by, created_at)
-VALUES (?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO ServerEntity(id, name, url, group_id, created_by, created_at)
+VALUES (?, ?, ?, ?, ?, ?);
 
 deleteServerById:
 DELETE FROM ServerEntity

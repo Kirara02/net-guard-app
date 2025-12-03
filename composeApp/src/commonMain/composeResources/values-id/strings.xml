@@ -64,8 +64,8 @@
     <string name="register_error_password_too_short">Kata sandi minimal 6 karakter</string>
 
     <!-- Dashboard Screen -->
-    <string name="dashboard_title">Dasbor NetGuard</string>
-    <string name="dashboard_loading">Memuat dasbor...</string>
+    <string name="dashboard_title">Dashboard NetGuard</string>
+    <string name="dashboard_loading">Memuat Dashboard...</string>
     <string name="dashboard_welcome_title">Selamat datang kembali!</string>
     <string name="dashboard_welcome_subtitle">Pantau server Anda dengan mudah</string>
     <string name="dashboard_total_servers">Total Server</string>
@@ -113,7 +113,7 @@
     <string name="server_management_add_title">Tambah Server</string>
     <string name="server_management_edit_title">Edit Server</string>
     <string name="server_management_delete_title">Hapus Server</string>
-    <string name="server_management_delete_confirm">Apakah Anda yakin ingin menghapus \'%1$s\'? Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="server_management_delete_confirm">Apakah Anda yakin ingin menghapus '%1$s'? Tindakan ini tidak dapat dibatalkan.</string>
     <string name="server_management_delete">Hapus</string>
     <string name="server_management_cancel">Batal</string>
     <string name="server_management_save">Simpan</string>
@@ -126,6 +126,7 @@
     <string name="server_management_edit">Edit</string>
     <string name="server_management_delete_action">Hapus</string>
     <string name="server_management_dismiss">Tutup</string>
+    <string name="server_management_created_by">Dibuat oleh: %1$s</string>
 
     <!-- Common Strings -->
     <string name="back">Kembali</string>
@@ -247,6 +248,21 @@
     <string name="users_passwords_not_match">Kata sandi tidak cocok</string>
     <string name="users_current_user">(Anda)</string>
 
+    <!--    Groups Screen-->
+    <string name="groups_title">Manajemen Grup</string>
+    <string name="groups_add">Tambah Grup</string>
+    <string name="groups_edit">Edit Grup</string>
+    <string name="groups_delete">Hapus Grup</string>
+    <string name="groups_delete_confirm">Apakah Anda yakin ingin menghapus grup ini? Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="groups_name">Nama</string>
+    <string name="groups_description">Deskripsi</string>
+    <string name="groups_max_members">Maksimal Anggota</string>
+    <string name="groups_current_members">Anggota Terkini</string>
+    <string name="groups_create">Buat</string>
+    <string name="groups_update">Perbarui</string>
+    <string name="groups_cancel">Batal</string>
+    <string name="groups_processing">Memproses...</string>
+
     <!-- Permissions Screen -->
     <string name="permission_battery">Pengoptimalan Baterai</string>
     <string name="permission_battery_desc">Izinkan NetGuard berjalan di latar belakang tanpa batasan baterai.</string>
@@ -257,4 +273,23 @@
     <string name="permission_status_checking">Memeriksa...</string>
     <string name="permission_action_request">Minta Izin</string>
     <string name="permission_action_settings">Buka Pengaturan</string>
+
+    <!--  Super Admin Dashboard Screen  -->
+    <string name="sa_dashboard_title">Dashboard Admin NetGuard</string>
+    <string name="sa_dashboard_retry">Coba Lagi</string>
+    <string name="sa_dashboard_view_all">Lihat Semua</string>
+    <string name="sa_dashboard_users">Pengguna</string>
+    <string name="sa_dashboard_groups">Grup</string>
+    <string name="sa_dashboard_servers">Server</string>
+    <string name="sa_dashboard_active_sessions">Sesi Aktif</string>
+    <string name="sa_dashboard_settings">Pengaturan</string>
+    <string name="sa_dashboard_settings_description">Kelola konfigurasi sistem</string>
+    <string name="sa_dashboard_incidents">Insiden</string>
+    <string name="sa_dashboard_incident_status">%1$s Belum Selesai • %2$s Total</string>
+    <string name="sa_dashboard_avg_resolution">Rata-rata penyelesaian: %s</string>
+    <string name="sa_dashboard_recent_users">Pengguna Terbaru</string>
+    <string name="sa_dashboard_recent_servers">Server Terbaru</string>
+    <string name="sa_dashboard_no_group">Tanpa Grup</string>
+    <string name="sa_dashboard_no_servers">Belum ada server terbaru</string>
+    <string name="sa_dashboard_no_users">Belum ada user terbaru</string>
 </resources>

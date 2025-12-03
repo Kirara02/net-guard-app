@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface ServerRepository {
     // Remote operations
-    suspend fun syncServersFromRemote(): ApiResult<List<Server>>
-    suspend fun createServer(name: String, url: String): ApiResult<Server>
-    suspend fun updateServer(serverId: String, name: String, url: String): ApiResult<Server>
-    suspend fun deleteServer(serverId: String): ApiResult<Unit>
+    suspend fun syncServersFromRemote(withLocal: Boolean = true): ApiResult<List<Server>>
+    suspend fun createServer(name: String, url: String, groupId: String? = null, withLocal: Boolean = true): ApiResult<Server>
+    suspend fun updateServer(serverId: String, name: String, url: String, groupId: String? = null, withLocal: Boolean = true): ApiResult<Server>
+    suspend fun deleteServer(serverId: String, withLocal: Boolean = true): ApiResult<Unit>
     suspend fun updateServerStatus(serverId: String, status: ServerStatus, responseTime: Long? = null): ApiResult<Server>
 
     // Local operations

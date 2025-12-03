@@ -65,7 +65,7 @@ actual class AppPreferences(private val context: Context) {
         }
     }
 
-    actual fun clearAll() {
+    actual fun clearAuthData() {
         runBlocking {
             context.dataStore.edit { preferences ->
                 preferences.remove(PreferencesKeys.TOKEN)

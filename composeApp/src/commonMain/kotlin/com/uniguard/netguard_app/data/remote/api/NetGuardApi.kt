@@ -47,6 +47,24 @@ class NetGuardApi(
         }
     }
 
+    suspend fun logout(token: String) : ApiResult<String> {
+        return try {
+            val response = client.post("$baseUrl/auth/logout") {
+                header("Authorization", "Bearer $token")
+            }
+
+            val groupResponse: LogoutResponse = response.body()
+            if (groupResponse.success) {
+                ApiResult.Success(groupResponse.message)
+            } else {
+                ApiResult.Error(groupResponse.error ?: "Failed to logout")
+            }
+
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
     suspend fun getCurrentUser(token: String): ApiResult<User> {
         return try {
             val response = client.get("$baseUrl/auth/me") {
@@ -110,6 +128,91 @@ class NetGuardApi(
             }
         } catch (e: Exception) {
             ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
+    // Group Management Endpoints
+    suspend fun getGroups(token: String) : ApiResult<List<Group>> {
+        return try {
+            val response = client.get("$baseUrl/admin/groups") {
+                header("Authorization", "Bearer $token")
+            }
+            val groupsResponse: GroupsResponse = response.body()
+            if(groupsResponse.success) {
+                ApiResult.Success(groupsResponse.data)
+            } else {
+                ApiResult.Error(groupsResponse.error ?: "Failed to get users")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network Error")
+        }
+    }
+
+    suspend fun getGroupById(token: String, id: String) : ApiResult<Group> {
+        return try {
+            val response = client.get("$baseUrl/admin/group/$id") {
+                header("Authorization", "Bearer $token")
+            }
+            val groupResponse: GroupResponse = response.body()
+            if(groupResponse.success && groupResponse.data != null) {
+                ApiResult.Success(groupResponse.data)
+            } else {
+                ApiResult.Error(groupResponse.error ?: "Failed to get group")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network Error")
+        }
+    }
+
+    suspend fun createGroup(token: String, request: GroupRequest) : ApiResult<Group> {
+        return try {
+            val response = client.post("$baseUrl/admin/groups") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+            val groupResponse: GroupResponse = response.body()
+            if(groupResponse.success && groupResponse.data != null) {
+                ApiResult.Success(groupResponse.data)
+            } else {
+                ApiResult.Error(groupResponse.error ?: "Failed to create group")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network Error")
+        }
+    }
+
+    suspend fun updateGroup(token: String, id: String, request: GroupRequest) : ApiResult<Group>{
+        return try {
+            val response = client.put("$baseUrl/admin/groups/$id") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+            val groupResponse: GroupResponse = response.body()
+            if(groupResponse.success && groupResponse.data != null) {
+                ApiResult.Success(groupResponse.data)
+            } else {
+                ApiResult.Error(groupResponse.error ?: "Failed to create group")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network Error")
+        }
+    }
+
+    suspend fun deleteGroupById(token: String, id: String) : ApiResult<String> {
+        return try {
+            val response = client.delete("$baseUrl/admin/groups/$id") {
+                header("Authorization", "Bearer $token")
+            }
+            val groupResponse: UserResponse = response.body()
+            if (groupResponse.success) {
+                ApiResult.Success(groupResponse.message!!)
+            } else {
+                ApiResult.Error(groupResponse.error ?: "Failed to create user")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network Error")
         }
     }
 
@@ -215,7 +318,7 @@ class NetGuardApi(
         }
     }
 
-    suspend fun createServer(token: String, request: CreateServerRequest): ApiResult<Server> {
+    suspend fun createServer(token: String, request: ServerRequest): ApiResult<Server> {
         return try {
             val response = client.post("$baseUrl/servers") {
                 header("Authorization", "Bearer $token")
@@ -233,7 +336,7 @@ class NetGuardApi(
         }
     }
 
-    suspend fun updateServer(token: String, serverId: String, request: CreateServerRequest): ApiResult<Server> {
+    suspend fun updateServer(token: String, serverId: String, request: ServerRequest): ApiResult<Server> {
         return try {
             val response = client.put("$baseUrl/servers/$serverId") {
                 header("Authorization", "Bearer $token")
@@ -374,6 +477,23 @@ class NetGuardApi(
             }
             val bytes = response.body<ByteArray>()
             ApiResult.Success(bytes)
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
+    suspend fun getAdminDashboard(token: String): ApiResult<Dashboard> {
+        return try {
+            val response = client.get("$baseUrl/admin/dashboard") {
+                header("Authorization", "Bearer $token")
+            }
+
+            val result: DashboardResponse = response.body()
+            if(result.success && result.data != null) {
+                ApiResult.Success(result.data)
+            } else {
+                ApiResult.Error(result.error ?: "Failed to get admin dashboard data")
+            }
         } catch (e: Exception) {
             ApiResult.Error(e.message ?: "Network error")
         }

@@ -1,7 +1,21 @@
 package com.uniguard.netguard_app.domain.model
 
+import com.uniguard.netguard_app.log
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+enum class UserRole {
+    USER,
+    ADMIN,
+    SUPER_ADMIN;
+
+    companion object {
+        fun fromString(value: String): UserRole {
+            return entries.firstOrNull { it.name.equals(value, ignoreCase = true) }
+                ?: USER
+        }
+    }
+}
 
 @Serializable
 data class User(
@@ -11,9 +25,13 @@ data class User(
     val division: String? = null,
     val phone: String? = null,
     val role: String,
-    val isActive: Boolean = true,
+    val group: GroupInfo? = null,
+    @SerialName("is_active") val isActive: Boolean? = true,
     @SerialName("created_at") val createdAt: String? = null
-)
+) {
+    val userRole: UserRole
+        get() = UserRole.fromString(role)
+}
 
 @Serializable
 data class LoginRequest(
@@ -53,6 +71,12 @@ data class UsersResponse(
     val error: String? = null
 )
 
+@Serializable
+data class LogoutResponse(
+    val success: Boolean,
+    val message: String,
+    val error: String? = null
+)
 
 @Serializable
 data class ErrorResponse(
@@ -89,7 +113,8 @@ data class CreateUserRequest(
     val password: String,
     val division: String? = null,
     val phone: String? = null,
-    val role: String
+    val role: String,
+    @SerialName("group_id") val groupId: String? = null
 )
 
 @Serializable
@@ -99,5 +124,7 @@ data class UpdateUserRequest(
     val password: String? = null,
     val division: String? = null,
     val phone: String? = null,
-    val role: String? = null
+    val role: String? = null,
+    @SerialName("group_id") val groupId: String? = null
 )
+

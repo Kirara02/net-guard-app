@@ -46,7 +46,7 @@ actual class AppPreferences {
         }
     }
 
-    actual fun clearAll() {
+    actual fun clearAuthData() {
         userDefaults.removeObjectForKey(Keys.TOKEN)
         userDefaults.removeObjectForKey(Keys.USER_DATA)
         userDefaults.synchronize()

@@ -8,6 +8,7 @@ import com.uniguard.netguard_app.domain.model.User
 
 interface AuthRepository {
     suspend fun login(email: String, password: String): ApiResult<AuthData>
+    suspend fun logout() : ApiResult<String>
     suspend fun getCurrentUser(): ApiResult<User>
     suspend fun updateProfile(request: UpdateProfileRequest): ApiResult<User>
     suspend fun changePassword(request: ChangePasswordRequest): ApiResult<Unit>

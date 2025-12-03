@@ -35,10 +35,29 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun logout(): ApiResult<String> {
+        val token = appPreferences.getToken()
+        return if (token != null) {
+            val result = api.logout(token)
+            result
+        } else {
+            ApiResult.Error("No authentication token found")
+        }
+    }
+
     override suspend fun getCurrentUser(): ApiResult<User> {
         val token = getSavedToken()
         return if (token != null) {
-            api.getCurrentUser(token)
+            when (val result = api.getCurrentUser(token)) {
+                is ApiResult.Success -> {
+                    appPreferences.saveUser(result.data)
+                    result
+                }
+                is ApiResult.Error -> result
+                is ApiResult.Loading -> result
+                is ApiResult.Initial -> result
+        }
+
         } else {
             ApiResult.Error("No authentication token found")
         }
@@ -77,7 +96,7 @@ class AuthRepositoryImpl(
     }
 
     override fun clearAuthData() {
-        appPreferences.clearAll()
+        appPreferences.clearAuthData()
     }
 
     override suspend fun changePassword(request: ChangePasswordRequest): ApiResult<Unit> {

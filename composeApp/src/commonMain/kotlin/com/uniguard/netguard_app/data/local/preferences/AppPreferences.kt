@@ -8,7 +8,7 @@ expect class AppPreferences {
     fun getToken(): String?
     fun saveUser(user: User)
     fun getUser(): User?
-    fun clearAll()
+    fun clearAuthData()
     fun isLoggedIn(): Boolean
     fun saveThemePreference(isDarkMode: Boolean)
     val themePreferenceFlow: Flow<Boolean>

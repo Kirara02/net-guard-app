@@ -8,14 +8,16 @@ data class Server(
     val id: String,
     val name: String,
     val url: String,
+    val group: GroupInfo,
     @SerialName("created_by") val createdBy: String,
     @SerialName("created_at") val createdAt: String
 )
 
 @Serializable
-data class CreateServerRequest(
+data class ServerRequest(
     val name: String,
-    val url: String
+    val url: String,
+    @SerialName("group_id") val groupId: String? = null
 )
 
 @Serializable
@@ -44,4 +46,9 @@ enum class ServerStatus {
     DOWN,
     UNKNOWN,
     RESOLVED
+}
+
+enum class ServerLoadSource {
+    LOCAL,
+    REMOTE
 }

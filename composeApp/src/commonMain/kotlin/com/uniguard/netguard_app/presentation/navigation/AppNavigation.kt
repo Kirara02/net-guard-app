@@ -1,25 +1,41 @@
 package com.uniguard.netguard_app.presentation.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.uniguard.netguard_app.core.rememberKoinViewModel
-import com.uniguard.netguard_app.presentation.ui.screens.AboutScreen
-import com.uniguard.netguard_app.presentation.ui.screens.ChangePasswordScreen
-import com.uniguard.netguard_app.presentation.ui.screens.DashboardScreen
-import com.uniguard.netguard_app.presentation.ui.screens.HistoryScreen
-import com.uniguard.netguard_app.presentation.ui.screens.LoginScreen
-import com.uniguard.netguard_app.presentation.ui.screens.ReportScreen
-import com.uniguard.netguard_app.presentation.ui.screens.SettingsScreen
-import com.uniguard.netguard_app.presentation.ui.screens.ServerManagementScreen
-import com.uniguard.netguard_app.presentation.ui.screens.SplashScreen
-import com.uniguard.netguard_app.presentation.viewmodel.AuthViewModel
+import com.uniguard.netguard_app.presentation.ui.screens.shared.about.AboutScreen
+import com.uniguard.netguard_app.presentation.ui.screens.user.change_password.ChangePasswordScreen
+import com.uniguard.netguard_app.presentation.ui.screens.user.dashboard.DashboardScreen
+import com.uniguard.netguard_app.presentation.ui.screens.user.history.HistoryScreen
+import com.uniguard.netguard_app.presentation.ui.screens.user.login.LoginScreen
+import com.uniguard.netguard_app.presentation.ui.screens.user.report.ReportScreen
+import com.uniguard.netguard_app.presentation.ui.screens.shared.settings.SettingsScreen
+import com.uniguard.netguard_app.presentation.ui.screens.user.servers.ServersScreen
+import com.uniguard.netguard_app.presentation.ui.screens.shared.splash.SplashScreen
+import com.uniguard.netguard_app.presentation.viewmodel.user.AuthViewModel
 import com.uniguard.netguard_app.data.remote.api.AuthInterceptor
 import androidx.compose.runtime.LaunchedEffect
-import com.uniguard.netguard_app.presentation.ui.screens.PermissionsScreen
-import com.uniguard.netguard_app.presentation.ui.screens.UsersScreen
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import com.uniguard.netguard_app.domain.model.ApiResult
+import com.uniguard.netguard_app.domain.model.UserRole
+import com.uniguard.netguard_app.presentation.ui.components.showErrorToast
+import com.uniguard.netguard_app.presentation.ui.components.showToast
+import com.uniguard.netguard_app.presentation.ui.screens.shared.permissions.PermissionsScreen
+import com.uniguard.netguard_app.presentation.ui.screens.admin.users.UsersScreen
+import com.uniguard.netguard_app.presentation.ui.screens.super_admin.groups.GroupsScreen
+import com.uniguard.netguard_app.presentation.ui.screens.super_admin.dashboard.SADashboardScreen
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 @Composable
@@ -27,19 +43,40 @@ fun AppNavigation(
     navController: NavHostController = rememberNavController(),
 ) {
     val authViewModel = rememberKoinViewModel<AuthViewModel>()
-    val authInterceptor = koinInject<AuthInterceptor>()
 
-    // Listen for unauthorized events and navigate to login
+    val authInterceptor: AuthInterceptor = koinInject()
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
+
     LaunchedEffect(Unit) {
         authInterceptor.unauthorizedEvent.collect {
-            // Clear current user state
-            authViewModel.logout()
-            // Navigate to login screen
+            authViewModel.forceLocalLogout()
+
+            showErrorToast("Session expired. Please login again.")
+
+            delay(300)
+
             navController.navigate(Login) {
-                popUpTo(0) { inclusive = true }
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
             }
         }
     }
+
+
+    LaunchedEffect(authViewModel.logoutState.collectAsState()) {
+        when (val state = authViewModel.logoutState.value) {
+            is ApiResult.Success -> {
+                showToast("Logout berhasil")
+                delay(300)
+            }
+            is ApiResult.Error -> {
+                showErrorToast("Logout gagal: ${state.message}")
+            }
+            else -> {}
+        }
+    }
+
 
     NavHost(
         navController = navController,
@@ -47,12 +84,16 @@ fun AppNavigation(
     ) {
         // Splash Screen
         composable<Splash> {
-            SplashScreen(navController = navController)
+            SplashScreen(
+                authViewModel = authViewModel,
+                navController = navController
+            )
         }
 
         // Authentication Routes
         composable<Login> {
             LoginScreen(
+                viewModel = authViewModel,
                 onLoginSuccess = {
                     navController.navigate(Dashboard) {
                         popUpTo<Login> { inclusive = true }
@@ -63,38 +104,64 @@ fun AppNavigation(
 
         // Main App Routes
         composable<Dashboard> {
-            DashboardScreen(
-                onNavigateToServerList = {
-                    navController.navigate(ServerList)
-                },
-                onNavigateToHistory = {
-                    navController.navigate(History)
-                },
-                onNavigateToSettings = {
-                    navController.navigate(Settings)
-                },
-                onNavigateToReport = {
-                    navController.navigate(Report)
-                },
-                onNavigateToUsers = {
-                    navController.navigate(Users)
-                },
-                onLogout = {
-                    navController.navigate(Login) {
-                        popUpTo(0) { inclusive = true }
+            val user by authViewModel.currentUser.collectAsState()
+            val isUserChecked by authViewModel.isUserChecked.collectAsState()
+
+            when {
+                !isUserChecked -> {
+                    LoadingOverlay()
+                    return@composable
+                }
+
+                user == null -> {
+                    LaunchedEffect("redirectLogout") {
+                        navController.navigate(Login) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                    return@composable
+                }
+
+                else -> {
+                    if (user!!.userRole == UserRole.SUPER_ADMIN) {
+                        SADashboardScreen(
+                            authViewModel = authViewModel,
+                            onNavigateToGroupList = { navController.navigate(Groups) },
+                            onNavigateToUserList = { navController.navigate(Users) },
+                            onNavigateToServerList = { navController.navigate(ServerList) },
+                            onNavigateToSettings = { navController.navigate(Settings) },
+                        )
+                    } else {
+                        DashboardScreen(
+                            authViewModel = authViewModel,
+                            onNavigateToServerList = { navController.navigate(ServerList) },
+                            onNavigateToHistory = { navController.navigate(History) },
+                            onNavigateToSettings = { navController.navigate(Settings) },
+                            onNavigateToReport = { navController.navigate(Report) },
+                            onNavigateToUsers = { navController.navigate(Users) },
+                        )
                     }
                 }
+            }
+
+        }
+
+        composable<Groups> {
+            GroupsScreen(
+                authViewModel = authViewModel,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 
         composable<Users> {
             UsersScreen(
+                authViewModel = authViewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
         composable<ServerList> {
-            ServerManagementScreen(
+            ServersScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
@@ -107,6 +174,7 @@ fun AppNavigation(
 
         composable<Settings> {
             SettingsScreen(
+                viewModel = authViewModel,
                 onNavigateToAbout = { navController.navigate(About) },
                 onNavigateToChangePassword = { navController.navigate(ChangePassword) },
                 onNavigateToPermissions = { navController.navigate(Permissions) },
@@ -134,8 +202,21 @@ fun AppNavigation(
 
         composable<ChangePassword> {
             ChangePasswordScreen(
+                viewModel = authViewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }
+    }
+}
+
+@Composable
+fun LoadingOverlay() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.6f)),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }

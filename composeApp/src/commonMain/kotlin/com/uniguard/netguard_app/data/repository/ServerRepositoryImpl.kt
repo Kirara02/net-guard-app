@@ -4,7 +4,8 @@ import com.uniguard.netguard_app.data.local.database.DatabaseProvider
 import com.uniguard.netguard_app.data.local.preferences.AppPreferences
 import com.uniguard.netguard_app.data.remote.api.NetGuardApi
 import com.uniguard.netguard_app.domain.model.ApiResult
-import com.uniguard.netguard_app.domain.model.CreateServerRequest
+import com.uniguard.netguard_app.domain.model.GroupInfo
+import com.uniguard.netguard_app.domain.model.ServerRequest
 import com.uniguard.netguard_app.domain.model.Server
 import com.uniguard.netguard_app.domain.model.ServerStatus
 import com.uniguard.netguard_app.domain.model.UpdateServerStatusRequest
@@ -23,14 +24,17 @@ class ServerRepositoryImpl(
     private val serverQueries = database.appDatabaseQueries
 
     // Remote operations
-    override suspend fun syncServersFromRemote(): ApiResult<List<Server>> {
+    override suspend fun syncServersFromRemote(
+        withLocal: Boolean,
+    ): ApiResult<List<Server>> {
         val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.getServers(token)
             when (result) {
                 is ApiResult.Success -> {
-                    // Save to local database
-                    insertOrUpdateServers(result.data)
+                    if (withLocal) {
+                        insertOrUpdateServers(result.data)
+                    }
                     result
                 }
                 else -> result
@@ -40,14 +44,20 @@ class ServerRepositoryImpl(
         }
     }
 
-    override suspend fun createServer(name: String, url: String): ApiResult<Server> {
+    override suspend fun createServer(
+        name: String,
+        url: String,
+        groupId: String?,
+        withLocal: Boolean
+    ): ApiResult<Server> {
         val token = appPreferences.getToken()
         return if (token != null) {
-            val result = api.createServer(token, CreateServerRequest(name, url))
+            val result = api.createServer(token, ServerRequest(name, url, groupId))
             when (result) {
                 is ApiResult.Success -> {
-                    // Save to local database
-                    insertOrUpdateServer(result.data)
+                    if (withLocal) {
+                        insertOrUpdateServer(result.data)
+                    }
                     result
                 }
                 else -> result
@@ -57,14 +67,21 @@ class ServerRepositoryImpl(
         }
     }
 
-    override suspend fun updateServer(serverId: String, name: String, url: String): ApiResult<Server> {
+    override suspend fun updateServer(
+        serverId: String,
+        name: String,
+        url: String,
+        groupId: String?,
+        withLocal: Boolean
+    ): ApiResult<Server> {
         val token = appPreferences.getToken()
         return if (token != null) {
-            val result = api.updateServer(token, serverId, CreateServerRequest(name, url))
+            val result = api.updateServer(token, serverId, ServerRequest(name, url, groupId))
             when (result) {
                 is ApiResult.Success -> {
-                    // Update local database
-                    insertOrUpdateServer(result.data)
+                    if (withLocal) {
+                        insertOrUpdateServer(result.data)
+                    }
                     result
                 }
                 else -> result
@@ -74,14 +91,18 @@ class ServerRepositoryImpl(
         }
     }
 
-    override suspend fun deleteServer(serverId: String): ApiResult<Unit> {
+    override suspend fun deleteServer(
+        serverId: String,
+        withLocal: Boolean
+    ): ApiResult<Unit> {
         val token = appPreferences.getToken()
         return if (token != null) {
             val result = api.deleteServer(token, serverId)
             when (result) {
                 is ApiResult.Success -> {
-                    // Delete from local database
-                    deleteServerLocally(serverId)
+                    if (withLocal) {
+                        deleteServerLocally(serverId)
+                    }
                     result
                 }
                 else -> result
@@ -129,6 +150,7 @@ class ServerRepositoryImpl(
             id = server.id,
             name = server.name,
             url = server.url,
+            group_id = server.group.id,
             created_by = server.createdBy,
             created_at = server.createdAt
         )
@@ -148,7 +170,7 @@ class ServerRepositoryImpl(
 
     // Sync operations
     override suspend fun syncServerToRemote(server: Server): ApiResult<Server> {
-        return updateServer(server.id, server.name, server.url)
+        return updateServer(server.id, server.name, server.url, withLocal = true)
     }
 
     override suspend fun syncAllServersToRemote(): ApiResult<List<Server>> {
@@ -173,6 +195,10 @@ class ServerRepositoryImpl(
             id = id,
             name = name,
             url = url,
+            group = GroupInfo(
+                id = group_id,
+                name = ""
+            ),
             createdBy = created_by,
             createdAt = created_at,
         )
