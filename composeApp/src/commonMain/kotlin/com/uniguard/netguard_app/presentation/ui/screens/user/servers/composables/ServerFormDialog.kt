@@ -86,9 +86,13 @@ fun ServerFormDialog(
                         OutlinedTextField(
                             value = selectedGroupName,
                             onValueChange = {},
-                            readOnly = isLockedGroup,
+                            readOnly = true,
                             enabled = !isLockedGroup,
-                            label = { Text("Group") },
+                            label = { Text(stringResource(Res.string.server_management_group)) },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.None
+                            ),
                             trailingIcon = {
                                 if (!isLockedGroup) {
                                     ExposedDropdownMenuDefaults.TrailingIcon(

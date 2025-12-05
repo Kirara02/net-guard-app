@@ -125,6 +125,7 @@
     <string name="server_management_delete">Delete</string>
     <string name="server_management_cancel">Cancel</string>
     <string name="server_management_save">Save</string>
+    <string name="server_management_group">Group</string>
     <string name="server_management_name">Server Name</string>
     <string name="server_management_url">Server URL</string>
     <string name="server_management_url_placeholder">https://example.com</string>

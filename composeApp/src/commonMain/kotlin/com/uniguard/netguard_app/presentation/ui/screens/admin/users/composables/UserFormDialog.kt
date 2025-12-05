@@ -111,7 +111,7 @@ fun UserFormDialog(
                         OutlinedTextField(
                             value = selectedGroupName,
                             onValueChange = {},
-                            readOnly = isLockedGroup,
+                            readOnly = true,
                             enabled = !isLockedGroup,
                             label = { Text("Group") },
                             trailingIcon = {

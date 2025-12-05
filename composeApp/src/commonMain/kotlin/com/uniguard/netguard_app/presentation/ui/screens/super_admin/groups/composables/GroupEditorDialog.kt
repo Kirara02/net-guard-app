@@ -2,8 +2,11 @@ package com.uniguard.netguard_app.presentation.ui.screens.super_admin.groups.com
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -11,13 +14,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.uniguard.netguard_app.domain.model.Group
 import com.uniguard.netguard_app.presentation.ui.components.TextFieldWithLabel
 import netguardapp.composeapp.generated.resources.Res
 import netguardapp.composeapp.generated.resources.groups_cancel
 import netguardapp.composeapp.generated.resources.groups_create
+import netguardapp.composeapp.generated.resources.groups_description
+import netguardapp.composeapp.generated.resources.groups_max_members
+import netguardapp.composeapp.generated.resources.groups_name
 import netguardapp.composeapp.generated.resources.groups_update
+import netguardapp.composeapp.generated.resources.server_management_group
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -55,60 +65,74 @@ fun GroupEditorDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
-                // Name
-                TextFieldWithLabel(
-                    label = "Name",
+
+                // --- NAME ---
+                OutlinedTextField(
                     value = name,
                     onValueChange = {
                         name = it
                         validate()
-                    }
-                )
-                if (nameError != null) {
-                    Text(
-                        text = nameError!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
+                    },
+                    label = { Text(stringResource(Res.string.groups_name)) },
+                    isError = nameError != null,
+                    supportingText = nameError?.let { { Text(it) } },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
                     )
-                }
-
-                // Description
-                TextFieldWithLabel(
-                    label = "Description",
-                    value = description,
-                    onValueChange = { description = it }
                 )
 
-                // Max Members
-                TextFieldWithLabel(
-                    label = "Max Members",
+                // --- DESCRIPTION ---
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = {
+                        description = it
+                    },
+                    label = { Text(stringResource(Res.string.groups_description)) },
+                    singleLine = false,
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    )
+                )
+
+                // --- MAX MEMBERS ---
+                OutlinedTextField(
                     value = maxMembers,
                     onValueChange = {
                         maxMembers = it
                         validate()
-                    }
-                )
-                if (maxMembersError != null) {
-                    Text(
-                        text = maxMembersError!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
+                    },
+                    label = { Text(stringResource(Res.string.groups_max_members)) },
+                    isError = maxMembersError != null,
+                    supportingText = maxMembersError?.let { { Text(it) } },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
                     )
-                }
+                )
+
             }
         },
         confirmButton = {
+            val isValid = validate()
+
             TextButton(
                 onClick = {
-                    if (validate()) {
+                    if (isValid) {
                         onConfirm(
-                            name,
+                            name.trim(),
                             description.ifBlank { null },
                             maxMembers.toInt()
                         )
                     }
                 },
-                enabled = validate()  // Disable button when invalid
+                enabled = isValid
             ) {
                 Text(
                     stringResource(

@@ -125,6 +125,7 @@
     <string name="server_management_delete">Hapus</string>
     <string name="server_management_cancel">Batal</string>
     <string name="server_management_save">Simpan</string>
+    <string name="server_management_group">Grup</string>
     <string name="server_management_name">Nama Server</string>
     <string name="server_management_url">URL Server</string>
     <string name="server_management_url_placeholder">https://contoh.com</string>
