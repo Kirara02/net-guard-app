@@ -118,6 +118,9 @@ kotlin {
             implementation(libs.koin.android)
             implementation(project.dependencies.platform(libs.firebase.android.bom))
             implementation(libs.firebase.messaging)
+
+            implementation(libs.app.update)
+            implementation(libs.app.update.ktx)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
