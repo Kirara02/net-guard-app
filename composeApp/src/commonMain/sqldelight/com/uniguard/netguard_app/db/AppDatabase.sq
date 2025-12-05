@@ -20,19 +20,6 @@ CREATE TABLE ServerStatusEntity (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE HistoryEntity (
-    id TEXT NOT NULL PRIMARY KEY,
-    server_id TEXT NOT NULL REFERENCES ServerEntity(id) ON DELETE CASCADE,
-    server_name TEXT NOT NULL,
-    url TEXT NOT NULL,
-    status TEXT NOT NULL, -- e.g. "DOWN", "RESOLVED", etc.
-    timestamp TEXT NOT NULL,
-    created_by TEXT NOT NULL,
-    resolved_by TEXT,
-    resolved_at TEXT,
-    resolve_note TEXT
-);
-
 /** ============================
  *  ServerEntity Queries
  *  ============================ */
@@ -78,45 +65,3 @@ WHERE server_id = ?;
 
 clearServerStatuses:
 DELETE FROM ServerStatusEntity;
-
-
-/** ============================
- *  HistoryEntity Queries
- *  ============================ */
-
-getAllHistory:
-SELECT * FROM HistoryEntity
-ORDER BY timestamp DESC;
-
-getHistoryByServer:
-SELECT * FROM HistoryEntity
-WHERE server_id = ?
-ORDER BY timestamp DESC;
-
-insertHistory:
-INSERT OR REPLACE INTO HistoryEntity(
-    id,
-    server_id,
-    server_name,
-    url,
-    status,
-    timestamp,
-    created_by,
-    resolved_by,
-    resolved_at,
-    resolve_note
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-
-deleteHistoryById:
-DELETE FROM HistoryEntity
-WHERE id = ?;
-
-clearHistory:
-DELETE FROM HistoryEntity;
-
-getRecentStatusForServer:
-SELECT *
-FROM HistoryEntity
-WHERE server_id = ?
-ORDER BY timestamp DESC
-LIMIT 1;

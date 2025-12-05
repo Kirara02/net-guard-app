@@ -88,6 +88,11 @@ class ServerViewModel(
     }
 
     fun addServer(name: String, url: String, groupId: String? = null) {
+        if (isUser()) {
+            _error.value = "You don't have permission to add server"
+            return
+        }
+        
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -128,6 +133,11 @@ class ServerViewModel(
     }
 
     fun updateServer(serverId: String, name: String, url: String, groupId: String? = null) {
+        if (isUser()) {
+            _error.value = "You don't have permission to add server"
+            return
+        }
+
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -172,6 +182,11 @@ class ServerViewModel(
     }
 
     fun deleteServer(serverId: String) {
+        if (isUser()) {
+            _error.value = "You don't have permission to add server"
+            return
+        }
+
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -248,6 +263,9 @@ class ServerViewModel(
 
     fun isSuperAdmin(): Boolean =
         userSessionService.getUserRole() == UserRole.SUPER_ADMIN
+
+    fun isUser(): Boolean =
+        userSessionService.getUserRole() == UserRole.USER
 
     // Computed properties for stats
     val totalServers: Int get() = _servers.value.size

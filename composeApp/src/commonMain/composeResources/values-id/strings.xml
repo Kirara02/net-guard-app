@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">NetGuard</string>
 
+    <string name="created_at">Dibuat pada %1$s</string>
+    <string name="time_just_now">Baru saja</string>
+    <string name="time_minute_ago">%1$s mnt lalu</string>
+    <string name="time_hour_ago">%1$s jam lalu</string>
+    <string name="time_day_ago">%1$s hari lalu</string>
+
+    <string name="created_by">Dibuat oleh %1$s</string>
+
     <string name="settings">Pengaturan</string>
     <string name="settings_desc">Pengaturan Aplikasi</string>
     <string name="settings_loading">Memuat pengaturan...</string>
@@ -126,7 +134,6 @@
     <string name="server_management_edit">Edit</string>
     <string name="server_management_delete_action">Hapus</string>
     <string name="server_management_dismiss">Tutup</string>
-    <string name="server_management_created_by">Dibuat oleh: %1$s</string>
 
     <!-- Common Strings -->
     <string name="back">Kembali</string>
@@ -286,7 +293,7 @@
     <string name="sa_dashboard_settings_description">Kelola konfigurasi sistem</string>
     <string name="sa_dashboard_incidents">Insiden</string>
     <string name="sa_dashboard_incident_status">%1$s Belum Selesai • %2$s Total</string>
-    <string name="sa_dashboard_avg_resolution">Rata-rata penyelesaian: %s</string>
+    <string name="sa_dashboard_avg_resolution">Rata-rata penyelesaian: %1$s</string>
     <string name="sa_dashboard_recent_users">Pengguna Terbaru</string>
     <string name="sa_dashboard_recent_servers">Server Terbaru</string>
     <string name="sa_dashboard_no_group">Tanpa Grup</string>

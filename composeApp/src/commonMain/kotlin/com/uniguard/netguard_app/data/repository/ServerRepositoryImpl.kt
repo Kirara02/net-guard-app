@@ -10,6 +10,7 @@ import com.uniguard.netguard_app.domain.model.Server
 import com.uniguard.netguard_app.domain.model.ServerStatus
 import com.uniguard.netguard_app.domain.model.UpdateServerStatusRequest
 import com.uniguard.netguard_app.domain.repository.ServerRepository
+import com.uniguard.netguard_app.log
 import com.uniguard.netguardapp.db.ServerEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -165,6 +166,7 @@ class ServerRepositoryImpl(
     }
 
     override suspend fun clearAllServers() {
+        log { "Clearing all servers" }
         serverQueries.clearServers()
     }
 

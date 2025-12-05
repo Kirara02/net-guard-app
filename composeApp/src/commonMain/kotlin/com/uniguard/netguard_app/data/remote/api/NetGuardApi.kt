@@ -389,6 +389,24 @@ class NetGuardApi(
     }
 
     // History/Incident Management Endpoints
+    suspend fun getHistories(token: String, serverId: String? = null, limit: Int? = 50): ApiResult<List<History>> {
+        return try {
+            val response = client.get("$baseUrl/history") {
+                header("Authorization", "Bearer $token")
+                parameter("server_id", serverId)
+                parameter("limit", limit)
+            }
+            val historiesResponse: HistoriesResponse = response.body()
+            if (historiesResponse.success) {
+                ApiResult.Success(historiesResponse.data)
+            } else {
+                ApiResult.Error(historiesResponse.error ?: "Failed to get history")
+            }
+        } catch (e: Exception) {
+            ApiResult.Error(e.message ?: "Network error")
+        }
+    }
+
     suspend fun createHistory(token: String, request: CreateHistoryRequest): ApiResult<History> {
         return try {
             val response = client.post("$baseUrl/history") {
@@ -401,24 +419,6 @@ class NetGuardApi(
                 ApiResult.Success(historyResponse.data)
             } else {
                 ApiResult.Error(historyResponse.error ?: "Failed to create history")
-            }
-        } catch (e: Exception) {
-            ApiResult.Error(e.message ?: "Network error")
-        }
-    }
-
-    suspend fun getHistory(token: String, serverId: String? = null, limit: Int = 50): ApiResult<List<History>> {
-        return try {
-            val response = client.get("$baseUrl/history") {
-                header("Authorization", "Bearer $token")
-                parameter("server_id", serverId)
-                parameter("limit", limit)
-            }
-            val historiesResponse: HistoriesResponse = response.body()
-            if (historiesResponse.success) {
-                ApiResult.Success(historiesResponse.data)
-            } else {
-                ApiResult.Error(historiesResponse.error ?: "Failed to get history")
             }
         } catch (e: Exception) {
             ApiResult.Error(e.message ?: "Network error")
@@ -443,6 +443,7 @@ class NetGuardApi(
         }
     }
 
+    // Report Management Endpoints
     suspend fun getReports(token: String, params: ReportParams): ApiResult<List<Report>> {
         return try {
             val response = client.get("$baseUrl/report") {
@@ -464,6 +465,7 @@ class NetGuardApi(
         }
     }
 
+
     suspend fun exportReports(token: String, params: ReportParams): ApiResult<ByteArray> {
         return try {
             val response = client.get("$baseUrl/report/export") {
@@ -482,6 +484,7 @@ class NetGuardApi(
         }
     }
 
+    // Dashboard Admin Endpoints
     suspend fun getAdminDashboard(token: String): ApiResult<Dashboard> {
         return try {
             val response = client.get("$baseUrl/admin/dashboard") {

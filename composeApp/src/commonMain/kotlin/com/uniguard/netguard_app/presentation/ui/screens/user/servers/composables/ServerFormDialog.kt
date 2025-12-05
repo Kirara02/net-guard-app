@@ -189,8 +189,9 @@ fun ServerFormDialog(
         confirmButton = {
 
             val isValid =
-                (name.isNotBlank()
-                        && url.isNotBlank())
+                name.isNotBlank()
+                        && url.isNotBlank()
+                        && (!isSuperAdmin || selectedGroupId.isNotBlank())
 
             TextButton(
                 enabled = isValid,

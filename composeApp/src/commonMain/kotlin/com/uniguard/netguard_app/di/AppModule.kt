@@ -122,7 +122,7 @@ val appModule = module {
     single { UserSessionService(get(), get(), FirebaseTopicManager) }
 
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
-    single<HistoryRepository> { HistoryRepositoryImpl(get(), get(), get()) }
+    single<HistoryRepository> { HistoryRepositoryImpl(get(), get()) }
     single<ReportRepository> { ReportRepositoryImpl(get(), get()) }
     single<ServerRepository> { ServerRepositoryImpl(get(), get(), get()) }
     single<ServerStatusRepository> { ServerStatusRepositoryImpl(get()) }
@@ -130,7 +130,7 @@ val appModule = module {
     single<GroupRepository> { GroupRepositoryImpl(get(), get() ) }
     single<DashboardRepository> { DashboardRepositoryImpl(get(), get() ) }
 
-    factory { AuthViewModel(get(), get()) }
+    factory { AuthViewModel(get(), get(), get(), get(), get() ) }
     factory { SADashboardViewModel(get() ) }
     factory { DashboardViewModel(get(), get(), get(), get(), get(), get()) }
     factory { HistoryViewModel(get()) }

@@ -44,7 +44,7 @@ fun EditProfileDialog(
     currentUser: User?,
     updateProfileState: ApiResult<User>,
     onDismiss: () -> Unit,
-    onUpdateProfile: (name: String, division: String, phone: String) -> Unit
+    onUpdateProfile: (name: String?, division: String?, phone: String?) -> Unit
 ) {
     var name by remember { mutableStateOf(currentUser?.name ?: "") }
     var division by remember { mutableStateOf(currentUser?.division ?: "") }
@@ -118,12 +118,13 @@ fun EditProfileDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (name.isNotBlank() && division.isNotBlank() && phone.isNotBlank()) {
-                        onUpdateProfile(name, division, phone)
-                    }
+                    onUpdateProfile(
+                        name.takeIf { it.isNotBlank() },
+                        division.takeIf { it.isNotBlank() },
+                        phone.takeIf { it.isNotBlank() }
+                    )
                 },
-                enabled = name.isNotBlank() && division.isNotBlank() && phone.isNotBlank() &&
-                        updateProfileState !is ApiResult.Loading
+                enabled = updateProfileState !is ApiResult.Loading
             ) {
                 Text(stringResource(Res.string.update))
             }

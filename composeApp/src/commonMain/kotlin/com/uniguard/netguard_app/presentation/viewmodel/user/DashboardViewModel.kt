@@ -7,6 +7,7 @@ import com.uniguard.netguard_app.data.remote.api.TokenExpiredException
 import com.uniguard.netguard_app.domain.model.ApiResult
 import com.uniguard.netguard_app.domain.model.History
 import com.uniguard.netguard_app.domain.model.Server
+import com.uniguard.netguard_app.domain.model.UserRole
 import com.uniguard.netguard_app.domain.repository.AuthRepository
 import com.uniguard.netguard_app.domain.repository.HistoryRepository
 import com.uniguard.netguard_app.domain.repository.ServerRepository
@@ -75,7 +76,7 @@ class DashboardViewModel(
                 }
 
                 // Load recent incidents
-                val incidentsResult = historyRepository.getRecentIncidents()
+                val incidentsResult = historyRepository.getHistories()
                 when (incidentsResult) {
                     is ApiResult.Success -> {
                         _recentIncidents.value = incidentsResult.data
@@ -87,13 +88,14 @@ class DashboardViewModel(
                 }
 
                 // Load user count for admin
-                when (val usersResult = userRepository.getUsers()) {
-                    is ApiResult.Success -> {
-                        _totalUsers.value = usersResult.data.size
+                if (isAdmin()) {
+                    when (val usersResult = userRepository.getUsers()) {
+                        is ApiResult.Success -> {
+                            _totalUsers.value = usersResult.data.size
+                        }
+                        else -> {}
                     }
-                    else -> {}
                 }
-
                 // Schedule server monitoring after data is loaded (only once)
                 // This ensures servers are available in local database before scheduling
                 if (!isMonitoringScheduled) {
@@ -121,7 +123,7 @@ class DashboardViewModel(
             serverRepository.syncServersFromRemote()
 
             // Sync recent history
-            historyRepository.syncHistoryFromRemote(limit = 20)
+            historyRepository.getHistories()
         } catch (e: Exception) {
             // Handle sync errors silently for now
             // In production, you might want to show a toast or log this
@@ -143,5 +145,8 @@ class DashboardViewModel(
 
     val downIncidents: Int
         get() = _recentIncidents.value.count { it.status.equals("DOWN", ignoreCase = true) }
+
+    fun isAdmin(): Boolean =
+        userSessionService.getUserRole() == UserRole.ADMIN
 
 }

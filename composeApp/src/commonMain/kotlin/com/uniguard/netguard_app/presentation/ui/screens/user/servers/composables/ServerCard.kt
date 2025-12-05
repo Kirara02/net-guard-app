@@ -10,25 +10,38 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -42,9 +55,13 @@ import org.jetbrains.compose.resources.stringResource
 fun ServerCard(
     server: Server,
     serverStatus: ServerStatusEntity?,
+    canManage: Boolean,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    var menuExpanded by remember { mutableStateOf(false) }
+
+    // ===== STATUS CONFIG =====
     val statusColor = when (serverStatus?.status) {
         "UP" -> Color(0xFF4CAF50)
         "DOWN" -> Color(0xFFF44336)
@@ -59,70 +76,72 @@ fun ServerCard(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = when (serverStatus?.status) {
-                "UP" -> MaterialTheme.colorScheme.surface
-                "DOWN" -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)
-                else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            }
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         )
     ) {
+
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Server Header with Status Badge
+
+            // ================= HEADER =================
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.Top
             ) {
-                // Status Icon
-                Box(
-                    modifier = Modifier.size(40.dp),
-                    contentAlignment = Alignment.Center
+
+                // ===== STATUS PILL AVATAR =====
+                Surface(
+                    shape = CircleShape,
+                    color = statusColor.copy(alpha = 0.12f),
+                    modifier = Modifier.size(40.dp)
                 ) {
-                    Icon(
-                        statusIcon,
-                        contentDescription = serverStatus?.status ?: "Unknown",
-                        tint = statusColor,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = statusIcon,
+                            contentDescription = null,
+                            tint = statusColor,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
                 }
 
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    // Server Name and Status Badge
+                // ================= CONTENT =================
+                Column(modifier = Modifier.weight(1f)) {
+
+                    // ----- TITLE + BADGE -----
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Text(
                             text = server.name,
-                            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f)
                         )
 
-                        // Status Badge
-                        Surface(
-                            color = statusColor.copy(alpha = 0.1f),
-                            shape = MaterialTheme.shapes.small,
-                            border = BorderStroke(1.dp, statusColor.copy(alpha = 0.3f))
-                        ) {
-                            Text(
-                                text = serverStatus?.status ?: "UNKNOWN",
-                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
-                                color = statusColor,
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                            )
-                        }
+                        // STATUS BADGE
+                        AssistChip(
+                            onClick = {},
+                            enabled = false,
+                            label = { Text(serverStatus?.status ?: "UNKNOWN") },
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = statusColor.copy(alpha = .12f),
+                                labelColor = statusColor
+                            ),
+                            border = BorderStroke(1.dp, statusColor.copy(alpha = .3f))
+                        )
                     }
 
+                    // ----- URL -----
                     Text(
                         text = server.url,
                         style = MaterialTheme.typography.bodySmall,
@@ -131,84 +150,159 @@ fun ServerCard(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    // Status information
+                    // ================= META =================
                     serverStatus?.let { status ->
-                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Spacer(Modifier.height(6.dp))
+
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Icon(
-                                    Icons.Default.Schedule,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(14.dp)
-                                )
-                                Text(
-                                    text = formatRelativeTime(status.last_checked),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+
+                            // Last check chip
+                            MetaChip(
+                                icon = Icons.Default.Schedule,
+                                value = formatRelativeTime(status.last_checked)
+                            )
 
                             status.response_time?.let { responseTime ->
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Icon(
-                                        Icons.Default.Timer,
-                                        contentDescription = null,
-                                        tint = when {
-                                            responseTime < 500 -> Color(0xFF4CAF50)
-                                            responseTime < 2000 -> Color(0xFFFF9800)
-                                            else -> Color(0xFFF44336)
-                                        },
-                                        modifier = Modifier.size(14.dp)
-                                    )
-                                    Text(
-                                        text = "${responseTime}ms",
-                                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
-                                        color = when {
-                                            responseTime < 500 -> Color(0xFF4CAF50)
-                                            responseTime < 2000 -> Color(0xFFFF9800)
-                                            else -> Color(0xFFF44336)
-                                        }
-                                    )
+
+                                val responseColor = when {
+                                    responseTime < 500 -> Color(0xFF4CAF50)
+                                    responseTime < 2000 -> Color(0xFFFF9800)
+                                    else -> Color(0xFFF44336)
                                 }
+
+                                MetaChip(
+                                    icon = Icons.Default.Timer,
+                                    value = "${responseTime}ms",
+                                    color = responseColor
+                                )
                             }
                         }
                     }
                 }
 
-                // Action buttons
-                Column(
-                    horizontalAlignment = Alignment.End
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        IconButton(onClick = onEdit) {
-                            Icon(
-                                Icons.Default.Edit,
-                                contentDescription = stringResource(Res.string.server_management_edit),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
+                // ================= MENU =================
+                if (canManage) {
+                    Box {
+
+                        IconButton(onClick = { menuExpanded = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = null)
                         }
-                        IconButton(onClick = onDelete) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = stringResource(Res.string.server_management_delete_action),
-                                tint = MaterialTheme.colorScheme.error
+
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false }
+                        ) {
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(Res.string.server_management_edit)) },
+                                leadingIcon = { Icon(Icons.Default.Edit, null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onEdit()
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(Res.string.server_management_delete)) },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.Delete,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                },
+                                onClick = {
+                                    menuExpanded = false
+                                    onDelete()
+                                }
                             )
                         }
                     }
                 }
             }
+
+            // ================= DIVIDER =================
+            HorizontalDivider(
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.outlineVariant
+            )
+
+            // ================= FOOTER =================
+            // ================= FOOTER =================
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                    tint = MaterialTheme.colorScheme.outline
+                )
+
+                Text(
+                    text = stringResource(
+                        Res.string.created_by,
+                        server.createdBy
+                    ),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Text(
+                    text = "•",
+                    color = MaterialTheme.colorScheme.outline
+                )
+
+                Icon(
+                    Icons.Default.Schedule,
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                    tint = MaterialTheme.colorScheme.outline
+                )
+
+                Text(
+                    text = formatRelativeTime(server.createdAt),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline,
+                    maxLines = 1
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun MetaChip(
+    icon: ImageVector,
+    value: String,
+    color: Color = MaterialTheme.colorScheme.outline
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(14.dp),
+            tint = color
+        )
+
+        Text(
+            text = value,
+            style = MaterialTheme.typography.labelSmall,
+            color = color
+        )
     }
 }

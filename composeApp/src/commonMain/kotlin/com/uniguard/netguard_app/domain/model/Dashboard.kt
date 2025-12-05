@@ -186,5 +186,6 @@ data class TopProblematicServer(
 data class DashboardRowData(
     val title: String,
     val subtitle: String? = null,
-    val badge: String? = null
+    val badge: String? = null,
+    val createdAt: String? = null // ✅ new
 )

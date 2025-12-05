@@ -1,5 +1,6 @@
 package com.uniguard.netguard_app.presentation.ui.screens.user.servers
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,6 +67,7 @@ fun ServersScreen(
     }
 
     val isSuperAdmin = viewModel.isSuperAdmin()
+    val isUser = viewModel.isUser()
 
     LaunchedEffect(Unit) {
         viewModel.loadServersByRole()
@@ -103,10 +105,6 @@ fun ServersScreen(
         }
     }
 
-    LaunchedEffect(error) {
-        showErrorToast(error.toString())
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -120,12 +118,16 @@ fun ServersScreen(
                     IconButton(onClick = { viewModel.loadServersByRole() }) {
                         Icon(Icons.Default.Refresh, contentDescription = stringResource(Res.string.refresh))
                     }
-                    IconButton(onClick = { showAddDialog = true }) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = stringResource(Res.string.server_management_add_server),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                    AnimatedVisibility(
+                        visible = !isUser
+                    ) {
+                        IconButton(onClick = { showAddDialog = true }) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = stringResource(Res.string.server_management_add_server),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             )
@@ -194,6 +196,7 @@ fun ServersScreen(
                         adminUserServerSections(
                             servers = servers,
                             statuses = serverStatuses,
+                            canManage = !isUser,
                             onEdit = { server ->
                                 viewModel.selectServer(server)
                                 showEditDialog = true
@@ -303,6 +306,7 @@ fun ServersScreen(
 fun LazyListScope.adminUserServerSections(
     servers: List<Server>,
     statuses: Map<String, ServerStatusEntity>,
+    canManage: Boolean,
     onEdit: (Server) -> Unit,
     onDelete: (Server) -> Unit
 ) {
@@ -325,6 +329,7 @@ fun LazyListScope.adminUserServerSections(
             ServerCard(
                 server = server,
                 serverStatus = statuses[server.id],
+                canManage = canManage,
                 onEdit = { onEdit(server) },
                 onDelete = { onDelete(server) }
             )

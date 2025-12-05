@@ -27,6 +27,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.uniguard.netguard_app.presentation.ui.screens.user.dashboard.composables.DashboardIncidentCard
 import com.uniguard.netguard_app.utils.getCurrentTimestamp
 import com.uniguard.netguard_app.utils.saveFile
 
@@ -537,7 +538,7 @@ fun ReportScreen(
                                 }
                             } else {
                                 items(reports) { report ->
-                                    EnhancedIncidentCard(
+                                    DashboardIncidentCard(
                                         serverName = report.serverName,
                                         status = report.status,
                                         timestamp = formatRelativeTime(report.timestamp),

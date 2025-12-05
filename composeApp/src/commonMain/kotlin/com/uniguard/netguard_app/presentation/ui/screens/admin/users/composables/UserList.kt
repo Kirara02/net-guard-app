@@ -91,7 +91,7 @@ fun UserList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupFilterDropdown(
+private fun GroupFilterDropdown(
     groups: List<Group>,
     selectedGroup: String,
     onGroupChange: (String) -> Unit
@@ -147,7 +147,7 @@ fun GroupFilterDropdown(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoleFilterDropdown(
+private fun RoleFilterDropdown(
     selectedRole: String,
     onRoleChange: (String) -> Unit,
     isSuperAdmin: Boolean

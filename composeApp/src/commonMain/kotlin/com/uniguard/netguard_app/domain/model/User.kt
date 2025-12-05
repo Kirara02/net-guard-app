@@ -27,7 +27,7 @@ data class User(
     val role: String,
     val group: GroupInfo? = null,
     @SerialName("is_active") val isActive: Boolean? = true,
-    @SerialName("created_at") val createdAt: String? = null
+    @SerialName("created_at") val createdAt: String
 ) {
     val userRole: UserRole
         get() = UserRole.fromString(role)
@@ -86,9 +86,9 @@ data class ErrorResponse(
 
 @Serializable
 data class UpdateProfileRequest(
-    val name: String,
-    val division: String,
-    val phone: String
+    val name: String? = null,
+    val division: String? = null,
+    val phone: String? = null
 )
 
 @Serializable

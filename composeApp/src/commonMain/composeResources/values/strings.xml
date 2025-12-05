@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">NetGuard</string>
 
+    <string name="created_at">Created at %1$s</string>
+    <string name="time_just_now">Just now</string>
+    <string name="time_minute_ago">%1$sm ago</string>
+    <string name="time_hour_ago">%1$sh ago</string>
+    <string name="time_day_ago">%1$sd ago</string>
+
+    <string name="created_by">Created by %1$s</string>
+
     <string name="settings">Settings</string>
     <string name="settings_desc">App Settings</string>
     <string name="settings_loading">Loading settings...</string>
@@ -126,7 +134,6 @@
     <string name="server_management_edit">Edit</string>
     <string name="server_management_delete_action">Delete</string>
     <string name="server_management_dismiss">Dismiss</string>
-    <string name="server_management_created_by">Created by: %1$s</string>
 
     <!-- Common Strings -->
     <string name="back">Back</string>
@@ -288,7 +295,7 @@
     <string name="sa_dashboard_settings_description">Manage system configuration</string>
     <string name="sa_dashboard_incidents">Incidents</string>
     <string name="sa_dashboard_incident_status">%1$s Unresolved • %2$s Total</string>
-    <string name="sa_dashboard_avg_resolution">Avg resolution: %s</string>
+    <string name="sa_dashboard_avg_resolution">Avg resolution: %1$s</string>
     <string name="sa_dashboard_recent_users">Recent Users</string>
     <string name="sa_dashboard_recent_servers">Recent Servers</string>
     <string name="sa_dashboard_no_group">No Group</string>

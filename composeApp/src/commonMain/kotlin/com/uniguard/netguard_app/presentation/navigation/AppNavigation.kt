@@ -25,6 +25,8 @@ import com.uniguard.netguard_app.data.remote.api.AuthInterceptor
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.uniguard.netguard_app.domain.model.ApiResult
@@ -41,14 +43,18 @@ import org.koin.compose.koinInject
 @Composable
 fun AppNavigation(
     navController: NavHostController = rememberNavController(),
+    authViewModel: AuthViewModel = rememberKoinViewModel<AuthViewModel>()
 ) {
-    val authViewModel = rememberKoinViewModel<AuthViewModel>()
-
     val authInterceptor: AuthInterceptor = koinInject()
-    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
+
+    val logoutState by authViewModel.logoutState.collectAsState()
+    val hasHandledUnauthorized = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         authInterceptor.unauthorizedEvent.collect {
+            if (hasHandledUnauthorized.value) return@collect
+            hasHandledUnauthorized.value = true
+
             authViewModel.forceLocalLogout()
 
             showErrorToast("Session expired. Please login again.")
@@ -64,14 +70,16 @@ fun AppNavigation(
     }
 
 
-    LaunchedEffect(authViewModel.logoutState.collectAsState()) {
-        when (val state = authViewModel.logoutState.value) {
+    LaunchedEffect(logoutState) {
+        when (val state = logoutState) {
             is ApiResult.Success -> {
-                showToast("Logout berhasil")
+                showToast(state.data)
                 delay(300)
+                authViewModel.resetLogoutState()
             }
             is ApiResult.Error -> {
-                showErrorToast("Logout gagal: ${state.message}")
+                showErrorToast(state.message)
+                authViewModel.resetLogoutState()
             }
             else -> {}
         }

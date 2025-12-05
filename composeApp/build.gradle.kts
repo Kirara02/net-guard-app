@@ -40,6 +40,7 @@ buildkonfig {
             FieldSpec.Type.STRING,
             "BASEURL",
             "http://ptt.uniguard.co.id:8006/api",
+//            "http://192.168.1.172:8080/api",
             const = true
         )
         buildConfigField(

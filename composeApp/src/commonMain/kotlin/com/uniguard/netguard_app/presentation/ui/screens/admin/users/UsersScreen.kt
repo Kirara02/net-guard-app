@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -84,14 +86,28 @@ fun UsersScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        viewModel.resetAllState()
+
+                        viewModel.loadUsers()
+                        selectedRoleFilter = "ALL"
+                        selectedGroupFilter = "ALL"
+
+                        if (currentUser?.userRole == UserRole.SUPER_ADMIN) {
+                            groupViewModel.loadGroups()
+                        }
+                    }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                    }
+
+                    IconButton(onClick = { showAddDialog = true }) {
+                        Icon(Icons.Default.PersonAdd, contentDescription = "Add User")
+                    }
                 }
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { showAddDialog = true }) {
-                Icon(Icons.Default.PersonAdd, contentDescription = "Add User")
-            }
-        }
     ) { padding ->
 
         Box(

@@ -21,6 +21,7 @@ import com.uniguard.netguard_app.presentation.ui.components.*
 import com.uniguard.netguard_app.presentation.ui.screens.shared.settings.composables.EditProfileDialog
 import com.uniguard.netguard_app.presentation.ui.screens.shared.settings.composables.IntervalPickerDialog
 import com.uniguard.netguard_app.presentation.ui.screens.shared.settings.composables.LanguagePickerDialog
+import com.uniguard.netguard_app.presentation.ui.screens.shared.settings.composables.ProfileCard
 import com.uniguard.netguard_app.presentation.ui.screens.shared.settings.composables.SettingItem
 import com.uniguard.netguard_app.presentation.viewmodel.user.AuthViewModel
 import netguardapp.composeapp.generated.resources.*

@@ -9,6 +9,8 @@ import com.uniguard.netguard_app.domain.model.ChangePasswordRequest
 import com.uniguard.netguard_app.domain.model.UpdateProfileRequest
 import com.uniguard.netguard_app.domain.model.User
 import com.uniguard.netguard_app.domain.repository.AuthRepository
+import com.uniguard.netguard_app.domain.repository.ServerRepository
+import com.uniguard.netguard_app.domain.repository.ServerStatusRepository
 import com.uniguard.netguard_app.domain.service.UserSessionService
 import com.uniguard.netguard_app.log
 import kotlinx.coroutines.delay
@@ -16,14 +18,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class AuthViewModel(
     private val authRepository: AuthRepository,
-    private val userSessionService: UserSessionService
-) : ViewModel(), KoinComponent {
-    private val appPreferences: AppPreferences by inject()
+    private val serverRepository: ServerRepository,
+    private val serverStatusRepository: ServerStatusRepository,
+    private val appPreferences: AppPreferences,
+    private val userSessionService: UserSessionService,
+) : ViewModel() {
 
     private val _loginState = MutableStateFlow<ApiResult<AuthData>>(ApiResult.Initial)
     val loginState: StateFlow<ApiResult<AuthData>> = _loginState.asStateFlow()
@@ -129,8 +131,6 @@ class AuthViewModel(
                 }
                 else -> {}
             }
-
-            log { "ViewModel logout success triggered" }
         }
     }
 
@@ -139,6 +139,15 @@ class AuthViewModel(
     }
 
     private fun clearLocalSession() {
+        viewModelScope.launch {
+            try {
+                serverRepository.clearAllServers()
+                serverStatusRepository.clearAllStatuses()
+            } catch (e: Exception) {
+                log { "Failed to clear local servers: ${e.message}" }
+            }
+        }
+
         userSessionService.endSession()
         authRepository.clearAuthData()
         resetAllStates()
@@ -162,7 +171,7 @@ class AuthViewModel(
     }
 
 
-    fun updateProfile(name: String, division: String, phone: String) {
+    fun updateProfile(name: String?, division: String?, phone: String?) {
         viewModelScope.launch {
             _updateProfileState.value = ApiResult.Loading
 
