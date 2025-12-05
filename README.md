@@ -112,7 +112,7 @@ For support and questions, please open an issue on GitHub or contact the develop
 
 | Dashboard | Server Management | Reports | About |
 |-----------|-------------------|---------|-------|
-| ![Dashboard](docs/dashbooard.png) | ![Server Management](docs/servers.png) | ![Reports](docs/report.png) | ![About](docs/about.png) |
+| ![Dashboard](docs/dashboard.png) | ![Server Management](docs/servers.png) | ![Reports](docs/report.png) | ![About](docs/about.png) |
 
 ---
 
