@@ -189,7 +189,10 @@ fun UsersScreen(
     deleteUser?.let { user ->
         ConfirmDeleteDialog(
             onDismiss = { deleteUser = null },
-            onConfirm = { viewModel.deleteUser(user.id) },
+            onConfirm = {
+                viewModel.deleteUser(user.id)
+                deleteUser = null
+            },
             isProcessing = deleteState is ApiResult.Loading
         )
     }

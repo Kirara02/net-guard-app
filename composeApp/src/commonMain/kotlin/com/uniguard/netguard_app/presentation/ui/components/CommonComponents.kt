@@ -209,30 +209,6 @@ fun StatusIndicator(status: String) {
     )
 }
 
-@Composable
-fun TextFieldWithLabel(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        Spacer(modifier = Modifier.size(4.dp))
-
-        TextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-    }
-}
 
 @Composable
 fun RoleBadge(role: String) {
